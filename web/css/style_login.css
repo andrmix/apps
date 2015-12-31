@@ -1,0 +1,92 @@
+@font-face {
+    font-family: '9369';
+    src: url('fonts/9369.ttf');
+}
+body {
+    font-family: '9369';
+    margin: 0;
+}
+
+h1 {
+    font-size: 36px;
+    margin: 0;
+    color: #fff;
+}
+   
+.galka{
+    position: absolute;
+    left: 60px;
+    top: 20px;
+    height: 80px;
+}
+   
+#header {
+    position: fixed;
+    background: #808080;
+    padding: 10px;
+    padding-left: 150px;
+    padding-top: 40px;
+    top: 0;
+    left: 0;
+    height: 80px;
+    width: 100%;
+}
+   
+#lb{
+    margin: auto;
+    text-align: center;
+    margin-top: 250px;
+    width: 450px;
+}
+
+#lb #loginBox{
+    margin-left: 0;
+    padding-left: 0;
+}
+    
+#lb #loginBox li{
+    list-style-type: none;
+}
+    
+#lb #loginBox .submit{
+    font-family: '9369';
+    cursor: pointer;
+    border: 0px solid #3a3633;
+    background: #3a3633;
+    border-radius: 0px;
+    width: 452px;
+    height: 50px;
+    font-size: 15px;
+    border-radius: 0px 0px 5px 5px;
+    color: #C0C0C0;
+}
+
+#lb #loginBox .submit:hover {
+    color: #Ffffff;
+}
+
+#lb #loginBox .text {
+    width: 100%;
+    margin-bottom: -1px;
+    font-family: '9369';
+    border: 1px solid #3a3633;
+    background: #Ffffff;
+    border-radius: 5px 5px 0px 0px;
+    padding: 8px 0 8px 0;
+    height: 30px;
+    font-size: 20px;
+    text-align: center;
+}
+
+#lb #loginBox .text1 {
+    width: 100%;
+    margin: 0;
+    font-family: '9369';
+    border: 1px solid #3a3633;
+    background: #Ffffff;
+    border-radius: 0px 0px 0px 0px;
+    padding: 8px 0 8px 0;
+    height: 30px;
+    font-size: 20px;	
+    text-align: center;
+}

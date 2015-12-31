@@ -1,0 +1,11 @@
+{
+    "elements": {},
+    "attributes": {
+        "border": {
+            "context": "frameset"
+        },
+        "cols": {
+            "context": "frameset"
+        }
+    }
+}
