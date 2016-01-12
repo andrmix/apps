@@ -35,10 +35,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findByLogin", query = "SELECT u FROM Users u WHERE u.login = :login"),
     @NamedQuery(name = "Users.findByPass", query = "SELECT u FROM Users u WHERE u.pass = :pass"),
     @NamedQuery(name = "Users.findByName", query = "SELECT u FROM Users u WHERE u.name = :name"),
-    @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email"),
     @NamedQuery(name = "Users.findByDepart", query = "SELECT u FROM Users u WHERE u.depart = :depart"),
     @NamedQuery(name = "Users.findSearch", query = "SELECT u FROM Users u WHERE u.name like :user"),
-    @NamedQuery(name = "Users.findAllOrder", query = "SELECT u FROM Users u ORDER BY u.login")})
+    @NamedQuery(name = "Users.findAllOrder", query = "SELECT u FROM Users u ORDER BY u.login"),
+    @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email")})
 public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -64,14 +64,14 @@ public class Users implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "email")
     private String email;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin", orphanRemoval = true)
     private Collection<Groupuser> groupuserCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "zayavitel")
+    @OneToMany(mappedBy = "zayavitel")
     private Collection<Incidents> incidentsCollection;
     @OneToMany(mappedBy = "specialist")
     private Collection<Incidents> incidentsCollection1;
     @JoinColumn(name = "depart", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Departs depart;
 
     public Users() {

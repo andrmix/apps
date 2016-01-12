@@ -8,7 +8,6 @@ package entity;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,8 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Statuses.findAll", query = "SELECT s FROM Statuses s"),
     @NamedQuery(name = "Statuses.findById", query = "SELECT s FROM Statuses s WHERE s.id = :id"),
-    @NamedQuery(name = "Statuses.findByName", query = "SELECT s FROM Statuses s WHERE s.name = :name"),
-    @NamedQuery(name = "Statuses.findAllOrder", query = "SELECT s FROM Statuses s ORDER BY s.id")})
+    @NamedQuery(name = "Statuses.findAllOrder", query = "SELECT s FROM Statuses s ORDER BY s.id"),
+    @NamedQuery(name = "Statuses.findByName", query = "SELECT s FROM Statuses s WHERE s.name = :name")})
 public class Statuses implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,9 +46,9 @@ public class Statuses implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "status")
+    @OneToMany(mappedBy = "status")
     private Collection<Incidents> incidentsCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "status")
+    @OneToMany(mappedBy = "status")
     private Collection<Acts> actsCollection;
 
     public Statuses() {

@@ -6,6 +6,9 @@
         },
         "cols": {
             "context": "frameset"
+        },
+        "value": {
+            "context": "select"
         }
     }
 }

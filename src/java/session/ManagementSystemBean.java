@@ -6,13 +6,21 @@
 package session;
 
 import entity.Departs;
+import entity.Groupuser;
 import entity.Incidents;
 import entity.Statuses;
 import entity.Typeincident;
 import entity.Users;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -22,7 +30,11 @@ import javax.persistence.Query;
  * @author admin
  */
 @Stateless(name = "ManagementSystem")
+@TransactionManagement(TransactionManagementType.CONTAINER)
 public class ManagementSystemBean implements ManagementSystemLocal {
+
+    @Resource
+    private SessionContext context;
 
     @PersistenceContext(unitName = "helpPU")
     private EntityManager em;
@@ -144,9 +156,87 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public List<Users> getUsersSearch(String searchText) {
         Query q = em.createNamedQuery("Users.findSearch");
-        q.setParameter("user", "%"+searchText+"%");
+        q.setParameter("user", "%" + searchText + "%");
         List resultList = q.getResultList();
         return resultList;
     }
-    
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void addUser(String login, String pass,
+            String fio, String email, Departs depart,
+            String role, boolean addUser) {
+        try {
+            Users user;
+            if (addUser) {
+                user = new Users();
+            } else {
+                user = findUser(login);
+            }
+            user.setDepart(depart);
+            user.setEmail(email);
+            user.setLogin(login);
+            user.setName(fio);
+            user.setPass(pass);
+            if (addUser) {
+                em.persist(user);
+            } else {
+                em.merge(user);
+            }
+            Groupuser groupuser;
+            if (addUser) {
+                groupuser = new Groupuser();
+            } else {
+                groupuser = findGroupuser(user);
+            }
+            groupuser.setName(role);
+            groupuser.setUsersLogin(user);
+            if (addUser) {
+                em.persist(groupuser);
+            } else {
+                em.merge(groupuser);
+            }
+        } catch (Exception e) {
+            context.setRollbackOnly();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteUser(Users user) {
+        Users toBeRemoved = em.merge(user);
+        em.remove(toBeRemoved);
+    }
+
+    @Override
+    public Groupuser findGroupuser(Users user) {
+        Query q = em.createNamedQuery("Groupuser.findByUser");
+        q.setParameter("user", user);
+        List resultList = q.getResultList();
+        Groupuser groupuser = (Groupuser) resultList.get(0);
+        return groupuser;
+    }
+
+    @Override
+    public List<Departs> getDepartsForEdit(Departs depart) {
+        List resultList = em.createNamedQuery("Departs.findAll").getResultList();
+        Departs departA = null, departB = null;
+        Iterator iterator = resultList.iterator();
+        while (iterator.hasNext()) {
+            departA = (Departs) iterator.next();
+            if (depart.equals(departA)) {
+                departB = departA;
+                iterator.remove();
+            }
+        }
+        resultList.add(departB);
+        return resultList;
+    }
+
+    @Override
+    public void deleteDepart(Departs depart) {
+        Departs toBeRemoved = em.merge(depart);
+        em.remove(toBeRemoved);
+    }
+
 }

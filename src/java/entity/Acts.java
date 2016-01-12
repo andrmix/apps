@@ -57,13 +57,13 @@ public class Acts implements Serializable {
     @Column(name = "podpisZayavitel")
     private int podpisZayavitel;
     @JoinColumn(name = "incident", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Incidents incident;
     @JoinColumn(name = "status", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Statuses status;
     @JoinColumn(name = "typeAct", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Typeact typeAct;
 
     public Acts() {

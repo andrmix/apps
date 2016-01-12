@@ -6,6 +6,7 @@
 package session;
 
 import entity.Departs;
+import entity.Groupuser;
 import entity.Incidents;
 import entity.Statuses;
 import entity.Typeincident;
@@ -47,8 +48,18 @@ public interface ManagementSystemLocal {
     public List<Departs> getAllDeparts();
 
     public Departs findDepart(Object id);
-    
+
     public List<Users> getUsersByDepart(Departs depart);
-    
+
     public List<Users> getUsersSearch(String searchText);
+
+    public void addUser(String login, String pass, String fio, String email, Departs depart, String role, boolean addUser);
+
+    public void deleteUser(Users user);
+
+    public Groupuser findGroupuser(Users user);
+
+    public List<Departs> getDepartsForEdit(Departs depart);
+    
+    public void deleteDepart(Departs depart);
 }

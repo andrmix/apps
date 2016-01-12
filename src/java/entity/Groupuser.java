@@ -9,6 +9,8 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -29,12 +31,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Groupuser.findAll", query = "SELECT g FROM Groupuser g"),
     @NamedQuery(name = "Groupuser.findById", query = "SELECT g FROM Groupuser g WHERE g.id = :id"),
+    @NamedQuery(name = "Groupuser.findByUser", query = "SELECT g FROM Groupuser g WHERE g.usersLogin = :user"),
     @NamedQuery(name = "Groupuser.findByName", query = "SELECT g FROM Groupuser g WHERE g.name = :name")})
 public class Groupuser implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)

@@ -6,11 +6,9 @@
 package entity;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,17 +40,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findByDateIncident", query = "SELECT i FROM Incidents i WHERE i.dateIncident = :dateIncident"),
     @NamedQuery(name = "Incidents.findByTitle", query = "SELECT i FROM Incidents i WHERE i.title = :title"),
     @NamedQuery(name = "Incidents.findByText", query = "SELECT i FROM Incidents i WHERE i.text = :text"),
+    @NamedQuery(name = "Incidents.findByDecision", query = "SELECT i FROM Incidents i WHERE i.decision = :decision"),
+    @NamedQuery(name = "Incidents.findByDateDone", query = "SELECT i FROM Incidents i WHERE i.dateDone = :dateDone"),
     @NamedQuery(name = "Incidents.findByUser", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user"),
     @NamedQuery(name = "Incidents.findByUser1Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status = :status"),
     @NamedQuery(name = "Incidents.findByUser2Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2)"),
-    @NamedQuery(name = "Incidents.findByDecision", query = "SELECT i FROM Incidents i WHERE i.decision = :decision")})
+    @NamedQuery(name = "Incidents.findByDateClose", query = "SELECT i FROM Incidents i WHERE i.dateClose = :dateClose")})
 public class Incidents implements Serializable {
-    @Column(name = "dateDone")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateDone;
-    @Column(name = "dateClose")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateClose;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,19 +71,25 @@ public class Incidents implements Serializable {
     @Size(max = 255)
     @Column(name = "decision")
     private String decision;
+    @Column(name = "dateDone")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateDone;
+    @Column(name = "dateClose")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateClose;
     @JoinColumn(name = "status", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Statuses status;
     @JoinColumn(name = "typeIncident", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Typeincident typeIncident;
     @JoinColumn(name = "zayavitel", referencedColumnName = "login")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Users zayavitel;
     @JoinColumn(name = "specialist", referencedColumnName = "login")
     @ManyToOne
     private Users specialist;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "incident")
+    @OneToMany(mappedBy = "incident")
     private Collection<Acts> actsCollection;
 
     public Incidents() {
@@ -114,12 +114,8 @@ public class Incidents implements Serializable {
         this.id = id;
     }
 
-    public String getDateIncident() {
-        try{
-            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateIncident);
-        }catch (NullPointerException e){
-            return "Дата не определена";
-        }
+    public Date getDateIncident() {
+        return dateIncident;
     }
 
     public void setDateIncident(Date dateIncident) {
@@ -148,6 +144,22 @@ public class Incidents implements Serializable {
 
     public void setDecision(String decision) {
         this.decision = decision;
+    }
+
+    public Date getDateDone() {
+        return dateDone;
+    }
+
+    public void setDateDone(Date dateDone) {
+        this.dateDone = dateDone;
+    }
+
+    public Date getDateClose() {
+        return dateClose;
+    }
+
+    public void setDateClose(Date dateClose) {
+        this.dateClose = dateClose;
     }
 
     public Statuses getStatus() {
@@ -214,22 +226,6 @@ public class Incidents implements Serializable {
     @Override
     public String toString() {
         return "entity.Incidents[ id=" + id + " ]";
-    }
-
-    public Date getDateDone() {
-        return dateDone;
-    }
-
-    public void setDateDone(Date dateDone) {
-        this.dateDone = dateDone;
-    }
-
-    public Date getDateClose() {
-        return dateClose;
-    }
-
-    public void setDateClose(Date dateClose) {
-        this.dateClose = dateClose;
     }
     
 }
