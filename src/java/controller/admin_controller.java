@@ -6,8 +6,12 @@
 package controller;
 
 import entity.Departs;
+import entity.Groupuser;
+import entity.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,7 +24,11 @@ import session.ManagementSystemLocal;
  *
  * @author admin
  */
-@WebServlet(name = "admin_controller", urlPatterns = {"/admin"})
+@WebServlet(name = "admin_controller",
+        urlPatterns = {"/admin",
+            "/admin/new_user", "/admin/user_data",
+            "/admin/new_depart", "/admin/departs",
+            "/admin/depart_data"})
 public class admin_controller extends HttpServlet {
 
     @EJB(name = "ManagementSystem")
@@ -49,6 +57,99 @@ public class admin_controller extends HttpServlet {
                 getServletContext().setAttribute("filtr", 0);
             }
             request.getRequestDispatcher("/WEB-INF/admin/userlist.jsp").forward(request, response);
+        }
+        if ("/admin/new_user".equals(request.getServletPath())) {
+            int answer = 0;
+            answer = checkAction(request);
+            if (answer == 4) {
+                Departs depart = ms.findDepart(Integer.parseInt(request.getParameter("departId")));
+                ms.addUser(request.getParameter("login"), request.getParameter("pass"),
+                        request.getParameter("fio"), request.getParameter("email"), depart,
+                        request.getParameter("role"), true);
+                response.sendRedirect(request.getContextPath() + "/admin");
+                return;
+            }
+            if (answer == 5) {
+                response.sendRedirect(request.getContextPath() + "/admin");
+                return;
+            }
+            if (answer == 6) {
+                Departs depart = ms.findDepart(Integer.parseInt(request.getParameter("departId")));
+                ms.addUser(request.getParameter("login"), request.getParameter("pass"),
+                        request.getParameter("fio"), request.getParameter("email"), depart,
+                        request.getParameter("role"), false);
+                response.sendRedirect(request.getContextPath() + "/admin");
+                return;
+            }
+            List<Departs> departs = ms.getAllDeparts();
+            request.setAttribute("departs", departs);
+            request.getRequestDispatcher("/WEB-INF/admin/new_user.jsp").forward(request, response);
+        }
+        if ("/admin/user_data".equals(request.getServletPath())) {
+            int answer = 0;
+            answer = checkAction(request);
+            if (answer == 7) {
+                Users user = ms.findUser(request.getParameter("login"));
+                ms.deleteUser(user);
+                response.sendRedirect(request.getContextPath() + "/admin");
+                return;
+            }
+            if (answer == 5) {
+                response.sendRedirect(request.getContextPath() + "/admin");
+                return;
+            }
+            String login = null;
+            Enumeration<String> params = request.getParameterNames();
+            while (params.hasMoreElements()) {
+                String param = params.nextElement();
+                login = "login".equals(param) ? request.getParameter(param) : login;
+            }
+            try {
+                Users user = ms.findUser(login);
+                request.setAttribute("user", user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (answer == 6) {
+                Users user = ms.findUser(login);
+                List<Departs> departs = ms.getDepartsForEdit(user.getDepart());
+                request.setAttribute("departs", departs);
+                Groupuser groupuser = ms.findGroupuser(user);
+                request.setAttribute("login", user.getLogin());
+                request.setAttribute("pass", user.getPass());
+                request.setAttribute("fio", user.getName());
+                request.setAttribute("email", user.getEmail());
+                request.setAttribute("role", groupuser.getName());
+                request.setAttribute("editUser", 1);
+                request.getRequestDispatcher("/WEB-INF/admin/new_user.jsp").forward(request, response);
+            }
+            request.getRequestDispatcher("/WEB-INF/admin/user_data.jsp").forward(request, response);
+        }
+
+        if ("/admin/new_depart".equals(request.getServletPath())) {
+            request.getRequestDispatcher("/WEB-INF/admin/new_depart.jsp").forward(request, response);
+        }
+
+        if ("/admin/departs".equals(request.getServletPath())) {
+            getServletContext().setAttribute("departList", ms.getAllDeparts());
+            request.getRequestDispatcher("/WEB-INF/admin/departs.jsp").forward(request, response);
+        }
+
+        if ("/admin/depart_data".equals(request.getServletPath())) {
+            int answer = 0;
+            answer = checkAction(request);
+            if (answer == 5) {
+                response.sendRedirect(request.getContextPath() + "/admin/departs");
+                return;
+            }
+            Departs depart = ms.findDepart(Integer.parseInt(request.getParameter("id")));
+            getServletContext().setAttribute("depart", depart);
+            if (answer == 7) {
+                ms.deleteDepart(depart);
+                response.sendRedirect(request.getContextPath() + "/admin/departs");
+                return;
+            }
+            request.getRequestDispatcher("/WEB-INF/admin/depart_data.jsp").forward(request, response);
         }
 
     }
@@ -101,6 +202,18 @@ public class admin_controller extends HttpServlet {
         }
         if (req.getParameter("Searchb") != null) {
             return 3;
+        }
+        if (req.getParameter("Add") != null) {
+            return 4;
+        }
+        if (req.getParameter("Cancel") != null) {
+            return 5;
+        }
+        if (req.getParameter("Edit") != null) {
+            return 6;
+        }
+        if (req.getParameter("Delete") != null) {
+            return 7;
         }
         return 0;
     }
