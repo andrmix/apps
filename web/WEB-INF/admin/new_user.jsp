@@ -12,6 +12,7 @@
         <form action='<c:url value="/admin/new_user"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Сотрудники / Новый сотрудник</div></div>
             </div>
             <div id="sidebar">
                 <p><a href='<c:url value="/admin"/>'>< Назад</a></p>
@@ -48,22 +49,22 @@
                                     <c:when test="${role == 'user'}">
                                         <option value="user" selected><c:out value="Пользователь"/></option>
                                         <option value="specialist"><c:out value="Специалист"/></option>
-                                        <option value="rukovoditel"><c:out value="Руководитель"/></option>
+                                        <option value="manager"><c:out value="Руководитель"/></option>
                                     </c:when>
                                     <c:when test="${role == 'specialist'}">
                                         <option value="user"><c:out value="Пользователь"/></option>
                                         <option value="specialist" selected><c:out value="Специалист"/></option>
-                                        <option value="rukovoditel"><c:out value="Руководитель"/></option>
+                                        <option value="manager"><c:out value="Руководитель"/></option>
                                     </c:when>
-                                    <c:when test="${role == 'rukovoditel'}">
+                                    <c:when test="${role == 'manager'}">
                                         <option value="user"><c:out value="Пользователь"/></option>
                                         <option value="specialist"><c:out value="Специалист"/></option>
-                                        <option value="rukovoditel" selected><c:out value="Руководитель"/></option>
+                                        <option value="manager" selected><c:out value="Руководитель"/></option>
                                     </c:when>
                                     <c:otherwise>
                                         <option value="user"><c:out value="Пользователь"/></option>
                                         <option value="specialist"><c:out value="Специалист"/></option>
-                                        <option value="rukovoditel" selected><c:out value="Руководитель"/></option>
+                                        <option value="manager" selected><c:out value="Руководитель"/></option>
                                     </c:otherwise>
                                 </c:choose>
                             </select>

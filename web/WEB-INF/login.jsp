@@ -15,8 +15,8 @@
             <form action="j_security_check" method="POST">
     <div id="lb">
         <ul id="loginBox">
-            <li><input placeholder="Введите логин" type="text" class="text" size="20" name="j_username" value="admin"></li>
-            <li><input placeholder="Введите пароль" type="password" class="text1" size="20" name="j_password" value="admin"></li>
+            <li><input placeholder="Введите логин" type="text" class="text" size="20" name="j_username" value="i.ivanov"></li>
+            <li><input placeholder="Введите пароль" type="password" class="text1" size="20" name="j_password" value="ivanov"></li>
             <li><input type="submit" class="submit" value="Авторизоваться"></li>
         </ul>
     </div>

@@ -13,36 +13,47 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import session.ManagementSystemLocal;
 
 /**
  *
  * @author admin
  */
-@WebServlet(name = "user_controller", urlPatterns = {"/", "/user"})
+@WebServlet(name = "user_controller", urlPatterns = {"/", "/user", "/logout"})
 public class user_controller extends HttpServlet {
 
     @EJB(name = "ManagementSystem")
     private ManagementSystemLocal ms;
-    
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        if ("/".equals(request.getServletPath())){
+        if ("/".equals(request.getServletPath())) {
             response.sendRedirect("user");
         }
-            if(request.isUserInRole("user")) {
-                request.setAttribute("name", request.getUserPrincipal().getName());
-                Users user = ms.findUser(request.getUserPrincipal().getName());
-                getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user));
-                getServletContext().setAttribute("doneIncidents", ms.getDoneIncidents(user));
-                getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user));
-                request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
-            } else if(request.isUserInRole("admin")) {
-                response.sendRedirect("admin");
-            }   
+        if ("/logout".equals(request.getServletPath())) {
+            HttpSession session = request.getSession(false);
+            if (session!= null){
+                session.invalidate();
+            }
+            response.sendRedirect("/help");
+            return;
         }
-    
+        if (request.isUserInRole("user")) {
+            Users user = ms.findUser(request.getUserPrincipal().getName());
+            request.setAttribute("user", user);
+            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user));
+            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user));
+            request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
+        } else if (request.isUserInRole("admin")) {
+            response.sendRedirect("admin");
+        } else if (request.isUserInRole("manager")) {
+            response.sendRedirect("manager");
+        } else if (request.isUserInRole("specialist")) {
+            response.sendRedirect("specialist");
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

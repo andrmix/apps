@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -44,9 +45,15 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findByDateDone", query = "SELECT i FROM Incidents i WHERE i.dateDone = :dateDone"),
     @NamedQuery(name = "Incidents.findByUser", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user"),
     @NamedQuery(name = "Incidents.findByUser1Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status = :status"),
-    @NamedQuery(name = "Incidents.findByUser2Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2)"),
+    @NamedQuery(name = "Incidents.findByUser3Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3)"),
+    @NamedQuery(name = "Incidents.findByUser4Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3 OR i.status = :status4)"),
+    @NamedQuery(name = "Incidents.findBySpecialist1Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status"),
+    @NamedQuery(name = "Incidents.findBySpecialist2Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2)"),
+    @NamedQuery(name = "Incidents.findBySpecialist3Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3)"),
+    @NamedQuery(name = "Incidents.findUnallocated", query = "SELECT i FROM Incidents i WHERE i.status = :status"),
     @NamedQuery(name = "Incidents.findByDateClose", query = "SELECT i FROM Incidents i WHERE i.dateClose = :dateClose")})
 public class Incidents implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -114,8 +121,12 @@ public class Incidents implements Serializable {
         this.id = id;
     }
 
-    public Date getDateIncident() {
-        return dateIncident;
+    public String getDateIncident() {
+        try {
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateIncident);
+        } catch (NullPointerException e) {
+            return "Дата не определена";
+        }
     }
 
     public void setDateIncident(Date dateIncident) {
@@ -146,16 +157,24 @@ public class Incidents implements Serializable {
         this.decision = decision;
     }
 
-    public Date getDateDone() {
-        return dateDone;
+    public String getDateDone() {
+        try {
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateDone);
+        } catch (NullPointerException e) {
+            return "Дата не определена";
+        }
     }
 
     public void setDateDone(Date dateDone) {
         this.dateDone = dateDone;
     }
 
-    public Date getDateClose() {
-        return dateClose;
+    public String getDateClose() {
+        try {
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateClose);
+        } catch (NullPointerException e) {
+            return "Дата не определена";
+        }
     }
 
     public void setDateClose(Date dateClose) {
@@ -227,5 +246,5 @@ public class Incidents implements Serializable {
     public String toString() {
         return "entity.Incidents[ id=" + id + " ]";
     }
-    
+
 }

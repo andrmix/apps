@@ -34,53 +34,64 @@ public class incident_controller extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String userPath = request.getServletPath();
+        Users user = ms.findUser(request.getUserPrincipal().getName());
+        request.setAttribute("user", user);
         if ("/user/user_incident".equals(userPath)) {
             int answer = 0;
             answer = checkAction(request);
-            if (answer == 3) {
-                Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
-                ms.cancelIncident(incident);
-                response.sendRedirect(request.getContextPath() + "/user");
-                return;
-            }
+            Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
             if (answer == 2) {
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
-            String id = null;
-            Enumeration<String> params = request.getParameterNames();
-            while (params.hasMoreElements()) {
-                String param = params.nextElement();
-                id = "id".equals(param) ? request.getParameter(param) : id;
+            if (answer == 3) {
+                request.setAttribute("commenta", 1);
             }
-            try {
-                Incidents incident = ms.findIncident(Integer.parseInt(id));
+            if (answer == 4) {
+                List<Typeincident> typs = ms.getTypesIncidentsForEdit(incident.getTypeIncident());
                 request.setAttribute("incident", incident);
-            } catch (Exception e) {
-                e.printStackTrace();
+                request.setAttribute("typs", typs);
+                request.setAttribute("editincident", 1);
+                request.getRequestDispatcher("/WEB-INF/user/new_incident.jsp").forward(request, response);
             }
+            if (answer == 5) {
+                ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"));
+                response.sendRedirect(request.getContextPath() + "/user");
+                return;
+            }
+            if (answer == 6) {
+                
+            }
+            if (answer == 7) {
+                request.setAttribute("commenta", 1);
+            }
+            request.setAttribute("incident", incident);
         }
         if ("/user/new_incident".equals(userPath)) {
             int answer = 0;
             answer = checkAction(request);
-            if (answer == 1) {
-                Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
-                Users user = ms.findUser(request.getUserPrincipal().getName());
-                ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti);
-                response.sendRedirect(request.getContextPath() + "/user");
-                return;
-            }
             if (answer == 2) {
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
-            List<Typeincident> typs = ms.getTypesOfincidents();
+            if (answer == 1) {
+                Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
+                ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, true, 0);
+                response.sendRedirect(request.getContextPath() + "/user");
+                return;
+            }
+            if (answer == 4) {
+                Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
+                ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, false, Integer.parseInt(request.getParameter("id")));
+                response.sendRedirect(request.getContextPath() + "/user");
+                return;
+            }
+            getServletContext().setAttribute("editincident", 0);
+            List<Typeincident> typs = ms.getAllTypesIncident();
             request.setAttribute("typs", typs);
         }
         if (("/user/closed_incidents".equals(userPath)) || ("/user/done_incidents".equals(userPath))) {
-            Users user = ms.findUser(request.getUserPrincipal().getName());
             getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user));
-            getServletContext().setAttribute("doneIncidents", ms.getDoneIncidents(user));
             getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user));
         }
         request.getRequestDispatcher("/WEB-INF" + userPath + ".jsp").forward(request, response);
@@ -134,6 +145,18 @@ public class incident_controller extends HttpServlet {
         }
         if (req.getParameter("Close") != null) {
             return 3;
+        }
+        if (req.getParameter("Edit") != null) {
+            return 4;
+        }
+        if (req.getParameter("Done") != null) {
+            return 5;
+        }
+        if (req.getParameter("Accept") != null) {
+            return 6;
+        }
+        if (req.getParameter("NoAccept") != null) {
+            return 7;
         }
         return 0;
     }

@@ -27,11 +27,9 @@ public interface ManagementSystemLocal {
 
     public List<Incidents> getOpenIncidents(Users user);
 
-    public List<Incidents> getDoneIncidents(Users user);
+    public void addIncident(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id);
 
-    public void addIncident(String title, String text, Users zayavitel, Typeincident ti);
-
-    public void cancelIncident(Incidents incident);
+    public void cancelIncident(Incidents incident, String textp, String tstatus);
 
     public List<Statuses> getStatuses();
 
@@ -60,6 +58,36 @@ public interface ManagementSystemLocal {
     public Groupuser findGroupuser(Users user);
 
     public List<Departs> getDepartsForEdit(Departs depart);
-    
+
     public void deleteDepart(Departs depart);
+
+    public List<Departs> getDepartsSearch(String searchText);
+
+    public void addDepart(String name, boolean addDepart, int id);
+
+    public void addTypeIncident(String name, boolean addTypeIncident, int id);
+
+    public List<Typeincident> getTypesIncidentSearch(String searchText);
+
+    public void deleteTypeincident(Typeincident typeincident);
+
+    public List<Typeincident> getAllTypesIncident();
+
+    public List<Incidents> getUnallocatedIncidents();
+
+    public List<Users> getSpecialists();
+
+    public void addSpecialist(Incidents incident, Users specialist);
+
+    public void inWork(Incidents incident);
+
+    public List<Incidents> getSpecialistOpenIncidents(Users specialist);
+
+    public void doneIncident(Incidents incident, String decision);
+
+    public List<Incidents> getSpecialistDoneIncidents(Users specialist);
+
+    public List<Incidents> getSpecialistClosedIncidents(Users specialist);
+
+    public List<Typeincident> getTypesIncidentsForEdit(Typeincident typeincident);
 }

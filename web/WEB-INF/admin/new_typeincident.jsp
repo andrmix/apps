@@ -9,25 +9,25 @@
         <title>Решение</title>
     </head>
     <body>
-        <form action='<c:url value="/admin/new_depart"/>' method="POST">
+        <form action='<c:url value="/admin/new_typeincident"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Отделы / Новый отдел</div></div>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Типы инцидентов / Новый тип инцидентов</div></div>
             </div>
             <div id="sidebar">
-                <p><a href='<c:url value="/admin/departs"/>'>< Назад</a></p>
+                <p><a href='<c:url value="/admin/typesincident"/>'>< Назад</a></p>
             </div>
             <div id="content">
-                <input type="hidden" name="id" value="${depart.id}"/>
+                <input type="hidden" name="id" value="${typeIncident.id}"/>
                 <table>
                     <tr>
-                        <td>Название:</td><td><input type="text" name="nameDepart" value="${nameDepart}"/></td>
+                        <td>Название:</td><td><input type="text" name="nameTypeIncident" value="${nameTypeIncident}"/></td>
                     </tr>
                 </table>
                 <table>
                     <tr>
                         <c:choose>
-                            <c:when test="${editDepart == 1}">
+                            <c:when test="${editTypeIncident == 1}">
                                 <td><input type="submit" value="Изменить" name="Edit"/></td>
                                 </c:when>    
                                 <c:otherwise>

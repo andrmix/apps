@@ -6,100 +6,16 @@
 body{
     font-family: '9369';
     margin: 0;
-    background: #3a3633;
-}
-
-h1{
-    font-size: 36px;
-    margin: 0;
-    color: #fff;
-}
-
-.galka{
-    position: absolute;
-    left: 60px;
-    top: 20px;
-    height: 80px;
-}
-
-#header{
-    position: fixed;
-    background: #808080;
-    padding: 10px;
-    padding-left: 150px;
-    padding-top: 40px;
-    top: 0;
-    left: 0;
-    height: 80px;
-    width: 100%;
-    z-index: 100;
-}
-
-#sidebar{
-    position: fixed;
-    float: right;
-    width: 15%;
-    padding: 5px;
-    margin: 20px 0px 20px 5%;
-}
-
-#sidebar a{
-    text-decoration: none;
-    color: #C0C0C0;
-}
-
-#sidebar a:hover{
-    color: #FFFFFF;
+    background: #ffffff;
 }
 
 #content{
-    margin: 130px 0 0 22%;
-    padding: 10px;
-    background: #FFFFFF;
+    width: 77.9%;
+    margin: 70px 0 0 297px;
+    background: #F0F8FF;
     height: 100vh;
-}
-
-#content #incident{
-    margin-bottom: 10px;
-    margin-left: 20px;
-    margin-right: 20px;
-    background: #A9A9A9;
-    padding: 0;
-}
-
-#incident li{
-    list-style-type: none;
-    margin-bottom: 10px;
-}
-
-#incident li:nth-child(1){
-    margin: 0;
-    background: #696969;
-    color: #Ffffff;
-    margin-bottom: 10px;
-    padding: 10px;
-}
-
-#incident li:nth-child(2){
-    margin: 0;
-    padding-left: 10px;
-}
-
-#incident li:nth-child(3){
-    margin: 0;
-    padding-left: 10px;
-}
-
-#incident li:nth-child(1) a{
-    font-size: 25px;
-    color: #Ffffff;
-    text-decoration: none;
-}
-
-#incident li:last-child{
-    margin: 0;
-    background: #696969;
-    height: 3px;
+    top: 50px;
+    left: 298px;
 }
 
 .filter_off{
@@ -134,7 +50,7 @@ h1{
     color: #Ffffff;
 }
 
-.sel {
+.sel{
     margin-left: 20px;
     font-family: '9369';
     border: 1px solid #3a3633;
@@ -297,4 +213,77 @@ h1{
 
 #depart li:nth-child(even){
     background: #808080;
+}
+
+.ibutt{
+    font-family: '9369';
+    cursor: pointer;
+    background: #483D8B;
+    width: 149px;
+    height: 30px;
+    font-size: 15px;
+    color: #Ffffff;
+    border: 0;
+    border-radius: 0px 0px 5px 5px;
+    margin-left: auto;
+}
+
+.ibutt:hover{
+    background: #6A5ACD;
+}
+
+.sel_mal {
+    margin-left: 20px;
+    font-family: '9369';
+    border: 1px solid #3a3633;
+    background: #Ffffff;
+    cursor: pointer;
+    padding: 4px 0 4px 0;
+    height: 30px;
+    width: 200px;
+    font-size: 15px;
+    text-align: center;
+}
+
+#content .addEdit{
+    padding-top: 20px;
+}
+
+.addEdit ul li{
+    list-style-type: none;
+    margin-bottom: 3px;
+}
+
+.editAddEdit{
+    font-family: '9369';
+    border: 1px solid #483D8B;
+    background: #Ffffff;
+    padding: 8px 0 8px 0;
+    height: 22px;
+    width: 300px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.editAddSel{
+    font-family: '9369';
+    border: 1px solid #483D8B;
+    background: #Ffffff;
+    cursor: pointer;
+    padding: 8px 0 8px 0;
+    height: 40px;
+    width: 300px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.editAddArea{
+    font-family: '9369';
+    border: 1px solid #483D8B;
+    background: #Ffffff;
+    padding: 8px 0 8px 0;
+    height: 150px;
+    width: 300px;
+    font-size: 20px;
+    text-align: center;
 }

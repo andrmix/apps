@@ -51,10 +51,11 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public List<Incidents> getClosedIncidents(Users user) {
         List statuses = getStatuses();
-        Query q = em.createNamedQuery("Incidents.findByUser2Status");
+        Query q = em.createNamedQuery("Incidents.findByUser3Status");
         q.setParameter("user", user);
         q.setParameter("status1", statuses.get(1));
         q.setParameter("status2", statuses.get(3));
+        q.setParameter("status3", statuses.get(6));
         List resultList = q.getResultList();
         return resultList;
     }
@@ -62,27 +63,25 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public List<Incidents> getOpenIncidents(Users user) {
         List statuses = getStatuses();
-        Query q = em.createNamedQuery("Incidents.findByUser2Status");
+        Query q = em.createNamedQuery("Incidents.findByUser4Status");
         q.setParameter("user", user);
         q.setParameter("status1", statuses.get(4));
         q.setParameter("status2", statuses.get(0));
+        q.setParameter("status3", statuses.get(5));
+        q.setParameter("status4", statuses.get(2));
         List resultList = q.getResultList();
         return resultList;
     }
 
     @Override
-    public List<Incidents> getDoneIncidents(Users user) {
-        List statuses = getStatuses();
-        Query q = em.createNamedQuery("Incidents.findByUser1Status");
-        q.setParameter("user", user);
-        q.setParameter("status", statuses.get(2));
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public void addIncident(String title, String text, Users zayavitel, Typeincident ti) {
-        Incidents incident = new Incidents();
+    public void addIncident(String title, String text, Users zayavitel,
+            Typeincident ti, boolean addIncident, int id) {
+        Incidents incident;
+        if (addIncident) {
+            incident = new Incidents();
+        } else {
+            incident = findIncident(id);
+        }
         incident.setDateIncident(new Date());
         Statuses status = em.find(Statuses.class, 1);
         incident.setStatus(status);
@@ -90,13 +89,28 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setText(text);
         incident.setZayavitel(zayavitel);
         incident.setTypeIncident(ti);
-        em.persist(incident);
+        if (addIncident) {
+            em.persist(incident);
+        } else {
+            em.merge(incident);
+        }
     }
 
     @Override
-    public void cancelIncident(Incidents incident) {
-        Statuses status = em.find(Statuses.class, 2);
+    public void cancelIncident(Incidents incident, String textp, String tstatus) {
+        Statuses status = null;
+        if (tstatus.equals("1") || tstatus.equals("6")) {
+            status = em.find(Statuses.class, 2);
+            incident.setDateClose(new Date());
+            incident.setDecision(textp);
+        }
+        if (tstatus.equals("3")) {
+            status = em.find(Statuses.class, 5);
+            incident.setDateDone(new Date());
+            incident.setDecision(textp);
+        }
         incident.setStatus(status);
+        
         em.merge(incident);
     }
 
@@ -237,6 +251,152 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     public void deleteDepart(Departs depart) {
         Departs toBeRemoved = em.merge(depart);
         em.remove(toBeRemoved);
+    }
+
+    @Override
+    public List<Departs> getDepartsSearch(String searchText) {
+        Query q = em.createNamedQuery("Departs.findSearch");
+        q.setParameter("depart", "%" + searchText + "%");
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public void addDepart(String name, boolean addDepart, int id) {
+        Departs depart;
+        if (addDepart) {
+            depart = new Departs();
+        } else {
+            depart = findDepart(id);
+        }
+        depart.setName(name);
+        if (addDepart) {
+            em.persist(depart);
+        } else {
+            em.merge(depart);
+        }
+    }
+
+    @Override
+    public void addTypeIncident(String name, boolean addTypeIncident, int id) {
+        Typeincident typeincident;
+        if (addTypeIncident) {
+            typeincident = new Typeincident();
+        } else {
+            typeincident = findTypeIncident(id);
+        }
+        typeincident.setName(name);
+        if (addTypeIncident) {
+            em.persist(typeincident);
+        } else {
+            em.merge(typeincident);
+        }
+    }
+
+    @Override
+    public List<Typeincident> getTypesIncidentSearch(String searchText) {
+        Query q = em.createNamedQuery("Typeincident.findSearch");
+        q.setParameter("typeincident", "%" + searchText + "%");
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public void deleteTypeincident(Typeincident typeincident) {
+        Typeincident toBeRemoved = em.merge(typeincident);
+        em.remove(toBeRemoved);
+    }
+
+    @Override
+    public List<Typeincident> getAllTypesIncident() {
+        List resultList = em.createNamedQuery("Typeincident.findAll").getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Incidents> getUnallocatedIncidents() {
+        List statuses = getStatuses();
+        Query q = em.createNamedQuery("Incidents.findUnallocated");
+        q.setParameter("status", statuses.get(0));
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Users> getSpecialists() {
+        Query q = em.createNamedQuery("Users.findByDepart");
+        Departs depart = findDepart(4);
+        q.setParameter("depart", depart);
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public void addSpecialist(Incidents incident, Users specialist) {
+        incident.setSpecialist(specialist);
+        incident.setStatus(getStatuses().get(5));
+        em.merge(incident);
+    }
+
+    @Override
+    public void inWork(Incidents incident) {
+        incident.setStatus(getStatuses().get(4));
+        em.merge(incident);
+    }
+
+    @Override
+    public List<Incidents> getSpecialistOpenIncidents(Users specialist) {
+        List statuses = getStatuses();
+        Query q = em.createNamedQuery("Incidents.findBySpecialist2Status");
+        q.setParameter("specialist", specialist);
+        q.setParameter("status1", statuses.get(5));
+        q.setParameter("status2", statuses.get(4));
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public void doneIncident(Incidents incident, String decision) {
+        incident.setDateDone(new Date());
+        incident.setStatus(getStatuses().get(2));
+        incident.setDecision(decision);
+        em.merge(incident);
+    }
+
+    @Override
+    public List<Incidents> getSpecialistDoneIncidents(Users specialist) {
+        List statuses = getStatuses();
+        Query q = em.createNamedQuery("Incidents.findBySpecialist1Status");
+        q.setParameter("specialist", specialist);
+        q.setParameter("status", statuses.get(2));
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Incidents> getSpecialistClosedIncidents(Users specialist) {
+        List statuses = getStatuses();
+        Query q = em.createNamedQuery("Incidents.findBySpecialist1Status");
+        q.setParameter("specialist", specialist);
+        q.setParameter("status", statuses.get(3));
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Typeincident> getTypesIncidentsForEdit(Typeincident typeincident) {
+        List resultList = em.createNamedQuery("Typeincident.findAll").getResultList();
+        Typeincident tiA = null, tiB = null;
+        Iterator iterator = resultList.iterator();
+        while (iterator.hasNext()) {
+            tiA = (Typeincident) iterator.next();
+            if (typeincident.equals(tiA)) {
+                tiB = tiA;
+                iterator.remove();
+            }
+        }
+        resultList.add(tiB);
+        return resultList;
     }
 
 }

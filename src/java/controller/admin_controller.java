@@ -7,9 +7,9 @@ package controller;
 
 import entity.Departs;
 import entity.Groupuser;
+import entity.Typeincident;
 import entity.Users;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.List;
 import javax.ejb.EJB;
@@ -28,7 +28,8 @@ import session.ManagementSystemLocal;
         urlPatterns = {"/admin",
             "/admin/new_user", "/admin/user_data",
             "/admin/new_depart", "/admin/departs",
-            "/admin/depart_data"})
+            "/admin/depart_data", "/admin/new_typeincident",
+            "/admin/typesincident", "/admin/typeincident_data"})
 public class admin_controller extends HttpServlet {
 
     @EJB(name = "ManagementSystem")
@@ -37,6 +38,9 @@ public class admin_controller extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        Users admin = ms.findUser(request.getUserPrincipal().getName());
+        request.setAttribute("user", admin);
+        //users
         if ("/admin".equals(request.getServletPath())) {
             int answer = 0;
             answer = checkAction(request);
@@ -58,6 +62,7 @@ public class admin_controller extends HttpServlet {
             }
             request.getRequestDispatcher("/WEB-INF/admin/userlist.jsp").forward(request, response);
         }
+
         if ("/admin/new_user".equals(request.getServletPath())) {
             int answer = 0;
             answer = checkAction(request);
@@ -85,6 +90,7 @@ public class admin_controller extends HttpServlet {
             request.setAttribute("departs", departs);
             request.getRequestDispatcher("/WEB-INF/admin/new_user.jsp").forward(request, response);
         }
+
         if ("/admin/user_data".equals(request.getServletPath())) {
             int answer = 0;
             answer = checkAction(request);
@@ -126,12 +132,38 @@ public class admin_controller extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/admin/user_data.jsp").forward(request, response);
         }
 
+        //departs
         if ("/admin/new_depart".equals(request.getServletPath())) {
+            int answer = 0;
+            answer = checkAction(request);
+            if (answer == 5) {
+                response.sendRedirect(request.getContextPath() + "/admin/departs");
+                return;
+            }
+            if (answer == 4) {
+                ms.addDepart(request.getParameter("nameDepart"), true, 0);
+                response.sendRedirect(request.getContextPath() + "/admin/departs");
+                return;
+            }
+            if (answer == 6) {
+                ms.addDepart(request.getParameter("nameDepart"), false, Integer.parseInt(request.getParameter("id")));
+                response.sendRedirect(request.getContextPath() + "/admin/departs");
+                return;
+            }
+            getServletContext().setAttribute("id", null);
+            getServletContext().setAttribute("nameDepart", null);
+            getServletContext().setAttribute("editDepart", 0);
             request.getRequestDispatcher("/WEB-INF/admin/new_depart.jsp").forward(request, response);
         }
 
         if ("/admin/departs".equals(request.getServletPath())) {
+            int answer = 0;
+            answer = checkAction(request);
             getServletContext().setAttribute("departList", ms.getAllDeparts());
+            if (answer == 3) {
+                String searchText = request.getParameter("Search");
+                getServletContext().setAttribute("departList", ms.getDepartsSearch(searchText));
+            }
             request.getRequestDispatcher("/WEB-INF/admin/departs.jsp").forward(request, response);
         }
 
@@ -149,9 +181,72 @@ public class admin_controller extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/admin/departs");
                 return;
             }
+            if (answer == 6) {
+                getServletContext().setAttribute("id", depart.getId());
+                getServletContext().setAttribute("nameDepart", depart.getName());
+                getServletContext().setAttribute("editDepart", 1);
+                request.getRequestDispatcher("/WEB-INF/admin/new_depart.jsp").forward(request, response);
+            }
             request.getRequestDispatcher("/WEB-INF/admin/depart_data.jsp").forward(request, response);
         }
 
+        //typesincident
+        if ("/admin/new_typeincident".equals(request.getServletPath())) {
+            int answer = 0;
+            answer = checkAction(request);
+            if (answer == 5) {
+                response.sendRedirect(request.getContextPath() + "/admin/typesincident");
+                return;
+            }
+            if (answer == 4) {
+                ms.addTypeIncident(request.getParameter("nameTypeIncident"), true, 0);
+                response.sendRedirect(request.getContextPath() + "/admin/typesincident");
+                return;
+            }
+            if (answer == 6) {
+                ms.addTypeIncident(request.getParameter("nameTypeIncident"), false, Integer.parseInt(request.getParameter("id")));
+                response.sendRedirect(request.getContextPath() + "/admin/typesincident");
+                return;
+            }
+            getServletContext().setAttribute("id", null);
+            getServletContext().setAttribute("nameTypeIncident", null);
+            getServletContext().setAttribute("editTypeIncident", 0);
+            request.getRequestDispatcher("/WEB-INF/admin/new_typeincident.jsp").forward(request, response);
+        }
+
+        if ("/admin/typesincident".equals(request.getServletPath())) {
+            int answer = 0;
+            answer = checkAction(request);
+            getServletContext().setAttribute("typesIncidentList", ms.getAllTypesIncident());
+            if (answer == 3) {
+                String searchText = request.getParameter("Search");
+                getServletContext().setAttribute("typesIncidentList", ms.getTypesIncidentSearch(searchText));
+            }
+            request.getRequestDispatcher("/WEB-INF/admin/typesincident.jsp").forward(request, response);
+        }
+
+        if ("/admin/typeincident_data".equals(request.getServletPath())) {
+            int answer = 0;
+            answer = checkAction(request);
+            if (answer == 5) {
+                response.sendRedirect(request.getContextPath() + "/admin/typesincident");
+                return;
+            }
+            Typeincident typeincident = ms.findTypeIncident(Integer.parseInt(request.getParameter("id")));
+            getServletContext().setAttribute("typeIncident", typeincident);
+            if (answer == 7) {
+                ms.deleteTypeincident(typeincident);
+                response.sendRedirect(request.getContextPath() + "/admin/typesincident");
+                return;
+            }
+            if (answer == 6) {
+                getServletContext().setAttribute("id", typeincident.getId());
+                getServletContext().setAttribute("nameTypeIncident", typeincident.getName());
+                getServletContext().setAttribute("editTypeIncident", 1);
+                request.getRequestDispatcher("/WEB-INF/admin/new_typeincident.jsp").forward(request, response);
+            }
+            request.getRequestDispatcher("/WEB-INF/admin/typeincident_data.jsp").forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

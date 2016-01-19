@@ -1,0 +1,35 @@
+.table_incident_data{
+    margin: 0;
+    font-family: '9369';
+    font-size: 20px;
+    border-collapse: collapse;
+    text-align: left;
+    width: 100%;
+}
+
+th{
+    background: #483D8B;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+td {
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    border-color: white;
+    padding: 10px;
+}
+
+tbody td:nth-child(odd) {
+    background: #FFA500;
+}
+
+thead {
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.comment{
+    padding: 10px;
+}
+

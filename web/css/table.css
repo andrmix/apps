@@ -1,0 +1,51 @@
+.incidents_tab{
+    margin: 0;
+    font-family: '9369';
+    font-size: 20px;
+    border-collapse: collapse;
+    text-align: center;
+    width: 100%;
+}
+
+th{
+    background: #483D8B;
+    color: white;
+    padding: 10px 20px;
+}
+
+td {
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    border-color: white;
+    padding: 10px;
+}
+
+thead {
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+tbody tr:nth-child(odd) {
+    background: #FFFFFF;
+}
+
+tbody tr:nth-child(even) {
+    background: #F0F8FF;
+}
+
+th:first-child, td:first-child {
+    text-align: left;
+}
+
+tbody tr:hover{
+    background: #FFA500;
+}
+
+tbody tr a{
+    padding-left: 10px;
+    color: black;
+    text-decoration: none;
+}
+
+tbody tr a:hover{
+    color: #FFFFFF;
+}

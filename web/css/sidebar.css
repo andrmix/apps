@@ -1,0 +1,45 @@
+#sidebar{
+    position: fixed;
+    float: left;
+    width: 297px;
+    padding: 5px;
+    background: #3a3633;
+    padding: 50px 0px 20px 0px;
+    top: 50px;
+    left: 0;
+    height: 100%;
+}
+
+#sidebar a{
+    margin-left: 37px;
+    text-decoration: none;
+    color: #C0C0C0;
+}
+
+#sidebar a:hover{
+    color: #FFFFFF;
+}
+
+.videl{
+    color: #FFA500;
+}
+
+.videlc{
+    border: 1px solid #FFA500;
+    border-radius: 10px 10px 10px 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 10px;
+    color: #3a3633;
+    background: #FFA500;
+}
+
+.count{
+    border: 1px solid #C0C0C0;
+    background: #C0C0C0;
+    border-radius: 10px 10px 10px 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 10px;
+    color: #3a3633;
+}

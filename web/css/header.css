@@ -1,0 +1,72 @@
+h1{
+    font-size: 36px;
+    margin: 0;
+    color: #fff;
+}
+
+.galka{
+    position: absolute;
+    left: 25px;
+    top: 5px;
+    height: 60px;
+}
+
+#header{
+    position: fixed;
+    background: #3a3633;
+    padding-bottom: 15px;
+    padding-left: 95px;
+    padding-top: 15px;
+    top: 0;
+    left: 0;
+    height: 40px;
+    width: 100%;
+    z-index: 100;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.head_block{
+    position: absolute;
+    width: 80%;
+    top: 0;
+    left: 297px;
+    height: 70px;
+    z-index: 1;
+    background: #3a3633;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.user_pic{
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    height: 20px;
+}
+
+.head_block .heada{
+    border-bottom: 1px solid #1A1817;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 6px;
+    padding-left: 40px;
+    color: #C0C0C0;
+}
+
+.head_block .heada a{
+    text-decoration: none;
+    color: #C0C0C0;
+}
+
+.head_block .heada a:hover{
+    color: #FFF;
+}
+
+.head_block .headb{
+    height: 30px;
+    border-style: solid;
+    border-color: #525151 transparent transparent;
+    border-width: 1px 0px;
+    width: 100%;
+    color: #C0C0C0;
+    padding: 8px;
+}

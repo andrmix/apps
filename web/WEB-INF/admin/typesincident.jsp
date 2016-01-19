@@ -9,10 +9,10 @@
         <title>Решение</title>
     </head>
     <body>
-        <form action='<c:url value="/admin/departs"/>' method="POST">
+        <form action='<c:url value="/admin/typesincident"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Отделы</div></div>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Типы инцидентов</div></div>
             </div>
             <div id="sidebar">
                 <p><a href='<c:url value="/admin"/>'>Сотрудники</a></p>
@@ -24,12 +24,12 @@
                     <ul id="toolbar">
                         <li><ul id="departSearch"><li><input placeholder="Поиск" type="text" class="search" size="20" name="Search"></li>
                                 <li><input type="submit" class="filter_off1" value="Поиск" name="Searchb"/></li></ul></li>
-                        <li><a href='<c:url value="/admin/new_depart"/>' class="newUser">Новый отдел</a></li>
+                        <li><a href='<c:url value="/admin/new_typeincident"/>' class="newUser">Новый тип инцидента</a></li>
                     </ul>
                 </div>
                 <ul id="depart">
-                    <c:forEach var="depart" items="${departList}">
-                        <li><a href='<c:url value="/admin/depart_data?id=${depart.id}"/>'>${depart.name}</a></li>
+                    <c:forEach var="typeIncident" items="${typesIncidentList}">
+                        <li><a href='<c:url value="/admin/typeincident_data?id=${typeIncident.id}"/>'>${typeIncident.name}</a></li>
                         </c:forEach>
                 </ul>
             </div>

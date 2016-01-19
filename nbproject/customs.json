@@ -8,7 +8,7 @@
             "context": "frameset"
         },
         "value": {
-            "context": "select"
+            "context": "textarea"
         }
     }
 }

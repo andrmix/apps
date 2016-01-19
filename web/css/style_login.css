@@ -30,6 +30,7 @@ h1 {
     left: 0;
     height: 80px;
     width: 100%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
    
 #lb{
@@ -37,6 +38,7 @@ h1 {
     text-align: center;
     margin-top: 250px;
     width: 450px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
 #lb #loginBox{
@@ -51,9 +53,8 @@ h1 {
 #lb #loginBox .submit{
     font-family: '9369';
     cursor: pointer;
-    border: 0px solid #3a3633;
+    border: 0;
     background: #3a3633;
-    border-radius: 0px;
     width: 452px;
     height: 50px;
     font-size: 15px;
