@@ -5,6 +5,10 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/style.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/header.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/sidebar.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/tables.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/toolbar.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
     </head>
@@ -16,22 +20,52 @@
             </div>
             <div id="sidebar">
                 <p><a href='<c:url value="/admin"/>'>Сотрудники</a></p>
-                <p><a href='<c:url value="/admin/departs"/>'>Отделы</a></p>
+                <p><a href='<c:url value="/admin/departs"/>'><span class="videl">Отделы</span></a></p>
                 <p><a href='<c:url value="/admin/typesincident"/>'>Типы инцидентов</a></p>
             </div>
             <div id="content">
-                <div>
-                    <ul id="toolbar">
-                        <li><ul id="departSearch"><li><input placeholder="Поиск" type="text" class="search" size="20" name="Search"></li>
-                                <li><input type="submit" class="filter_off1" value="Поиск" name="Searchb"/></li></ul></li>
-                        <li><a href='<c:url value="/admin/new_depart"/>' class="newUser">Новый отдел</a></li>
-                    </ul>
-                </div>
-                <ul id="depart">
-                    <c:forEach var="depart" items="${departList}">
-                        <li><a href='<c:url value="/admin/depart_data?id=${depart.id}"/>'>${depart.name}</a></li>
+                <c:choose>
+                    <c:when test="${tools == 1}">
+                        <div id="toolbar">
+                            <input type="submit" value="Скрыть инструменты" name="bToolsOff" class="plashka_color"/>
+                            <table class="toolbar_table">
+                                <tr>
+                                    <td>
+                                        <input placeholder="Поиск" type="text" class="search" size="20" name="Search">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="submit" class="filter_off" value="Поиск" name="Searchb"/>
+                                    </td>
+                                    <td><a href='<c:url value="/admin/new_depart"/>' class="newUser">
+                                            <img class="addUserPic" src='<c:url value="/img/userplus.png"/>'>
+                                            Новый отдел
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <input type="submit" value="Показать инструменты" name="bToolsOn" class="plashka_color"/>
+                    </c:otherwise>
+                </c:choose>
+
+                <table class="incidents_tab">
+                    <thead>
+                        <tr>
+                            <th><a href='<c:url value="/sort_by_name_depart"/>'>Название отдела</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="depart" items="${departList}">
+                            <tr>
+                                <td><a href='<c:url value="/admin/depart_data?id=${depart.id}"/>'>${depart.name}</a></td>
+                            </tr>
                         </c:forEach>
-                </ul>
+                    </tbody>
+                </table>
             </div>
         </form>
     </body>

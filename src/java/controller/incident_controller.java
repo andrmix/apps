@@ -5,11 +5,11 @@
  */
 package controller;
 
+import entity.Comments;
 import entity.Incidents;
 import entity.Typeincident;
 import entity.Users;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -24,7 +24,10 @@ import session.ManagementSystemLocal;
  * @author admin
  */
 @WebServlet(name = "incident_controller", urlPatterns = {"/user/user_incident",
-    "/user/new_incident", "/user/closed_incidents", "/user/done_incidents"})
+    "/user/new_incident", "/user/closed_incidents", "/user/done_incidents",
+    "/sort_by_name", "/sort_by_date", "/sort_by_status", "/sort_by_spec",
+    "/sort_by_name_closed", "/sort_by_date_closed", "/sort_by_status_closed",
+    "/sort_by_spec_closed"})
 public class incident_controller extends HttpServlet {
 
     @EJB(name = "ManagementSystem")
@@ -36,6 +39,40 @@ public class incident_controller extends HttpServlet {
         String userPath = request.getServletPath();
         Users user = ms.findUser(request.getUserPrincipal().getName());
         request.setAttribute("user", user);
+
+        if ("/sort_by_name".equals(userPath)) {
+            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "name"));
+            request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_date".equals(userPath)) {
+            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "date"));
+            request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_status".equals(userPath)) {
+            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "status"));
+            request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_spec".equals(userPath)) {
+            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "spec"));
+            request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_name_closed".equals(userPath)) {
+            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "name"));
+            request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_date_closed".equals(userPath)) {
+            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "date"));
+            request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_status_closed".equals(userPath)) {
+            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "status"));
+            request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_spec_closed".equals(userPath)) {
+            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "spec"));
+            request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
+        }
+
         if ("/user/user_incident".equals(userPath)) {
             int answer = 0;
             answer = checkAction(request);
@@ -55,7 +92,7 @@ public class incident_controller extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/user/new_incident.jsp").forward(request, response);
             }
             if (answer == 5) {
-                ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"));
+                ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), user, false);
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
@@ -65,7 +102,19 @@ public class incident_controller extends HttpServlet {
             if (answer == 7) {
                 request.setAttribute("commenta", 1);
             }
+            if (answer == 8) {
+                request.setAttribute("commento", 1);
+            }
+            if (answer == 9) {
+                request.setAttribute("commento", 0);
+            }
+            if (answer == 10) {
+                request.setAttribute("commento", 1);
+                ms.addComment(request.getParameter("textcomm"), user, incident);
+            }
             request.setAttribute("incident", incident);
+            List<Comments> comments = ms.getComments(incident);
+            request.setAttribute("comments", comments);
         }
         if ("/user/new_incident".equals(userPath)) {
             int answer = 0;
@@ -87,12 +136,12 @@ public class incident_controller extends HttpServlet {
                 return;
             }
             getServletContext().setAttribute("editincident", 0);
-            List<Typeincident> typs = ms.getAllTypesIncident();
+            List<Typeincident> typs = ms.getAllTypesIncident("none");
             request.setAttribute("typs", typs);
         }
-        if (("/user/closed_incidents".equals(userPath)) || ("/user/done_incidents".equals(userPath))) {
-            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user));
-            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user));
+        if ("/user/closed_incidents".equals(userPath)) {
+            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "none"));
+            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "none"));
         }
         request.getRequestDispatcher("/WEB-INF" + userPath + ".jsp").forward(request, response);
     }
@@ -157,6 +206,15 @@ public class incident_controller extends HttpServlet {
         }
         if (req.getParameter("NoAccept") != null) {
             return 7;
+        }
+        if (req.getParameter("bCommOn") != null) {
+            return 8;
+        }
+        if (req.getParameter("bCommOff") != null) {
+            return 9;
+        }
+        if (req.getParameter("bCommGo") != null) {
+            return 10;
         }
         return 0;
     }

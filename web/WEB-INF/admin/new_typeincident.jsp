@@ -5,6 +5,9 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/style.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/header.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/sidebar.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/incident_data.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
     </head>
@@ -19,24 +22,22 @@
             </div>
             <div id="content">
                 <input type="hidden" name="id" value="${typeIncident.id}"/>
-                <table>
-                    <tr>
-                        <td>Название:</td><td><input type="text" name="nameTypeIncident" value="${nameTypeIncident}"/></td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                        <c:choose>
-                            <c:when test="${editTypeIncident == 1}">
-                                <td><input type="submit" value="Изменить" name="Edit"/></td>
-                                </c:when>    
+                <div class="addEdit">
+                    <ul>
+                        <li><input placeholder="Название" type="text" name="nameTypeIncident" class="editAddEdit" value="${nameTypeIncident}"/></li>
+                        <li>
+                            <c:choose>
+                                <c:when test="${editTypeIncident == 1}">
+                                    <input type="submit" value="Изменить" name="Edit" class="ibutt"/>
+                                </c:when>
                                 <c:otherwise>
-                                <td><input type="submit" value="Добавить" name="Add"/></td>
+                                    <input type="submit" value="Добавить" name="Add" class="ibutt"/>
                                 </c:otherwise>
                             </c:choose>
-                        <td><input type="submit" value="Отмена" name="Cancel"/></td>
-                    </tr>
-                </table>
+                            <input type="submit" value="Отмена" name="Cancel" class="ibutt"/>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </form>
     </body>

@@ -36,11 +36,14 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findByPass", query = "SELECT u FROM Users u WHERE u.pass = :pass"),
     @NamedQuery(name = "Users.findByName", query = "SELECT u FROM Users u WHERE u.name = :name"),
     @NamedQuery(name = "Users.findByDepart", query = "SELECT u FROM Users u WHERE u.depart = :depart"),
+    @NamedQuery(name = "Users.findByDepartOrderName", query = "SELECT u FROM Users u WHERE u.depart = :depart ORDER BY u.name"),
     @NamedQuery(name = "Users.findSearch", query = "SELECT u FROM Users u WHERE u.name like :user"),
     @NamedQuery(name = "Users.findAllOrder", query = "SELECT u FROM Users u ORDER BY u.login"),
+    @NamedQuery(name = "Users.findAllOrderFio", query = "SELECT u FROM Users u ORDER BY u.name"),
+    @NamedQuery(name = "Users.findAllOrderEmail", query = "SELECT u FROM Users u ORDER BY u.email"),
+    @NamedQuery(name = "Users.findAllOrderDepart", query = "SELECT u FROM Users u ORDER BY u.depart"),
     @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email")})
 public class Users implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -73,6 +76,8 @@ public class Users implements Serializable {
     @JoinColumn(name = "depart", referencedColumnName = "id")
     @ManyToOne
     private Departs depart;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin")
+    private Collection<Comments> commentsCollection;
 
     public Users() {
     }
@@ -178,6 +183,15 @@ public class Users implements Serializable {
     @Override
     public String toString() {
         return "entity.Users[ login=" + login + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Comments> getCommentsCollection() {
+        return commentsCollection;
+    }
+
+    public void setCommentsCollection(Collection<Comments> commentsCollection) {
+        this.commentsCollection = commentsCollection;
     }
 
 }

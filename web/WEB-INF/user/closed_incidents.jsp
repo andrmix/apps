@@ -7,7 +7,7 @@
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/style.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/header.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/sidebar.css"/>'>
-        <link rel="stylesheet" type="text/css" href='<c:url value="/css/table.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/tables.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
     </head>
@@ -33,10 +33,10 @@
             <table class="incidents_tab">
                 <thead>
                     <tr>
-                        <th>Заголовок инцидента</th>
-                        <th>Дата</th>
-                        <th>Статус</th>
-                        <th>Исполнитель</th>
+                        <th><a href='<c:url value="/sort_by_name_closed"/>'>Заголовок инцидента</a></th>
+                        <th><a href='<c:url value="/sort_by_date_closed"/>'>Дата</a></th>
+                        <th><a href='<c:url value="/sort_by_status_closed"/>'>Статус</a></th>
+                        <th><a href='<c:url value="/sort_by_spec_closed"/>'>Исполнитель</a></th>
                     </tr>
                 </thead>
                 <tbody>

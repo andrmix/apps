@@ -5,6 +5,9 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/style.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/header.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/sidebar.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/incident_data.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
     </head>
@@ -18,33 +21,24 @@
                 <p><a href='<c:url value="/admin"/>'>< Назад</a></p>
             </div>
             <div id="content">
-                <table>
-                    <tr>
-                        <td>Логин:</td><td><input type="text" name="login" value="${login}"/></td>
-                    </tr>
-                    <tr>
-                        <td>Пароль:</td><td><input type="text" name="pass" value="${pass}"/></td>
-                    </tr>
-                    <tr>
-                        <td>ФИО:</td><td><input type="text" name="fio" value="${fio}"/></td>
-                    </tr>
-                    <tr>
-                        <td>E-mail:</td><td><input type="text" name="email" value="${email}"/></td>
-                    </tr>
-                    <tr>
-                        <td>Отдел:</td>
-                        <td>
-                            <select name="departId">
+                <div class="addEdit">
+                    <ul>
+                        <li><input placeholder="Логин" type="text" name="login" class="editAddEdit" value="${login}"/></li>
+                        <li><input placeholder="Пароль" type="password" name="pass" class="editAddEdit" value="${pass}"/></li>
+                        <li><input placeholder="ФИО" type="text" name="fio" class="editAddEdit" value="${fio}"/></li>
+                        <li><input placeholder="E-mail" type="text" name="email" class="editAddEdit" value="${email}"/></li>
+                        <li>
+                            <select name="departId" class="editAddSel">
                                 <c:forEach var="depart" items="${departs}">
                                     <option value="${depart.id}" selected><c:out value="${depart.name}"/></option>
                                 </c:forEach>
+                                <c:if test="${edituser == 0}">
+                                    <option disabled selected>Выберите отдел</option>
+                                </c:if>
                             </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Роль:</td>
-                        <td>
-                            <select name="role">
+                        </li>
+                        <li>
+                            <select name="role" class="editAddSel">
                                 <c:choose>
                                     <c:when test="${role == 'user'}">
                                         <option value="user" selected><c:out value="Пользователь"/></option>
@@ -65,25 +59,24 @@
                                         <option value="user"><c:out value="Пользователь"/></option>
                                         <option value="specialist"><c:out value="Специалист"/></option>
                                         <option value="manager" selected><c:out value="Руководитель"/></option>
+                                        <option disabled selected>Выберите роль</option>
                                     </c:otherwise>
                                 </c:choose>
                             </select>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                        <c:choose>
-                            <c:when test="${editUser == 1}">
-                                <td><input type="submit" value="Изменить" name="Edit"/></td>
-                                </c:when>    
+                        </li>
+                        <li>
+                            <c:choose>
+                                <c:when test="${editUser == 1}">
+                                    <input type="submit" value="Изменить" name="Edit" class="ibutt"/>
+                                </c:when>
                                 <c:otherwise>
-                                <td><input type="submit" value="Добавить" name="Add"/></td>
+                                    <input type="submit" value="Добавить" name="Add" class="ibutt"/>
                                 </c:otherwise>
                             </c:choose>
-                        <td><input type="submit" value="Отмена" name="Cancel"/></td>
-                    </tr>
-                </table>
+                            <input type="submit" value="Отмена" name="Cancel" class="ibutt"/>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </form>
     </body>

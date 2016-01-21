@@ -5,6 +5,9 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/style.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/header.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/sidebar.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/incident_data.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
     </head>
@@ -19,13 +22,32 @@
             </div>
             <input type="hidden" name="login" value="${user.login}"/>
             <div id="content">
-                <ul id="incident">
-                    <li>${user.name}</li>
-                    <li>${user.login} | ${user.email} | ${user.depart.name}</li>
-                    <li><input type="submit" value="Редактировать" name="Edit" class="ibutt"/>
-                        <input type="submit" value="Удалить" name="Delete" class="ibutt"/>
-                        <input type="submit" value="Отмена" name="Cancel" class="ibutt"/></li>
-                </ul>
+                <div class="incident_data">
+                    <table class="table_incident_data">
+                        <thead>
+                            <tr>
+                                <th colspan="2">${user.name}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Логин</td>
+                                <td>${user.login}</td>
+                            </tr>
+                            <tr>
+                                <td>E-mail</td>
+                                <td>${user.email}</td>
+                            </tr>
+                            <tr>
+                                <td>Отдел</td>
+                                <td>${user.depart.name}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="submit" value="Редактировать" name="Edit" class="ibutt"/>
+                    <input type="submit" value="Удалить" name="Delete" class="ibutt"/>
+                    <input type="submit" value="Отмена" name="Cancel" class="ibutt"/>
+                </div>
             </div>
         </form>
     </body>

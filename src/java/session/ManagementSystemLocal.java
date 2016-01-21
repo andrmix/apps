@@ -5,6 +5,7 @@
  */
 package session;
 
+import entity.Comments;
 import entity.Departs;
 import entity.Groupuser;
 import entity.Incidents;
@@ -23,17 +24,15 @@ public interface ManagementSystemLocal {
 
     public List<Incidents> getIncidentsByUser(Users user, Statuses status);
 
-    public List<Incidents> getClosedIncidents(Users user);
-
-    public List<Incidents> getOpenIncidents(Users user);
-
+    public List<Incidents> getClosedIncidents(Users user, String sort);
+    
+    public List<Incidents> getOpenIncidents(Users user, String sort);
+    
     public void addIncident(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id);
 
-    public void cancelIncident(Incidents incident, String textp, String tstatus);
+    public void cancelIncident(Incidents incident, String textp, String tstatus, Users user, boolean it);
 
     public List<Statuses> getStatuses();
-
-    public List<Typeincident> getTypesOfincidents();
 
     public Users findUser(Object id);
 
@@ -41,9 +40,9 @@ public interface ManagementSystemLocal {
 
     public Typeincident findTypeIncident(Object id);
 
-    public List<Users> getAllUsers();
+    public List<Users> getAllUsers(String sort);
 
-    public List<Departs> getAllDeparts();
+    public List<Departs> getAllDeparts(String sort);
 
     public Departs findDepart(Object id);
 
@@ -71,11 +70,11 @@ public interface ManagementSystemLocal {
 
     public void deleteTypeincident(Typeincident typeincident);
 
-    public List<Typeincident> getAllTypesIncident();
+    public List<Typeincident> getAllTypesIncident(String sort);
 
-    public List<Incidents> getUnallocatedIncidents();
+    public List<Incidents> getUnallocatedIncidents(String sort);
 
-    public List<Users> getSpecialists();
+    public List<Users> getSpecialists(String sort);
 
     public void addSpecialist(Incidents incident, Users specialist);
 
@@ -90,4 +89,12 @@ public interface ManagementSystemLocal {
     public List<Incidents> getSpecialistClosedIncidents(Users specialist);
 
     public List<Typeincident> getTypesIncidentsForEdit(Typeincident typeincident);
+    
+    public void addComment(String text, Users commentator, Incidents incident);
+    
+    public List<Comments> getComments(Incidents incident);
+    
+    public void acceptIncident(Incidents incident);
+    
+    public List<Incidents> getAllocatedIncidents(String sort);
 }

@@ -1,0 +1,157 @@
+.plashka_color{
+    font-family: '9369';
+    cursor: pointer;
+    background: #483D8B;
+    width: 100%;
+    height: 30px;
+    font-size: 15px;
+    color: #FFFFFF;
+    border: 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.plashka_color_bt{
+    font-family: '9369';
+    cursor: pointer;
+    background: #483D8B;
+    width: 100%;
+    height: 30px;
+    font-size: 15px;
+    color: #FFFFFF;
+    border: 0;
+    margin: 0;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.plashka_color:hover, .plashka_color_bt:hover{
+    background: #FFA500;
+}
+
+#toolbar{
+    margin: 0;
+    padding: 0;
+    background: #483D8B;
+    padding-bottom: 10px;
+}
+
+/* таблица для toolbar */
+.toolbar_table{
+    margin: 0;
+    padding: 0;
+    font-family: '9369';
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.toolbar_table td {
+    border-style: solid;
+    border-width: 0;
+    border-color: white;
+    padding-left: 20px;
+}
+
+.filter_off{
+    font-family: '9369';
+    cursor: pointer;
+    border: 0;
+    background: #191970;
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+    border-radius: 0px 0px 5px 5px;
+    color: #FFFFFF;
+    margin-top: -2px;
+}
+
+.filter_on{
+    font-family: '9369';
+    cursor: pointer;
+    border: 0;
+    background: #FFA500;
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+    border-radius: 0px 0px 5px 5px;
+    color: #483D8B;
+    margin-top: -2px;
+}
+
+.filter_off:hover {
+    color: #FFA500;
+}
+
+.filter_on:hover{
+    color: #Ffffff;
+}
+
+.sel{
+    margin-top: 10px;
+    font-family: '9369';
+    border: 1px solid #191970;
+    background: #Ffffff;
+    cursor: pointer;
+    padding: 8px 0 8px 0;
+    height: 40px;
+    width: 100%;
+    font-size: 20px;
+    text-align: center;
+}
+
+.search{
+    margin-top: 10px;
+    font-family: '9369';
+    border: 1px solid #191970;
+    background: #Ffffff;
+    padding: 8px 0 8px 0;
+    height: 22px;
+    width: 100%;
+    font-size: 20px;
+    text-align: center;
+}
+
+#butt{
+    font-family: '9369';
+    cursor: pointer;
+    border: 0px solid #3a3633;
+    background: #3a3633;
+    width: 120px;
+    height: 40px;
+    font-size: 15px;
+    border-radius: 5px 5px 5px 5px;
+    color: #C0C0C0;
+    margin-left: 10px;
+}
+
+#butt:hover{
+    color: #Ffffff;
+}
+
+.newUser{
+    text-decoration: none;
+    font-family: '9369';
+    cursor: pointer;
+    font-size: 16px;
+    color: #FFFFFF;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    background: #191970;
+    border-radius: 5px 5px 5px 5px;
+}
+
+.newUser:hover .addUserPic{
+    background: #FFA500;
+    color: #FFA500;
+}
+
+.newUser:hover{
+    color: #FFA500;
+}
+
+.addUserPic{
+    height: 20px;
+    background: #FFFFFF;
+    margin-right: 5px;
+}

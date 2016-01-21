@@ -57,13 +57,13 @@ h1 {
     background: #3a3633;
     width: 452px;
     height: 50px;
-    font-size: 15px;
+    font-size: 20px;
     border-radius: 0px 0px 5px 5px;
     color: #C0C0C0;
 }
 
 #lb #loginBox .submit:hover {
-    color: #Ffffff;
+    color: #FFA500;
 }
 
 #lb #loginBox .text {

@@ -17,16 +17,16 @@
             <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Нераспределенные обращения</div></div>
         </div>
         <div id="sidebar">
-            <p><a href='<c:url value="/manager"/>'><span class="videl">Нераспределенные обращения
+            <p><a href='<c:url value="/manager"/>'>Нераспределенные обращения
                         <c:if test="${unallocatedIncidents.size() gt 0}">
-                            <span class="videlc">${unallocatedIncidents.size()}</span>
-                        </c:if>
-                    </span></a></p>
-            <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения
-                        <c:if test="${allocatedIncidents.size() gt 0}">
-                            <span class="count">${allocatedIncidents.size()}</span>
+                            <span class="count">${unallocatedIncidents.size()}</span>
                         </c:if>
                     </a></p>
+            <p><a href='<c:url value="/manager/allocated"/>'><span class="videl">Распределенные обращения
+                        <c:if test="${allocatedIncidents.size() gt 0}">
+                            <span class="videlc">${allocatedIncidents.size()}</span>
+                        </c:if>
+                    </span></a></p>
             <p><a href='<c:url value="/manager/specialists"/>'>Специалисты</a></p>
             <p><a href='<c:url value="/manager/done_incidents"/>'>На согласование
                     <c:if test="${doneIncidents.size() gt 0}">
@@ -38,19 +38,21 @@
             <table class="incidents_tab">
                 <thead>
                     <tr>
-                        <th><a href='<c:url value="/sort_by_name_un"/>'>Заголовок инцидента</a></th>
-                        <th><a href='<c:url value="/sort_by_date_un"/>'>Дата</a></th>
-                        <th><a href='<c:url value="/sort_by_status_un"/>'>Статус</a></th>
-                        <th><a href='<c:url value="/sort_by_zay_un"/>'>Заявитель</a></th>
+                        <th><a href='<c:url value="/sort_by_name_allo"/>'>Заголовок инцидента</a></th>
+                        <th><a href='<c:url value="/sort_by_date_allo"/>'>Дата</a></th>
+                        <th><a href='<c:url value="/sort_by_status_allo"/>'>Статус</a></th>
+                        <th><a href='<c:url value="/sort_by_zay_allo"/>'>Заявитель</a></th>
+                        <th><a href='<c:url value="/sort_by_spec_allo"/>'>Специалист</a></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="incident" items="${unallocatedIncidents}">
+                    <c:forEach var="incident" items="${allocatedIncidents}">
                         <tr>
-                            <td><a href='<c:url value="/manager/incident_data?id=${incident.id}&un=da"/>'>${incident.title}</a></td>
+                            <td><a href='<c:url value="/manager/incident_data?id=${incident.id}&un=no"/>'>${incident.title}</a></td>
                             <td>${incident.dateIncident}</td>
                             <td>${incident.status.name}</td>
                             <td>${incident.zayavitel.name}</td>
+                            <td>${incident.specialist.name}</td>
                         </tr>
                     </c:forEach>
                 </tbody>

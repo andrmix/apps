@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -46,14 +47,31 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findByUser", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user"),
     @NamedQuery(name = "Incidents.findByUser1Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status = :status"),
     @NamedQuery(name = "Incidents.findByUser3Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3)"),
+    @NamedQuery(name = "Incidents.findByUser3StatusOrderName", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3) ORDER BY i.title"),
+    @NamedQuery(name = "Incidents.findByUser3StatusOrderDate", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3) ORDER BY i.dateIncident"),
+    @NamedQuery(name = "Incidents.findByUser3StatusOrderStatus", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3) ORDER BY i.status"),
+    @NamedQuery(name = "Incidents.findByUser3StatusOrderSpec", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3) ORDER BY i.specialist"),
     @NamedQuery(name = "Incidents.findByUser4Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3 OR i.status = :status4)"),
+    @NamedQuery(name = "Incidents.findByUser4StatusOrderName", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3 OR i.status = :status4) ORDER BY i.title"),
+    @NamedQuery(name = "Incidents.findByUser4StatusOrderDate", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3 OR i.status = :status4) ORDER BY i.dateIncident"),
+    @NamedQuery(name = "Incidents.findByUser4StatusOrderStatus", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3 OR i.status = :status4) ORDER BY i.status"),
+    @NamedQuery(name = "Incidents.findByUser4StatusOrderSpec", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3 OR i.status = :status4) ORDER BY i.specialist"),
     @NamedQuery(name = "Incidents.findBySpecialist1Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status"),
     @NamedQuery(name = "Incidents.findBySpecialist2Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2)"),
     @NamedQuery(name = "Incidents.findBySpecialist3Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3)"),
     @NamedQuery(name = "Incidents.findUnallocated", query = "SELECT i FROM Incidents i WHERE i.status = :status"),
+    @NamedQuery(name = "Incidents.findUnallocatedOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.title"),
+    @NamedQuery(name = "Incidents.findUnallocatedOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.dateIncident"),
+    @NamedQuery(name = "Incidents.findUnallocatedOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.status"),
+    @NamedQuery(name = "Incidents.findUnallocatedOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.zayavitel"),
+    @NamedQuery(name = "Incidents.findAllocated", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 ORDER BY i.title"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 ORDER BY i.dateIncident"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 ORDER BY i.status"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 ORDER BY i.zayavitel"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderSpec", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 ORDER BY i.specialist"),
     @NamedQuery(name = "Incidents.findByDateClose", query = "SELECT i FROM Incidents i WHERE i.dateClose = :dateClose")})
 public class Incidents implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -98,6 +116,8 @@ public class Incidents implements Serializable {
     private Users specialist;
     @OneToMany(mappedBy = "incident")
     private Collection<Acts> actsCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "incident")
+    private Collection<Comments> commentsCollection;
 
     public Incidents() {
     }
@@ -123,7 +143,7 @@ public class Incidents implements Serializable {
 
     public String getDateIncident() {
         try {
-            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateIncident);
+            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(this.dateIncident);
         } catch (NullPointerException e) {
             return "Дата не определена";
         }
@@ -159,7 +179,7 @@ public class Incidents implements Serializable {
 
     public String getDateDone() {
         try {
-            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateDone);
+            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(this.dateDone);
         } catch (NullPointerException e) {
             return "Дата не определена";
         }
@@ -171,7 +191,7 @@ public class Incidents implements Serializable {
 
     public String getDateClose() {
         try {
-            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateClose);
+            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(this.dateClose);
         } catch (NullPointerException e) {
             return "Дата не определена";
         }
@@ -245,6 +265,15 @@ public class Incidents implements Serializable {
     @Override
     public String toString() {
         return "entity.Incidents[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Comments> getCommentsCollection() {
+        return commentsCollection;
+    }
+
+    public void setCommentsCollection(Collection<Comments> commentsCollection) {
+        this.commentsCollection = commentsCollection;
     }
 
 }

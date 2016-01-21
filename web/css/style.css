@@ -18,233 +18,6 @@ body{
     left: 298px;
 }
 
-.filter_off{
-    font-family: '9369';
-    cursor: pointer;
-    border: 0px solid #808080;
-    background: #808080;
-    width: 200px;
-    height: 40px;
-    font-size: 15px;
-    border-radius: 0px 0px 5px 5px;
-    color: #C0C0C0;
-}
-
-.filter_off:hover {
-    color: #Ffffff;
-}
-
-.filter_on{
-    font-family: '9369';
-    cursor: pointer;
-    border: 0px solid #3a3633;
-    background: #3a3633;
-    width: 200px;
-    height: 40px;
-    font-size: 15px;
-    border-radius: 0px 0px 5px 5px;
-    color: #C0C0C0;
-}
-
-.filter_on:hover {
-    color: #Ffffff;
-}
-
-.sel{
-    margin-left: 20px;
-    font-family: '9369';
-    border: 1px solid #3a3633;
-    background: #Ffffff;
-    cursor: pointer;
-    padding: 8px 0 8px 0;
-    height: 40px;
-    width: 200px;
-    font-size: 20px;
-    text-align: center;
-}
-
-.search{
-    left: 700px;
-    font-family: '9369';
-    border: 1px solid #3a3633;
-    background: #Ffffff;
-    padding: 8px 0 8px 0;
-    height: 22px;
-    width: 300px;
-    font-size: 20px;
-    text-align: center;
-}
-
-.filter_off:nth-child(4){
-    left: 1000px;
-}
-
-#butt{
-    font-family: '9369';
-    cursor: pointer;
-    border: 0px solid #3a3633;
-    background: #3a3633;
-    width: 120px;
-    height: 40px;
-    font-size: 15px;
-    border-radius: 5px 5px 5px 5px;
-    color: #C0C0C0;
-    margin-left: 10px;
-}
-
-#butt:hover{
-    color: #Ffffff;
-}
-
-#toolbar{
-    margin-left: 0;
-    padding-left: 0;
-}
-
-#toolbar li{
-    list-style-type: none;
-    display: inline-block;
-}
-
-.newUser{
-    text-decoration: none;
-    font-family: '9369';
-    cursor: pointer;
-    border: 0px solid #808080;
-    background: #808080;
-    font-size: 15px;
-    border-radius: 5px 5px 5px 5px;
-    color: #C0C0C0;
-    margin-left: 10px;
-    padding: 12px;
-    margin-top: 10px;
-}
-
-.newUser:hover{
-    color: #Ffffff;
-}
-
-#departFilter{
-    margin-left: 0;
-    padding-left: 0;
-}
-
-#departFilter li{
-    list-style-type: none;
-    margin-bottom: 10px;
-    display: block;
-}
-
-#departFilter li:nth-child(1){
-    margin: 0;
-    margin-left: 0;
-    margin-top: 5px;
-}
-
-#departFilter li:nth-child(2){
-    margin: 0;
-    padding: 0;
-    margin-left: 20px;
-}
-
-#departSearch{
-    margin-left: 10px;
-    padding-left: 0;
-}
-
-#departSearch li{
-    list-style-type: none;
-    margin-bottom: 10px;
-    display: block;
-}
-
-#departSearch li:nth-child(1){
-    margin: 0;
-    margin-left: 0;
-    margin-top: 5px;
-}
-
-#departSearch li:nth-child(2){
-    margin: 0;
-    padding: 0;
-    margin-left: 0;
-}
-
-.filter_off1{
-    font-family: '9369';
-    cursor: pointer;
-    border: 0px solid #808080;
-    background: #808080;
-    width: 302px;
-    height: 40px;
-    font-size: 15px;
-    border-radius: 0px 0px 5px 5px;
-    color: #C0C0C0;
-}
-
-.filter_off1:hover {
-    color: #Ffffff;
-}
-
-#content #depart{
-    margin-bottom: 10px;
-    margin-left: 10px;
-    margin-right: 20px;
-    background: #A9A9A9;
-    padding: 0;
-}
-
-#depart li{
-    list-style-type: none;
-    margin: 0;
-    font-family: '9369';
-    padding: 10px;
-    font-size: 25px;
-}
-
-#depart li a{
-    color: #Ffffff;
-    text-decoration: none;
-}
-
-#depart li:nth-child(odd){
-    background: #696969;
-}
-
-#depart li:nth-child(even){
-    background: #808080;
-}
-
-.ibutt{
-    font-family: '9369';
-    cursor: pointer;
-    background: #483D8B;
-    width: 149px;
-    height: 30px;
-    font-size: 15px;
-    color: #Ffffff;
-    border: 0;
-    border-radius: 0px 0px 5px 5px;
-    margin-left: auto;
-}
-
-.ibutt:hover{
-    background: #6A5ACD;
-}
-
-.sel_mal {
-    margin-left: 20px;
-    font-family: '9369';
-    border: 1px solid #3a3633;
-    background: #Ffffff;
-    cursor: pointer;
-    padding: 4px 0 4px 0;
-    height: 30px;
-    width: 200px;
-    font-size: 15px;
-    text-align: center;
-}
-
 #content .addEdit{
     padding-top: 20px;
 }
@@ -260,7 +33,7 @@ body{
     background: #Ffffff;
     padding: 8px 0 8px 0;
     height: 22px;
-    width: 300px;
+    width: 340px;
     font-size: 20px;
     text-align: center;
 }
@@ -272,7 +45,7 @@ body{
     cursor: pointer;
     padding: 8px 0 8px 0;
     height: 40px;
-    width: 300px;
+    width: 340px;
     font-size: 20px;
     text-align: center;
 }
@@ -283,7 +56,8 @@ body{
     background: #Ffffff;
     padding: 8px 0 8px 0;
     height: 150px;
-    width: 300px;
+    width: 340px;
     font-size: 20px;
     text-align: center;
+    resize: none;
 }

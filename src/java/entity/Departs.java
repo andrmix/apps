@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Departs.findAll", query = "SELECT d FROM Departs d"),
+    @NamedQuery(name = "Departs.findAllOrderName", query = "SELECT d FROM Departs d ORDER BY d.name"),
     @NamedQuery(name = "Departs.findById", query = "SELECT d FROM Departs d WHERE d.id = :id"),
     @NamedQuery(name = "Departs.findSearch", query = "SELECT d FROM Departs d WHERE d.name like :depart"),
     @NamedQuery(name = "Departs.findByName", query = "SELECT d FROM Departs d WHERE d.name = :name")})

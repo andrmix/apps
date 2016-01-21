@@ -80,9 +80,13 @@
                     </table>
                     <c:choose>
                         <c:when test="${commenta == 1}">
-                            <div class="comment">
-                                <textarea placeholder="Укажите причину" name="textc" class="editAddArea"/></textarea><br>
-                                <input type="submit" value="Готово" name="Done" class="ibutt"/>
+                            <div class="commentar">
+                                <table class="commgo">
+                                    <tr>
+                                        <td style="width: 70%"><textarea placeholder="Укажите причину" name="textc" class="commEdit"/></textarea></td>
+                                        <td style="width: 30%"><input type="submit" value="Готово" name="Done" class="ibuttcomm"/></td>
+                                    </tr>
+                                </table>
                                 <input type="hidden" name="status" value="${incident.status.id}"/>
                             </div>
                         </c:when>
@@ -95,11 +99,39 @@
                                 <input type="submit" value="Подтвердить" name="Accept" class="ibutt"/>
                                 <input type="submit" value="Вернуть на доработку" name="NoAccept" class="ibutt"/>
                             </c:if>
-                            <c:if test="${incident.status.id == 5}">
-                                <input type="submit" value="Оставить комментарий" name="Comment" class="ibutt"/>
-                            </c:if>
                         </c:otherwise>
                     </c:choose>
+                    <c:choose>
+                        <c:when test="${commento == 1}">
+                            <table class="comments">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3">Комментарии</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="comment" items="${comments}">
+                                        <tr>
+                                            <td style="width: 20%">${comment.usersLogin.name}</td>
+                                            <td style="width: 10%">${comment.dateComment}</td>
+                                            <td style="width: 70%">${comment.text}</td>
+                                        </tr>
+                                    </c:forEach>
+                            </table>
+                            <c:if test="${incident.status.id == 5}">
+                            <table class="commgo">
+                                <tr>
+                                    <td style="width: 70%"><textarea placeholder="Комментировать..." name="textcomm" class="commEdit"/></textarea></td>
+                                    <td style="width: 30%"><input type="submit" value="Отправить" name="bCommGo" class="ibuttcomm"/></td>
+                                </tr>
+                            </table>
+                            </c:if>
+                            <input type="submit" value="Скрыть комментарии" name="bCommOff" class="plashka"/>
+                        </c:when>
+                        <c:otherwise>
+                            <input type="submit" value="Показать комментарии (${comments.size()})" name="bCommOn" class="plashka"/>
+                        </c:otherwise>
+                    </c:choose>           
                 </div>
             </div>
         </form>

@@ -5,6 +5,9 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/style.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/header.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/sidebar.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/incident_data.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
     </head>
@@ -19,12 +22,24 @@
             </div>
             <input type="hidden" name="id" value="${depart.id}"/>
             <div id="content">
-                <ul id="depart">
-                    <li>${depart.name}</li>
-                </ul>
-                <input type="submit" value="Редактировать" name="Edit" id="butt"/>
-                <input type="submit" value="Удалить" name="Delete" id="butt"/>
-                <input type="submit" value="Отмена" name="Cancel" id="butt"/>
+                <div class="incident_data">
+                    <table class="table_incident_data">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Отдел</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="width: 30%">Название</td>
+                                <td style="width: 70%">${depart.name}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="submit" value="Редактировать" name="Edit" class="ibutt"/>
+                    <input type="submit" value="Удалить" name="Delete" class="ibutt"/>
+                    <input type="submit" value="Отмена" name="Cancel" class="ibutt"/>
+                </div>
             </div>
         </form>
     </body>

@@ -7,45 +7,54 @@
     width: 100%;
 }
 
-th{
+.incidents_tab th{
     background: #483D8B;
     color: white;
     padding: 10px 20px;
 }
 
-td {
+.incidents_tab th a{
+    color: white;
+    text-decoration: none;
+}
+
+.incidents_tab th a:hover{
+    color: #FFA500;
+}
+
+.incidents_tab td {
     border-style: solid;
     border-width: 0 2px 2px 0;
     border-color: white;
     padding: 10px;
 }
 
-thead {
+.incidents_tab thead {
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
-tbody tr:nth-child(odd) {
+.incidents_tab tbody tr:nth-child(odd) {
     background: #FFFFFF;
 }
 
-tbody tr:nth-child(even) {
+.incidents_tab tbody tr:nth-child(even) {
     background: #F0F8FF;
 }
 
-th:first-child, td:first-child {
+.incidents_tab th:first-child, td:first-child {
     text-align: left;
 }
 
-tbody tr:hover{
+.incidents_tab tbody tr:hover{
     background: #FFA500;
 }
 
-tbody tr a{
+.incidents_tab tbody tr a{
     padding-left: 10px;
     color: black;
     text-decoration: none;
 }
 
-tbody tr a:hover{
+.incidents_tab tbody tr a:hover{
     color: #FFFFFF;
 }

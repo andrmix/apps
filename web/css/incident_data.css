@@ -7,29 +7,146 @@
     width: 100%;
 }
 
-th{
+.table_incident_data th{
     background: #483D8B;
     color: white;
     padding: 10px 20px;
     text-align: center;
 }
 
-td {
+.table_incident_data td {
     border-style: solid;
     border-width: 0 2px 2px 0;
     border-color: white;
     padding: 10px;
 }
 
-tbody td:nth-child(odd) {
+.table_incident_data tbody td:nth-child(odd) {
     background: #FFA500;
 }
 
-thead {
+.table_incident_data thead {
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
-.comment{
+.commentar{
     padding: 10px;
 }
 
+.plashka{
+    font-family: '9369';
+    cursor: pointer;
+    background: #808080;
+    width: 100%;
+    height: 30px;
+    font-size: 15px;
+    color: #Ffffff;
+    border: 0;
+    margin-top: 20px;
+}
+
+.plashka:hover{
+    background: #A9A9A9;
+}
+
+.comments{
+    margin: 0;
+    margin-top: 20px;
+    font-family: '9369';
+    font-size: 15px;
+    border-collapse: collapse;
+    text-align: left;
+    width: 100%;
+}
+
+.comments th{
+    background: #808080;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.comments td {
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    border-color: white;
+    padding: 10px;
+}
+
+.comments tbody tr:nth-child(odd) {
+    background: #FFFAFA;
+}
+
+.commgo{
+    margin: 0;
+    margin-top: 10px;
+    font-family: '9369';
+    font-size: 15px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.commgo td{
+    border-width: 0;
+    padding: 0;
+}
+
+.commEdit{
+    font-family: '9369';
+    border: 1px solid #808080;
+    background: #Ffffff;
+    padding: 5px;
+    height: 50px;
+    width: 100%;
+    font-size: 15px;
+    text-align: left;
+    resize: none;
+    margin-left: 10px;
+}
+
+.ibuttcomm{
+    font-family: '9369';
+    cursor: pointer;
+    background: #808080;
+    width: 50%;
+    height: 62px;
+    font-size: 15px;
+    color: #Ffffff;
+    border: 0;
+    border-radius: 0px 5px 5px 0px;
+    margin-left: 12px;
+}
+
+.ibuttcomm:hover{
+    background: #A9A9A9;
+}
+
+.ibutt{
+    font-family: '9369';
+    cursor: pointer;
+    background: #483D8B;
+    width: 170px;
+    height: 30px;
+    font-size: 15px;
+    color: #Ffffff;
+    border: 0;
+    border-radius: 0px 0px 5px 5px;
+    margin-left: auto;
+}
+
+.ibutt:hover{
+    background: #6A5ACD;
+}
+
+.sel_mal {
+    font-family: '9369';
+    border: 1px solid #3a3633;
+    background: #Ffffff;
+    cursor: pointer;
+    padding: 4px 0 4px 0;
+    height: 30px;
+    width: 200px;
+    font-size: 15px;
+    text-align: center;
+    margin-left: 5px;
+}

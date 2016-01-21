@@ -16,7 +16,11 @@ import session.ManagementSystemLocal;
  * @author admin
  */
 @WebServlet(name = "manager_controller",
-        urlPatterns = {"/manager", "/manager/incident_data"})
+        urlPatterns = {"/manager", "/manager/incident_data", "/manager/allocated",
+            "/sort_by_name_un", "/sort_by_date_un", "/sort_by_status_un",
+            "/sort_by_zay_un", "/sort_by_name_allo", "/sort_by_date_allo",
+            "/sort_by_status_allo", "/sort_by_zay_allo", "/sort_by_spec_allo",
+            "/manager/specialists"})
 public class manager_controller extends HttpServlet {
 
     @EJB(name = "ManagementSystem")
@@ -27,20 +31,76 @@ public class manager_controller extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         Users manager = ms.findUser(request.getUserPrincipal().getName());
         request.setAttribute("user", manager);
-        
-        if ("/manager".equals(request.getServletPath())) {
-            getServletContext().setAttribute("unallocatedIncidents", ms.getUnallocatedIncidents());
+        getServletContext().setAttribute("unallocatedIncidents", ms.getUnallocatedIncidents("none"));
+        getServletContext().setAttribute("allocatedIncidents", ms.getAllocatedIncidents("none"));
+
+        if ("/sort_by_name_un".equals(request.getServletPath())) {
+            getServletContext().setAttribute("unallocatedIncidents", ms.getUnallocatedIncidents("name"));
             request.getRequestDispatcher("/WEB-INF/manager/unallocated_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_date_un".equals(request.getServletPath())) {
+            getServletContext().setAttribute("unallocatedIncidents", ms.getUnallocatedIncidents("date"));
+            request.getRequestDispatcher("/WEB-INF/manager/unallocated_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_status_un".equals(request.getServletPath())) {
+            getServletContext().setAttribute("unallocatedIncidents", ms.getUnallocatedIncidents("status"));
+            request.getRequestDispatcher("/WEB-INF/manager/unallocated_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_zay_un".equals(request.getServletPath())) {
+            getServletContext().setAttribute("unallocatedIncidents", ms.getUnallocatedIncidents("zay"));
+            request.getRequestDispatcher("/WEB-INF/manager/unallocated_incidents.jsp").forward(request, response);
+        }
+
+        if ("/manager".equals(request.getServletPath())) {
+            request.getRequestDispatcher("/WEB-INF/manager/unallocated_incidents.jsp").forward(request, response);
+        }
+
+        if ("/sort_by_name_allo".equals(request.getServletPath())) {
+            getServletContext().setAttribute("allocatedIncidents", ms.getAllocatedIncidents("name"));
+            request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_date_allo".equals(request.getServletPath())) {
+            getServletContext().setAttribute("allocatedIncidents", ms.getAllocatedIncidents("date"));
+            request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_status_allo".equals(request.getServletPath())) {
+            getServletContext().setAttribute("allocatedIncidents", ms.getAllocatedIncidents("status"));
+            request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_zay_allo".equals(request.getServletPath())) {
+            getServletContext().setAttribute("allocatedIncidents", ms.getAllocatedIncidents("zay"));
+            request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_spec_allo".equals(request.getServletPath())) {
+            getServletContext().setAttribute("allocatedIncidents", ms.getAllocatedIncidents("spec"));
+            request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
+        }
+
+        if ("/manager/allocated".equals(request.getServletPath())) {
+            request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
+        }
+        
+        if ("/sort_by_fio_spec".equals(request.getServletPath())) {
+            getServletContext().setAttribute("specialistList", ms.getSpecialists("name"));
+            request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
+        }
+
+        if ("/manager/specialists".equals(request.getServletPath())) {
+            getServletContext().setAttribute("specialistList", ms.getSpecialists("none"));
+            request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
         }
 
         if ("/manager/incident_data".equals(request.getServletPath())) {
             Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
+            String un = request.getParameter("un");
             request.setAttribute("incident", incident);
+            request.setAttribute("un", un);
+            getServletContext().setAttribute("commenta", 0);
             int answer = 0;
             answer = checkAction(request);
             getServletContext().setAttribute("appoint", 0);
             if (answer == 1) {
-                getServletContext().setAttribute("specialists", ms.getSpecialists());
+                getServletContext().setAttribute("specialists", ms.getSpecialists("none"));
                 getServletContext().setAttribute("appoint", 1);
             }
             if (answer == 4) {
@@ -50,7 +110,12 @@ public class manager_controller extends HttpServlet {
                 return;
             }
             if (answer == 3) {
-                //Отклонить
+                getServletContext().setAttribute("commenta", 1);
+            }
+            if (answer == 5) {
+                ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), null, false);
+                response.sendRedirect(request.getContextPath() + "/manager");
+                return;
             }
             request.getRequestDispatcher("/WEB-INF/manager/incident_data.jsp").forward(request, response);
         }
@@ -107,6 +172,9 @@ public class manager_controller extends HttpServlet {
         }
         if (req.getParameter("Done") != null) {
             return 4;
+        }
+        if (req.getParameter("pDone") != null) {
+            return 5;
         }
         return 0;
     }
