@@ -5,9 +5,11 @@
  */
 package controller;
 
+import entity.Comments;
 import entity.Incidents;
 import entity.Users;
 import java.io.IOException;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +24,8 @@ import session.ManagementSystemLocal;
  */
 @WebServlet(name = "specialist_controller",
         urlPatterns = {"/specialist", "/specialist/spec_incident_data",
-            "/specialist/spec_done_incidents", "/specialist/spec_done_incident_data"})
+            "/specialist/spec_done_incidents", "/specialist/spec_done_incident_data",
+            "/specialist/spec_closed_incidents", "/specialist/statistic"})
 public class specialist_controller extends HttpServlet {
 
     @EJB(name = "ManagementSystem")
@@ -46,35 +49,72 @@ public class specialist_controller extends HttpServlet {
             Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
             request.setAttribute("incident", incident);
             request.setAttribute("done", 0);
-            int answer = 0;
+            request.setAttribute("otmena", 0);
+            String answer = null;
             answer = checkAction(request);
-            if (incident.getStatus().equals(ms.getStatuses().get(5))) {
-                request.setAttribute("status", 1);
-            }
-            if (incident.getStatus().equals(ms.getStatuses().get(4))) {
-                request.setAttribute("status", 2);
-            }
-            if (answer == 1) {
+
+            //В работу
+            if (answer.equals("InWork")) {
                 ms.inWork(incident);
                 response.sendRedirect(request.getContextPath() + "/specialist");
                 return;
             }
-            if (answer == 2) {
-                //Отклонить
+
+            //Отменить
+            if (answer.equals("Close")) {
+                request.setAttribute("otmena", 1);
             }
-            if (answer == 3) {
+
+            //Выполнить
+            if (answer.equals("Doit")) {
                 request.setAttribute("done", 1);
             }
-            if (answer == 4) {
+
+            //Выполнить - Готово
+            if (answer.equals("Done")) {
                 ms.doneIncident(incident, request.getParameter("decision"));
                 response.sendRedirect(request.getContextPath() + "/specialist");
                 return;
             }
+
+            //Отменить - Готово
+            if (answer.equals("pDone")) {
+                ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), null, true);
+                response.sendRedirect(request.getContextPath() + "/specialist");
+                return;
+            }
+
+            if (answer.equals("bCommOn")) {
+                request.setAttribute("commento", 1);
+            }
+            if (answer.equals("bCommOff")) {
+                request.setAttribute("commento", 0);
+            }
+            if (answer.equals("bCommGo")) {
+                request.setAttribute("commento", 1);
+                ms.addComment(request.getParameter("textcomm"), specialist, incident);
+            }
+            List<Comments> comments = ms.getComments(incident);
+            request.setAttribute("comments", comments);
             request.getRequestDispatcher("/WEB-INF/specialist/spec_incident_data.jsp").forward(request, response);
         }
 
         if ("/specialist/spec_done_incidents".equals(request.getServletPath())) {
             request.getRequestDispatcher("/WEB-INF/specialist/spec_done_incidents.jsp").forward(request, response);
+        }
+
+        if ("/specialist/spec_closed_incidents".equals(request.getServletPath())) {
+            request.getRequestDispatcher("/WEB-INF/specialist/spec_closed_incidents.jsp").forward(request, response);
+        }
+        
+        if ("/specialist/statistic".equals(request.getServletPath())) {
+            List stats = ms.getOneSpecialistsStatistics(specialist.getLogin());
+            request.setAttribute("statList", stats);
+            List statsYear1 = ms.getYearStatistic("2016", specialist.getLogin(), 1);
+            List statsYear2 = ms.getYearStatistic("2016", specialist.getLogin(), 7);
+            request.setAttribute("statYearList1", statsYear1);
+            request.setAttribute("statYearList2", statsYear2);
+            request.getRequestDispatcher("/WEB-INF/specialist/statistic.jsp").forward(request, response);
         }
 
         if ("/specialist/spec_done_incident_data".equals(request.getServletPath())) {
@@ -124,20 +164,32 @@ public class specialist_controller extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private int checkAction(HttpServletRequest req) {
+    private String checkAction(HttpServletRequest req) {
         if (req.getParameter("InWork") != null) {
-            return 1;
+            return "InWork";
         }
         if (req.getParameter("Close") != null) {
-            return 2;
+            return "Close";
         }
         if (req.getParameter("Doit") != null) {
-            return 3;
+            return "Doit";
         }
         if (req.getParameter("Done") != null) {
-            return 4;
+            return "Done";
         }
-        return 0;
+        if (req.getParameter("pDone") != null) {
+            return "pDone";
+        }
+        if (req.getParameter("bCommOn") != null) {
+            return "bCommOn";
+        }
+        if (req.getParameter("bCommOff") != null) {
+            return "bCommOff";
+        }
+        if (req.getParameter("bCommGo") != null) {
+            return "bCommGo";
+        }
+        return "none";
     }
 
 }

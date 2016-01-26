@@ -21,6 +21,7 @@
         </div>
         <form action='<c:url value="/manager/incident_data"/>' method="POST">
             <input type="hidden" name="id" value="${incident.id}"/>
+            <input type="hidden" name="status" value="${incident.status.id}"/>
             <c:set var="una" scope="application" value="${un}"/>
             <div id="content">
                 <div class="incident_data">
@@ -48,6 +49,10 @@
                                 <td>${incident.dateIncident}</td>
                             </tr>
                             <tr>
+                                <td>Время</td>
+                                <td>${incident.timeIncident}</td>
+                            </tr>
+                            <tr>
                                 <td>Статус</td>
                                 <td>${incident.status.name}</td>
                             </tr>
@@ -55,6 +60,12 @@
                                 <td>Заявитель</td>
                                 <td>${incident.zayavitel.name}</td>
                             </tr>
+                            <c:if test="${incident.status.id == 5 || incident.status.id == 6}">
+                                <tr>
+                                    <td>Исполнитель</td>
+                                    <td>${incident.specialist.name}</td>
+                                </tr>
+                            </c:if>
                         </tbody>
                     </table>
                     <c:choose>
@@ -66,7 +77,6 @@
                                         <td style="width: 30%"><input type="submit" value="Готово" name="pDone" class="ibuttcomm"/></td>
                                     </tr>
                                 </table>
-                                <input type="hidden" name="status" value="${incident.status.id}"/>
                             </div>
                         </c:when>
                         <c:otherwise>
@@ -86,7 +96,9 @@
                                     <c:if test="${una.equals('no')}">
                                         <input type="submit" value="Переназначить" name="Appoint" class="ibutt"/>
                                     </c:if>
-                                    <input type="submit" value="Отклонить" name="Close" class="ibutt"/>
+                                    <c:if test="${incident.status.id != 5 && incident.status.id != 6}">
+                                        <input type="submit" value="Отклонить" name="Close" class="ibutt"/>
+                                    </c:if>
                                 </c:otherwise>
                             </c:choose>
                         </c:otherwise>

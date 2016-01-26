@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Acts.findAll", query = "SELECT a FROM Acts a"),
     @NamedQuery(name = "Acts.findById", query = "SELECT a FROM Acts a WHERE a.id = :id"),
     @NamedQuery(name = "Acts.findByDateAct", query = "SELECT a FROM Acts a WHERE a.dateAct = :dateAct"),
+    @NamedQuery(name = "Acts.findByTimeAct", query = "SELECT a FROM Acts a WHERE a.timeAct = :timeAct"),
     @NamedQuery(name = "Acts.findByPodpisNach", query = "SELECT a FROM Acts a WHERE a.podpisNach = :podpisNach"),
     @NamedQuery(name = "Acts.findByPodpisZayavitel", query = "SELECT a FROM Acts a WHERE a.podpisZayavitel = :podpisZayavitel")})
 public class Acts implements Serializable {
@@ -46,8 +47,13 @@ public class Acts implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "dateAct")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateAct;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "timeAct")
+    @Temporal(TemporalType.TIME)
+    private Date timeAct;
     @Basic(optional = false)
     @NotNull
     @Column(name = "podpisNach")
@@ -73,9 +79,10 @@ public class Acts implements Serializable {
         this.id = id;
     }
 
-    public Acts(Integer id, Date dateAct, int podpisNach, int podpisZayavitel) {
+    public Acts(Integer id, Date dateAct, Date timeAct, int podpisNach, int podpisZayavitel) {
         this.id = id;
         this.dateAct = dateAct;
+        this.timeAct = timeAct;
         this.podpisNach = podpisNach;
         this.podpisZayavitel = podpisZayavitel;
     }
@@ -94,6 +101,14 @@ public class Acts implements Serializable {
 
     public void setDateAct(Date dateAct) {
         this.dateAct = dateAct;
+    }
+
+    public Date getTimeAct() {
+        return timeAct;
+    }
+
+    public void setTimeAct(Date timeAct) {
+        this.timeAct = timeAct;
     }
 
     public int getPodpisNach() {

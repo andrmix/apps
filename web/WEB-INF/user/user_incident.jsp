@@ -47,6 +47,10 @@
                                 <td>${incident.dateIncident}</td>
                             </tr>
                             <tr>
+                                <td>Время</td>
+                                <td>${incident.timeIncident}</td>
+                            </tr>
+                            <tr>
                                 <td>Статус</td>
                                 <td>${incident.status.name}</td>
                             </tr>
@@ -59,11 +63,23 @@
                                     <td>Дата выполнения</td>
                                     <td>${incident.dateDone}</td>
                                 </tr>
+                                <tr>
+                                    <td>Время выполнения</td>
+                                    <td>${incident.timeDone}</td>
+                                </tr>
+                                <tr>
+                                    <td>Исполнитель</td>
+                                    <td>${incident.specialist.name}</td>
+                                </tr>
                             </c:if>
                             <c:if test="${incident.status.id == 4}">
                                 <tr>
                                     <td>Дата закрытия</td>
                                     <td>${incident.dateClose}</td>
+                                </tr>
+                                <tr>
+                                    <td>Время закрытия</td>
+                                    <td>${incident.timeClose}</td>
                                 </tr>
                             </c:if>
                             <c:if test="${incident.status.id == 2 || incident.status.id == 7}">
@@ -74,6 +90,10 @@
                                 <tr>
                                     <td>Дата отклонения/отмены</td>
                                     <td>${incident.dateClose}</td>
+                                </tr>
+                                <tr>
+                                    <td>Время отклонения/отмены</td>
+                                    <td>${incident.timeClose}</td>
                                 </tr>
                             </c:if>
                         </tbody>
@@ -113,7 +133,7 @@
                                     <c:forEach var="comment" items="${comments}">
                                         <tr>
                                             <td style="width: 20%">${comment.usersLogin.name}</td>
-                                            <td style="width: 10%">${comment.dateComment}</td>
+                                            <td style="width: 10%">${comment.dateComment} - ${comment.timeComment}</td>
                                             <td style="width: 70%">${comment.text}</td>
                                         </tr>
                                     </c:forEach>

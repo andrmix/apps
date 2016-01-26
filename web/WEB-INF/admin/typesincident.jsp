@@ -59,11 +59,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="typeIncident" items="${typesIncidentList}">
-                            <tr>
-                                <td><a href='<c:url value="/admin/typeincident_data?id=${typeIncident.id}"/>'>${typeIncident.name}</a></td>
-                            </tr>
-                        </c:forEach>
+                        <c:if test="${typesIncidentList.isEmpty()}">
+                        <td colspan="1" style="text-align: center;">Список типов инцидентов пуст</td>
+                    </c:if>
+                    <c:forEach var="typeIncident" items="${typesIncidentList}">
+                        <tr>
+                            <td><a href='<c:url value="/admin/typeincident_data?id=${typeIncident.id}"/>'>${typeIncident.name}</a></td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>

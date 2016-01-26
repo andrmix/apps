@@ -57,8 +57,8 @@
                                     </td>
                                     <td><a href='<c:url value="/admin/new_user"/>' class="newUser">
                                             <img class="addUserPic" src='<c:url value="/img/userplus.png"/>'>
-                                                Новый сотрудник
-                                            </a>
+                                            Новый сотрудник
+                                        </a>
                                     </td>
                                 </tr>
                             </table>
@@ -79,14 +79,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="user" items="${userList}">
-                            <tr>
-                                <td><a href='<c:url value="/admin/user_data?login=${user.login}"/>'>${user.name}</a></td>
-                                <td>${user.login}</td>
-                                <td>${user.email}</td>
-                                <td>${user.depart.name}</td>
-                            </tr>
-                        </c:forEach>
+                        <c:if test="${userList.isEmpty()}">
+                        <td colspan="4" style="text-align: center;">Список пользователей пуст</td>
+                    </c:if>
+                    <c:forEach var="user" items="${userList}">
+                        <tr>
+                            <td><a href='<c:url value="/admin/user_data?login=${user.login}"/>'>${user.name}</a></td>
+                            <td>${user.login}</td>
+                            <td>${user.email}</td>
+                            <td>${user.depart.name}</td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>

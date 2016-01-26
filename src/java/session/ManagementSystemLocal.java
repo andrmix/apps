@@ -25,9 +25,9 @@ public interface ManagementSystemLocal {
     public List<Incidents> getIncidentsByUser(Users user, Statuses status);
 
     public List<Incidents> getClosedIncidents(Users user, String sort);
-    
+
     public List<Incidents> getOpenIncidents(Users user, String sort);
-    
+
     public void addIncident(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id);
 
     public void cancelIncident(Incidents incident, String textp, String tstatus, Users user, boolean it);
@@ -89,12 +89,18 @@ public interface ManagementSystemLocal {
     public List<Incidents> getSpecialistClosedIncidents(Users specialist);
 
     public List<Typeincident> getTypesIncidentsForEdit(Typeincident typeincident);
-    
+
     public void addComment(String text, Users commentator, Incidents incident);
-    
+
     public List<Comments> getComments(Incidents incident);
-    
+
     public void acceptIncident(Incidents incident);
-    
+
     public List<Incidents> getAllocatedIncidents(String sort);
+
+    public List getSpecialistsStatistics();
+    
+    public List getOneSpecialistsStatistics(String specialist);
+    
+    public List getYearStatistic(String year, String specialist, int period);
 }

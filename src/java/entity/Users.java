@@ -69,6 +69,8 @@ public class Users implements Serializable {
     private String email;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin", orphanRemoval = true)
     private Collection<Groupuser> groupuserCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin")
+    private Collection<Comments> commentsCollection;
     @OneToMany(mappedBy = "zayavitel")
     private Collection<Incidents> incidentsCollection;
     @OneToMany(mappedBy = "specialist")
@@ -76,8 +78,6 @@ public class Users implements Serializable {
     @JoinColumn(name = "depart", referencedColumnName = "id")
     @ManyToOne
     private Departs depart;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin")
-    private Collection<Comments> commentsCollection;
 
     public Users() {
     }
@@ -135,6 +135,15 @@ public class Users implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Comments> getCommentsCollection() {
+        return commentsCollection;
+    }
+
+    public void setCommentsCollection(Collection<Comments> commentsCollection) {
+        this.commentsCollection = commentsCollection;
+    }
+
+    @XmlTransient
     public Collection<Incidents> getIncidentsCollection() {
         return incidentsCollection;
     }
@@ -184,14 +193,5 @@ public class Users implements Serializable {
     public String toString() {
         return "entity.Users[ login=" + login + " ]";
     }
-
-    @XmlTransient
-    public Collection<Comments> getCommentsCollection() {
-        return commentsCollection;
-    }
-
-    public void setCommentsCollection(Collection<Comments> commentsCollection) {
-        this.commentsCollection = commentsCollection;
-    }
-
+    
 }

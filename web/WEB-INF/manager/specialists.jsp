@@ -42,23 +42,60 @@
                         <tr>
                             <th rowspan="2"><a href='<c:url value="/sort_by_fio_spec"/>'>ФИО специалиста</a></th>
                             <th colspan="2">Активные инциденты</th>
-                            <th colspan="2">Завершенные инциденты</th>
+                            <th colspan="3">Завершенные инциденты</th>
                         </tr>
                         <tr>
                             <th>За сегодня</th>
-                            <th>За данный месяц</th>
+                            <th>Всего</th>
                             <th>За сегодня</th>
-                            <th>За данный месяц</th>
+                            <th>За месяц</th>
+                            <th>Всего</th>
                         </tr>
                     </thead>
                     <tbody>
                         <c:forEach var="user" items="${specialistList}">
                             <tr>
-                                <td><a href='<c:url value="/manager/specialist_data?login=${user.login}"/>'>${user.name}</a></td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
+                                <td><a href='<c:url value="/manager/specialist_data?id=${user[6]}"/>'>${user[0]}</a></td>
+                                <td><c:choose>
+                                        <c:when test="${user[2] == null}">
+                                            0
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${user[2]}
+                                        </c:otherwise>
+                                    </c:choose></td>
+                                <td><c:choose>
+                                        <c:when test="${user[1] == null}">
+                                            0
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${user[1]}
+                                        </c:otherwise>
+                                    </c:choose></td>
+                                <td><c:choose>
+                                        <c:when test="${user[3] == null}">
+                                            0
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${user[3]}
+                                        </c:otherwise>
+                                    </c:choose></td>
+                                <td><c:choose>
+                                        <c:when test="${user[4] == null}">
+                                            0
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${user[4]}
+                                        </c:otherwise>
+                                    </c:choose></td>
+                                <td><c:choose>
+                                        <c:when test="${user[5] == null}">
+                                            0
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${user[5]}
+                                        </c:otherwise>
+                                    </c:choose></td>
                             </tr>
                         </c:forEach>
                     </tbody>

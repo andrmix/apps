@@ -74,41 +74,41 @@ public class incident_controller extends HttpServlet {
         }
 
         if ("/user/user_incident".equals(userPath)) {
-            int answer = 0;
+            String answer = null;
             answer = checkAction(request);
             Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
-            if (answer == 2) {
+            if (answer.equals("Cancel")) {
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
-            if (answer == 3) {
+            if (answer.equals("Close")) {
                 request.setAttribute("commenta", 1);
             }
-            if (answer == 4) {
+            if (answer.equals("Edit")) {
                 List<Typeincident> typs = ms.getTypesIncidentsForEdit(incident.getTypeIncident());
                 request.setAttribute("incident", incident);
                 request.setAttribute("typs", typs);
                 request.setAttribute("editincident", 1);
                 request.getRequestDispatcher("/WEB-INF/user/new_incident.jsp").forward(request, response);
             }
-            if (answer == 5) {
+            if (answer.equals("Done")) {
                 ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), user, false);
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
-            if (answer == 6) {
+            if (answer.equals("Accept")) {
                 
             }
-            if (answer == 7) {
+            if (answer.equals("NoAccept")) {
                 request.setAttribute("commenta", 1);
             }
-            if (answer == 8) {
+            if (answer.equals("bCommOn")) {
                 request.setAttribute("commento", 1);
             }
-            if (answer == 9) {
+            if (answer.equals("bCommOff")) {
                 request.setAttribute("commento", 0);
             }
-            if (answer == 10) {
+            if (answer.equals("bCommGo")) {
                 request.setAttribute("commento", 1);
                 ms.addComment(request.getParameter("textcomm"), user, incident);
             }
@@ -117,19 +117,19 @@ public class incident_controller extends HttpServlet {
             request.setAttribute("comments", comments);
         }
         if ("/user/new_incident".equals(userPath)) {
-            int answer = 0;
+            String answer = null;
             answer = checkAction(request);
-            if (answer == 2) {
+            if (answer.equals("Cancel")) {
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
-            if (answer == 1) {
+            if (answer.equals("Add")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                 ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, true, 0);
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
-            if (answer == 4) {
+            if (answer.equals("Edit")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                 ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, false, Integer.parseInt(request.getParameter("id")));
                 response.sendRedirect(request.getContextPath() + "/user");
@@ -185,38 +185,38 @@ public class incident_controller extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private int checkAction(HttpServletRequest req) {
+    private String checkAction(HttpServletRequest req) {
         if (req.getParameter("Add") != null) {
-            return 1;
+            return "Add";
         }
         if (req.getParameter("Cancel") != null) {
-            return 2;
+            return "Cancel";
         }
         if (req.getParameter("Close") != null) {
-            return 3;
+            return "Close";
         }
         if (req.getParameter("Edit") != null) {
-            return 4;
+            return "Edit";
         }
         if (req.getParameter("Done") != null) {
-            return 5;
+            return "Done";
         }
         if (req.getParameter("Accept") != null) {
-            return 6;
+            return "Accept";
         }
         if (req.getParameter("NoAccept") != null) {
-            return 7;
+            return "NoAccept";
         }
         if (req.getParameter("bCommOn") != null) {
-            return 8;
+            return "bCommOn";
         }
         if (req.getParameter("bCommOff") != null) {
-            return 9;
+            return "bCommOff";
         }
         if (req.getParameter("bCommGo") != null) {
-            return 10;
+            return "bCommGo";
         }
-        return 0;
+        return "none";
     }
 
 }

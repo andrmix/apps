@@ -59,11 +59,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="depart" items="${departList}">
-                            <tr>
-                                <td><a href='<c:url value="/admin/depart_data?id=${depart.id}"/>'>${depart.name}</a></td>
-                            </tr>
-                        </c:forEach>
+                        <c:if test="${departList.isEmpty()}">
+                        <td colspan="1" style="text-align: center;">Список отделов пуст</td>
+                    </c:if>
+                    <c:forEach var="depart" items="${departList}">
+                        <tr>
+                            <td><a href='<c:url value="/admin/depart_data?id=${depart.id}"/>'>${depart.name}</a></td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>

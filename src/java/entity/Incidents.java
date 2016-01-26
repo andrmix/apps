@@ -40,10 +40,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findAll", query = "SELECT i FROM Incidents i"),
     @NamedQuery(name = "Incidents.findById", query = "SELECT i FROM Incidents i WHERE i.id = :id"),
     @NamedQuery(name = "Incidents.findByDateIncident", query = "SELECT i FROM Incidents i WHERE i.dateIncident = :dateIncident"),
+    @NamedQuery(name = "Incidents.findByTimeIncident", query = "SELECT i FROM Incidents i WHERE i.timeIncident = :timeIncident"),
     @NamedQuery(name = "Incidents.findByTitle", query = "SELECT i FROM Incidents i WHERE i.title = :title"),
     @NamedQuery(name = "Incidents.findByText", query = "SELECT i FROM Incidents i WHERE i.text = :text"),
     @NamedQuery(name = "Incidents.findByDecision", query = "SELECT i FROM Incidents i WHERE i.decision = :decision"),
     @NamedQuery(name = "Incidents.findByDateDone", query = "SELECT i FROM Incidents i WHERE i.dateDone = :dateDone"),
+    @NamedQuery(name = "Incidents.findByTimeDone", query = "SELECT i FROM Incidents i WHERE i.timeDone = :timeDone"),
     @NamedQuery(name = "Incidents.findByUser", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user"),
     @NamedQuery(name = "Incidents.findByUser1Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status = :status"),
     @NamedQuery(name = "Incidents.findByUser3Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3)"),
@@ -70,7 +72,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findAllocatedOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 ORDER BY i.status"),
     @NamedQuery(name = "Incidents.findAllocatedOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 ORDER BY i.zayavitel"),
     @NamedQuery(name = "Incidents.findAllocatedOrderSpec", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 ORDER BY i.specialist"),
-    @NamedQuery(name = "Incidents.findByDateClose", query = "SELECT i FROM Incidents i WHERE i.dateClose = :dateClose")})
+    @NamedQuery(name = "Incidents.findByDateClose", query = "SELECT i FROM Incidents i WHERE i.dateClose = :dateClose"),
+    @NamedQuery(name = "Incidents.findByTimeClose", query = "SELECT i FROM Incidents i WHERE i.timeClose = :timeClose")})
 public class Incidents implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -81,8 +84,13 @@ public class Incidents implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "dateIncident")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateIncident;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "timeIncident")
+    @Temporal(TemporalType.TIME)
+    private Date timeIncident;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -97,11 +105,19 @@ public class Incidents implements Serializable {
     @Column(name = "decision")
     private String decision;
     @Column(name = "dateDone")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateDone;
+    @Column(name = "timeDone")
+    @Temporal(TemporalType.TIME)
+    private Date timeDone;
     @Column(name = "dateClose")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateClose;
+    @Column(name = "timeClose")
+    @Temporal(TemporalType.TIME)
+    private Date timeClose;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "incident")
+    private Collection<Comments> commentsCollection;
     @JoinColumn(name = "status", referencedColumnName = "id")
     @ManyToOne
     private Statuses status;
@@ -116,8 +132,6 @@ public class Incidents implements Serializable {
     private Users specialist;
     @OneToMany(mappedBy = "incident")
     private Collection<Acts> actsCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "incident")
-    private Collection<Comments> commentsCollection;
 
     public Incidents() {
     }
@@ -126,9 +140,10 @@ public class Incidents implements Serializable {
         this.id = id;
     }
 
-    public Incidents(Integer id, Date dateIncident, String title, String text) {
+    public Incidents(Integer id, Date dateIncident, Date timeIncident, String title, String text) {
         this.id = id;
         this.dateIncident = dateIncident;
+        this.timeIncident = timeIncident;
         this.title = title;
         this.text = text;
     }
@@ -143,7 +158,7 @@ public class Incidents implements Serializable {
 
     public String getDateIncident() {
         try {
-            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(this.dateIncident);
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateIncident);
         } catch (NullPointerException e) {
             return "Дата не определена";
         }
@@ -151,6 +166,18 @@ public class Incidents implements Serializable {
 
     public void setDateIncident(Date dateIncident) {
         this.dateIncident = dateIncident;
+    }
+
+    public String getTimeIncident() {
+        try {
+            return new SimpleDateFormat("HH:mm:ss").format(this.timeIncident);
+        } catch (NullPointerException e) {
+            return "Время не определено";
+        }
+    }
+
+    public void setTimeIncident(Date timeIncident) {
+        this.timeIncident = timeIncident;
     }
 
     public String getTitle() {
@@ -179,7 +206,7 @@ public class Incidents implements Serializable {
 
     public String getDateDone() {
         try {
-            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(this.dateDone);
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateDone);
         } catch (NullPointerException e) {
             return "Дата не определена";
         }
@@ -189,9 +216,21 @@ public class Incidents implements Serializable {
         this.dateDone = dateDone;
     }
 
+    public String getTimeDone() {
+        try {
+            return new SimpleDateFormat("HH:mm:ss").format(this.timeDone);
+        } catch (NullPointerException e) {
+            return "Время не определено";
+        }
+    }
+
+    public void setTimeDone(Date timeDone) {
+        this.timeDone = timeDone;
+    }
+
     public String getDateClose() {
         try {
-            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(this.dateClose);
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateClose);
         } catch (NullPointerException e) {
             return "Дата не определена";
         }
@@ -199,6 +238,27 @@ public class Incidents implements Serializable {
 
     public void setDateClose(Date dateClose) {
         this.dateClose = dateClose;
+    }
+
+    public String getTimeClose() {
+        try {
+            return new SimpleDateFormat("HH:mm:ss").format(this.timeClose);
+        } catch (NullPointerException e) {
+            return "Время не определено";
+        }
+    }
+
+    public void setTimeClose(Date timeClose) {
+        this.timeClose = timeClose;
+    }
+
+    @XmlTransient
+    public Collection<Comments> getCommentsCollection() {
+        return commentsCollection;
+    }
+
+    public void setCommentsCollection(Collection<Comments> commentsCollection) {
+        this.commentsCollection = commentsCollection;
     }
 
     public Statuses getStatus() {
@@ -266,14 +326,5 @@ public class Incidents implements Serializable {
     public String toString() {
         return "entity.Incidents[ id=" + id + " ]";
     }
-
-    @XmlTransient
-    public Collection<Comments> getCommentsCollection() {
-        return commentsCollection;
-    }
-
-    public void setCommentsCollection(Collection<Comments> commentsCollection) {
-        this.commentsCollection = commentsCollection;
-    }
-
+    
 }

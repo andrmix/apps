@@ -18,10 +18,10 @@
         </div>
         <div id="sidebar">
             <p><a href='<c:url value="/manager"/>'>Нераспределенные обращения
-                        <c:if test="${unallocatedIncidents.size() gt 0}">
-                            <span class="count">${unallocatedIncidents.size()}</span>
-                        </c:if>
-                    </a></p>
+                    <c:if test="${unallocatedIncidents.size() gt 0}">
+                        <span class="count">${unallocatedIncidents.size()}</span>
+                    </c:if>
+                </a></p>
             <p><a href='<c:url value="/manager/allocated"/>'><span class="videl">Распределенные обращения
                         <c:if test="${allocatedIncidents.size() gt 0}">
                             <span class="videlc">${allocatedIncidents.size()}</span>
@@ -40,21 +40,26 @@
                     <tr>
                         <th><a href='<c:url value="/sort_by_name_allo"/>'>Заголовок инцидента</a></th>
                         <th><a href='<c:url value="/sort_by_date_allo"/>'>Дата</a></th>
+                        <th>Время</th>
                         <th><a href='<c:url value="/sort_by_status_allo"/>'>Статус</a></th>
                         <th><a href='<c:url value="/sort_by_zay_allo"/>'>Заявитель</a></th>
                         <th><a href='<c:url value="/sort_by_spec_allo"/>'>Специалист</a></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="incident" items="${allocatedIncidents}">
-                        <tr>
-                            <td><a href='<c:url value="/manager/incident_data?id=${incident.id}&un=no"/>'>${incident.title}</a></td>
-                            <td>${incident.dateIncident}</td>
-                            <td>${incident.status.name}</td>
-                            <td>${incident.zayavitel.name}</td>
-                            <td>${incident.specialist.name}</td>
-                        </tr>
-                    </c:forEach>
+                    <c:if test="${allocatedIncidents.isEmpty()}">
+                    <td colspan="6" style="text-align: center;">Распределенных инцидентов нет</td>
+                </c:if>
+                <c:forEach var="incident" items="${allocatedIncidents}">
+                    <tr>
+                        <td><a href='<c:url value="/manager/incident_data?id=${incident.id}&un=no"/>'>${incident.title}</a></td>
+                        <td>${incident.dateIncident}</td>
+                        <td>${incident.timeIncident}</td>
+                        <td>${incident.status.name}</td>
+                        <td>${incident.zayavitel.name}</td>
+                        <td>${incident.specialist.name}</td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>

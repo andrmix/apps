@@ -37,7 +37,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Comments.findById", query = "SELECT c FROM Comments c WHERE c.id = :id"),
     @NamedQuery(name = "Comments.findByText", query = "SELECT c FROM Comments c WHERE c.text = :text"),
     @NamedQuery(name = "Comments.findByIncident", query = "SELECT c FROM Comments c WHERE c.incident = :incident"),
-    @NamedQuery(name = "Comments.findByDateComment", query = "SELECT c FROM Comments c WHERE c.dateComment = :dateComment")})
+    @NamedQuery(name = "Comments.findByDateComment", query = "SELECT c FROM Comments c WHERE c.dateComment = :dateComment"),
+    @NamedQuery(name = "Comments.findByTimeComment", query = "SELECT c FROM Comments c WHERE c.timeComment = :timeComment")})
 public class Comments implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -53,8 +54,13 @@ public class Comments implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "dateComment")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateComment;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "timeComment")
+    @Temporal(TemporalType.TIME)
+    private Date timeComment;
     @JoinColumn(name = "incident", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Incidents incident;
@@ -69,10 +75,11 @@ public class Comments implements Serializable {
         this.id = id;
     }
 
-    public Comments(Integer id, String text, Date dateComment) {
+    public Comments(Integer id, String text, Date dateComment, Date timeComment) {
         this.id = id;
         this.text = text;
         this.dateComment = dateComment;
+        this.timeComment = timeComment;
     }
 
     public Integer getId() {
@@ -93,7 +100,7 @@ public class Comments implements Serializable {
 
     public String getDateComment() {
         try {
-            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(this.dateComment);
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateComment);
         } catch (NullPointerException e) {
             return "Дата не определена";
         }
@@ -101,6 +108,18 @@ public class Comments implements Serializable {
 
     public void setDateComment(Date dateComment) {
         this.dateComment = dateComment;
+    }
+
+    public String getTimeComment() {
+        try {
+            return new SimpleDateFormat("HH:mm:ss").format(this.timeComment);
+        } catch (NullPointerException e) {
+            return "Время не определено";
+        }
+    }
+
+    public void setTimeComment(Date timeComment) {
+        this.timeComment = timeComment;
     }
 
     public Incidents getIncident() {

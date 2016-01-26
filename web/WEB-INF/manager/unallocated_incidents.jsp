@@ -40,15 +40,20 @@
                     <tr>
                         <th><a href='<c:url value="/sort_by_name_un"/>'>Заголовок инцидента</a></th>
                         <th><a href='<c:url value="/sort_by_date_un"/>'>Дата</a></th>
+                        <th>Время</th>
                         <th><a href='<c:url value="/sort_by_status_un"/>'>Статус</a></th>
                         <th><a href='<c:url value="/sort_by_zay_un"/>'>Заявитель</a></th>
                     </tr>
                 </thead>
                 <tbody>
+                    <c:if test="${unallocatedIncidents.isEmpty()}">
+                    <td colspan="6" style="text-align: center;">Нераспределенных инцидентов нет</td>
+                </c:if>
                     <c:forEach var="incident" items="${unallocatedIncidents}">
                         <tr>
                             <td><a href='<c:url value="/manager/incident_data?id=${incident.id}&un=da"/>'>${incident.title}</a></td>
                             <td>${incident.dateIncident}</td>
+                            <td>${incident.timeIncident}</td>
                             <td>${incident.status.name}</td>
                             <td>${incident.zayavitel.name}</td>
                         </tr>

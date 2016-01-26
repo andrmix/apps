@@ -3,6 +3,7 @@ package controller;
 import entity.Incidents;
 import entity.Users;
 import java.io.IOException;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,7 +21,7 @@ import session.ManagementSystemLocal;
             "/sort_by_name_un", "/sort_by_date_un", "/sort_by_status_un",
             "/sort_by_zay_un", "/sort_by_name_allo", "/sort_by_date_allo",
             "/sort_by_status_allo", "/sort_by_zay_allo", "/sort_by_spec_allo",
-            "/manager/specialists"})
+            "/manager/specialists", "/manager/specialist_data"})
 public class manager_controller extends HttpServlet {
 
     @EJB(name = "ManagementSystem")
@@ -81,13 +82,24 @@ public class manager_controller extends HttpServlet {
         }
         
         if ("/sort_by_fio_spec".equals(request.getServletPath())) {
-            getServletContext().setAttribute("specialistList", ms.getSpecialists("name"));
+            getServletContext().setAttribute("specialistList", ms.getSpecialistsStatistics());
             request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
         }
 
         if ("/manager/specialists".equals(request.getServletPath())) {
-            getServletContext().setAttribute("specialistList", ms.getSpecialists("none"));
+            getServletContext().setAttribute("specialistList", ms.getSpecialistsStatistics());
             request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
+        }
+        
+        if ("/manager/specialist_data".equals(request.getServletPath())) {
+            Users specialist = ms.findUser(request.getParameter("id"));
+            List stats = ms.getOneSpecialistsStatistics(specialist.getLogin());
+            request.setAttribute("statList", stats);
+            List statsYear1 = ms.getYearStatistic("2016", specialist.getLogin(), 1);
+            List statsYear2 = ms.getYearStatistic("2016", specialist.getLogin(), 7);
+            request.setAttribute("statYearList1", statsYear1);
+            request.setAttribute("statYearList2", statsYear2);
+            request.getRequestDispatcher("/WEB-INF/manager/specialist_data.jsp").forward(request, response);
         }
 
         if ("/manager/incident_data".equals(request.getServletPath())) {
