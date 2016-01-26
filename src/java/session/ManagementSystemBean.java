@@ -12,10 +12,12 @@ import entity.Incidents;
 import entity.Statuses;
 import entity.Typeincident;
 import entity.Users;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Resource;
+import javax.ejb.EJBException;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -244,7 +246,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
                 q = em.createNamedQuery("Users.findByDepartOrderName");
                 break;
         }
-        Departs depart = findDepart(4);
+        Departs depart = findDepart(3);
         q.setParameter("depart", depart);
         List resultList = q.getResultList();
         return resultList;
@@ -345,6 +347,163 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         return resultList;
     }
 
+    @Override
+    public List getSpecialistsStatistics() {
+        Query q = em.createNativeQuery("SELECT u.name, "
+                + "tab_act_on_today.cnt AS cnt_act_on_today, "
+                + "tab_act_today.cnt AS cnt_act_today, "
+                + "tab_end_today.cnt AS cnt_end_today, "
+                + "tab_end_month.cnt AS cnt_end_month, "
+                + "tab_end_all.cnt AS cnt_end_all, "
+                + "u.login "
+                + "FROM users AS u "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 5 OR i.status = 3 OR i.status = 6) "
+                + "AND i.specialist IS NOT NULL "
+                + "GROUP BY i.specialist"
+                + ") AS tab_act_on_today ON u.login = tab_act_on_today.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 5 OR i.status = 3 OR i.status = 6) "
+                + "AND i.specialist IS NOT NULL "
+                + "AND i.dateIncident = CURDATE() "
+                + "GROUP BY i.specialist"
+                + ") AS tab_act_today ON u.login = tab_act_today.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 4) "
+                + "AND i.specialist IS NOT NULL "
+                + "AND i.dateIncident = CURDATE() "
+                + "GROUP BY i.specialist"
+                + ") AS tab_end_today ON u.login = tab_end_today.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 4) "
+                + "AND i.specialist IS NOT NULL "
+                + "AND (i.dateIncident <= CURDATE() AND i.dateIncident >= DATE(ADDDATE(NOW(), INTERVAL -(DAY(CURDATE()-1)) DAY))) "
+                + "GROUP BY i.specialist"
+                + ") AS tab_end_month ON u.login = tab_end_month.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 4) "
+                + "AND i.specialist IS NOT NULL "
+                + "GROUP BY i.specialist"
+                + ") AS tab_end_all ON u.login = tab_end_all.spec "
+                + "WHERE u.depart = 3 "
+                + "GROUP BY u.name;");
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List getOneSpecialistsStatistics(String specialist) {
+        Query q = em.createNativeQuery("SELECT u.name,"
+                + "tab_act_today.cnt AS cnt_act_today,"
+                + "tab_act_on_today.cnt AS cnt_act_on_today,"
+                + "tab_end_today.cnt AS cnt_end_today,"
+                + "tab_end_month.cnt AS cnt_end_month,"
+                + "tab_end_all.cnt AS cnt_end_all,"
+                + "tab_cancel_today.cnt AS cnt_cancel_today,"
+                + "tab_cancel_month.cnt AS cnt_cancel_month,"
+                + "tab_cancel_all.cnt AS cnt_cancel_all,"
+                + "u.login "
+                + "FROM users AS u "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 5 OR i.status = 3 OR i.status = 6) "
+                + "AND i.specialist IS NOT NULL "
+                + "GROUP BY i.specialist"
+                + ") AS tab_act_on_today ON u.login = tab_act_on_today.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 5 OR i.status = 3 OR i.status = 6) "
+                + "AND i.specialist IS NOT NULL "
+                + "AND i.dateIncident = CURDATE() "
+                + "GROUP BY i.specialist"
+                + ") AS tab_act_today ON u.login = tab_act_today.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 4) "
+                + "AND i.specialist IS NOT NULL "
+                + "AND i.dateIncident = CURDATE() "
+                + "GROUP BY i.specialist"
+                + ") AS tab_end_today ON u.login = tab_end_today.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 4) "
+                + "AND i.specialist IS NOT NULL "
+                + "AND (i.dateIncident <= CURDATE() AND i.dateIncident >= DATE(ADDDATE(NOW(), INTERVAL -(DAY(CURDATE()-1)) DAY))) "
+                + "GROUP BY i.specialist"
+                + ") AS tab_end_month ON u.login = tab_end_month.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 4) "
+                + "AND i.specialist IS NOT NULL "
+                + "GROUP BY i.specialist"
+                + ") AS tab_end_all ON u.login = tab_end_all.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 7) "
+                + "AND i.specialist IS NOT NULL "
+                + "AND i.dateIncident = CURDATE() "
+                + "GROUP BY i.specialist"
+                + ") AS tab_cancel_today ON u.login = tab_cancel_today.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 7) "
+                + "AND i.specialist IS NOT NULL "
+                + "AND (i.dateIncident <= CURDATE() AND i.dateIncident >= DATE(ADDDATE(NOW(), INTERVAL -(DAY(CURDATE()-1)) DAY))) "
+                + "GROUP BY i.specialist"
+                + ") AS tab_cancel_month ON u.login = tab_cancel_month.spec "
+                + "LEFT OUTER JOIN ("
+                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE (i.status = 7) "
+                + "AND i.specialist IS NOT NULL "
+                + "GROUP BY i.specialist"
+                + ") AS tab_cancel_all ON u.login = tab_cancel_all.spec "
+                + "WHERE u.login = ? "
+                + "GROUP BY u.name;");
+        q.setParameter(1, specialist);
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List getYearStatistic(String year, String specialist, int period) {
+        List resList = new ArrayList();
+        Query q = em.createNativeQuery("SELECT COUNT(i.specialist) AS cnt "
+                + "FROM incidents AS i "
+                + "WHERE i.specialist IS NOT NULL AND i.specialist = ? "
+                + "AND i.status = 4 AND year(i.dateIncident) = ? "
+                + "AND month(i.dateIncident) = ? "
+                + "GROUP BY i.specialist;");
+        q.setParameter(1, specialist);
+        q.setParameter(2, year);
+        for (int i = period; i < period + 6; i++) {
+            q.setParameter(3, Integer.toString(i));
+            if (!q.getResultList().isEmpty()) {
+                resList.add(q.getResultList().get(0));
+            } else {
+                resList.add("0");
+            }
+        }
+        return resList;
+    }
+
     /* add добавление =================================================================================================*/
     @Override
     public void addIncident(String title, String text, Users zayavitel,
@@ -356,6 +515,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             incident = findIncident(id);
         }
         incident.setDateIncident(new Date());
+        incident.setTimeIncident(new Date());
         Statuses status = em.find(Statuses.class, 1);
         incident.setStatus(status);
         incident.setTitle(title);
@@ -454,6 +614,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         Comments comment = new Comments();
         comment.setText(text);
         comment.setDateComment(new Date());
+        comment.setTimeComment(new Date());
         comment.setUsersLogin(commentator);
         comment.setIncident(incident);
         em.persist(comment);
@@ -512,13 +673,14 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public void cancelIncident(Incidents incident, String textp, String tstatus, Users user, boolean it) {
         Statuses status = null;
-        if (tstatus.equals("1") || tstatus.equals("6")) {
+        if (tstatus.equals("1") || tstatus.equals("6") || tstatus.equals("5")) {
             if (it) {
                 status = em.find(Statuses.class, 7);
             } else {
                 status = em.find(Statuses.class, 2);
             }
             incident.setDateClose(new Date());
+            incident.setTimeClose(new Date());
             incident.setDecision(textp);
         }
         if (tstatus.equals("3")) {
@@ -538,6 +700,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public void doneIncident(Incidents incident, String decision) {
         incident.setDateDone(new Date());
+        incident.setTimeDone(new Date());
         incident.setStatus(getStatuses().get(2));
         incident.setDecision(decision);
         em.merge(incident);
@@ -547,6 +710,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     public void acceptIncident(Incidents incident) {
         incident.setStatus(getStatuses().get(3));
         incident.setDateClose(new Date());
+        incident.setTimeClose(new Date());
         em.merge(incident);
     }
 }
