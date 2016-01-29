@@ -18,15 +18,11 @@
         </div>
         <div id="sidebar">
             <p><a href='<c:url value="/manager"/>'><span class="videl">Нераспределенные обращения
-                        <c:if test="${unallocatedIncidents.size() gt 0}">
-                            <span class="videlc">${unallocatedIncidents.size()}</span>
+                        <c:if test="${unallocatedIncidentsNew.size() gt 0}">
+                            <span class="videlc">${unallocatedIncidentsNew.size()}</span>
                         </c:if>
                     </span></a></p>
-            <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения
-                        <c:if test="${allocatedIncidents.size() gt 0}">
-                            <span class="count">${allocatedIncidents.size()}</span>
-                        </c:if>
-                    </a></p>
+            <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения</a></p>
             <p><a href='<c:url value="/manager/specialists"/>'>Специалисты</a></p>
             <p><a href='<c:url value="/manager/done_incidents"/>'>На согласование
                     <c:if test="${doneIncidents.size() gt 0}">
@@ -49,15 +45,22 @@
                     <c:if test="${unallocatedIncidents.isEmpty()}">
                     <td colspan="6" style="text-align: center;">Нераспределенных инцидентов нет</td>
                 </c:if>
-                    <c:forEach var="incident" items="${unallocatedIncidents}">
-                        <tr>
-                            <td><a href='<c:url value="/manager/incident_data?id=${incident.id}&un=da"/>'>${incident.title}</a></td>
-                            <td>${incident.dateIncident}</td>
-                            <td>${incident.timeIncident}</td>
-                            <td>${incident.status.name}</td>
-                            <td>${incident.zayavitel.name}</td>
-                        </tr>
-                    </c:forEach>
+                <c:forEach var="incident" items="${unallocatedIncidents}">
+                    <c:choose>
+                        <c:when test="${incident.new1 == 1}">
+                            <tr class="vyd">
+                            </c:when>
+                            <c:otherwise>
+                            <tr> 
+                            </c:otherwise>
+                        </c:choose>
+                        <td><a href='<c:url value="/manager/incident_data?id=${incident.id}&un=da"/>'>${incident.title}</a></td>
+                        <td>${incident.dateIncident}</td>
+                        <td>${incident.timeIncident}</td>
+                        <td>${incident.status.name}</td>
+                        <td>${incident.zayavitel.name}</td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>

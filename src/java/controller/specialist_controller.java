@@ -38,6 +38,7 @@ public class specialist_controller extends HttpServlet {
         Users specialist = ms.findUser(request.getUserPrincipal().getName());
         request.setAttribute("user", specialist);
         getServletContext().setAttribute("openIncidents", ms.getSpecialistOpenIncidents(specialist));
+        getServletContext().setAttribute("openIncidentsNew", ms.getSpecialistOpenIncidentsNew(specialist));
         getServletContext().setAttribute("doneIncidents", ms.getSpecialistDoneIncidents(specialist));
         getServletContext().setAttribute("closedIncidents", ms.getSpecialistClosedIncidents(specialist));
 
@@ -52,6 +53,10 @@ public class specialist_controller extends HttpServlet {
             request.setAttribute("otmena", 0);
             String answer = null;
             answer = checkAction(request);
+            
+            if (incident.getNew1().equals(1) && (incident.getStatus().getId().equals(6) || incident.getStatus().getId().equals(5))) {
+                ms.setNotNewIncident(incident);
+            }
 
             //В работу
             if (answer.equals("InWork")) {

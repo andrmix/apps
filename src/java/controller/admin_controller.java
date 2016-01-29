@@ -22,7 +22,7 @@ import session.ManagementSystemLocal;
 
 /**
  *
- * @author admin
+ * @author andrmix
  */
 @WebServlet(name = "admin_controller",
         urlPatterns = {"/admin",

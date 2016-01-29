@@ -18,20 +18,12 @@
         </div>
         <div id="sidebar">
             <p><a href='<c:url value="/specialist"/>'><span class="videl">Активные обращения 
-                        <c:if test="${openIncidents.size() gt 0}">
-                            <span class="videlc">${openIncidents.size()}</span>
+                        <c:if test="${openIncidentsNew.size() gt 0}">
+                            <span class="videlc">${openIncidentsNew.size()}</span>
                         </c:if>
                     </span></a></p>
-            <p><a href='<c:url value="/specialist/spec_done_incidents"/>'>Выполненные обращения 
-                    <c:if test="${doneIncidents.size() gt 0}">
-                        <span class="count">${doneIncidents.size()}</span>
-                    </c:if>
-                </a></p>
-            <p><a href='<c:url value="/specialist/spec_closed_incidents"/>'>Закрытые обращения
-                    <c:if test="${closedIncidents.size() gt 0}">
-                        <span class="count">${closedIncidents.size()}</span>
-                    </c:if>
-                </a></p>
+            <p><a href='<c:url value="/specialist/spec_done_incidents"/>'>Выполненные обращения</a></p>
+            <p><a href='<c:url value="/specialist/spec_closed_incidents"/>'>Закрытые обращения</a></p>
             <p><a href='<c:url value="/specialist/statistic"/>'>Статистика</a></p>
         </div>
         <div id="content">
@@ -50,7 +42,14 @@
                     <td colspan="5" style="text-align: center;">Активных инцидентов нет</td>
                 </c:if>
                 <c:forEach var="incident" items="${openIncidents}">
-                    <tr>
+                    <c:choose>
+                        <c:when test="${incident.new1 == 1}">
+                            <tr class="vyd">
+                            </c:when>
+                            <c:otherwise>
+                            <tr> 
+                            </c:otherwise>
+                        </c:choose>
                         <td><a href='<c:url value="/specialist/spec_incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
                         <td>${incident.dateIncident}</td>
                         <td>${incident.timeIncident}</td>

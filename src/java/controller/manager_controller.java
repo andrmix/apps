@@ -33,6 +33,7 @@ public class manager_controller extends HttpServlet {
         Users manager = ms.findUser(request.getUserPrincipal().getName());
         request.setAttribute("user", manager);
         getServletContext().setAttribute("unallocatedIncidents", ms.getUnallocatedIncidents("none"));
+        getServletContext().setAttribute("unallocatedIncidentsNew", ms.getUnallocatedIncidentsNew());
         getServletContext().setAttribute("allocatedIncidents", ms.getAllocatedIncidents("none"));
 
         if ("/sort_by_name_un".equals(request.getServletPath())) {
@@ -80,7 +81,7 @@ public class manager_controller extends HttpServlet {
         if ("/manager/allocated".equals(request.getServletPath())) {
             request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
         }
-        
+
         if ("/sort_by_fio_spec".equals(request.getServletPath())) {
             getServletContext().setAttribute("specialistList", ms.getSpecialistsStatistics());
             request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
@@ -90,7 +91,7 @@ public class manager_controller extends HttpServlet {
             getServletContext().setAttribute("specialistList", ms.getSpecialistsStatistics());
             request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
         }
-        
+
         if ("/manager/specialist_data".equals(request.getServletPath())) {
             Users specialist = ms.findUser(request.getParameter("id"));
             List stats = ms.getOneSpecialistsStatistics(specialist.getLogin());
@@ -104,6 +105,9 @@ public class manager_controller extends HttpServlet {
 
         if ("/manager/incident_data".equals(request.getServletPath())) {
             Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
+            if (incident.getNew1().equals(1)  && incident.getStatus().getId().equals(1)) {
+                ms.setNotNewIncident(incident);
+            }
             String un = request.getParameter("un");
             request.setAttribute("incident", incident);
             request.setAttribute("un", un);

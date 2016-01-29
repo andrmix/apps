@@ -4,6 +4,9 @@
         "border": {
             "context": "frameset"
         },
+        "size": {
+            "context": "input"
+        },
         "cols": {
             "context": "frameset"
         },

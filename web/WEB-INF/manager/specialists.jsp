@@ -20,15 +20,11 @@
             </div>
             <div id="sidebar">
                 <p><a href='<c:url value="/manager"/>'>Нераспределенные обращения
-                        <c:if test="${unallocatedIncidents.size() gt 0}">
-                            <span class="count">${unallocatedIncidents.size()}</span>
+                        <c:if test="${unallocatedIncidentsNew.size() gt 0}">
+                            <span class="count">${unallocatedIncidentsNew.size()}</span>
                         </c:if>
                     </a></p>
-                <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения
-                        <c:if test="${allocatedIncidents.size() gt 0}">
-                            <span class="count">${allocatedIncidents.size()}</span>
-                        </c:if>
-                    </a></p>
+                <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения</a></p>
                 <p><a href='<c:url value="/manager/specialists"/>'><span class="videl">Специалисты</span></a></p>
                 <p><a href='<c:url value="/manager/done_incidents"/>'>На согласование
                         <c:if test="${doneIncidents.size() gt 0}">

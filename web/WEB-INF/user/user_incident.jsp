@@ -96,6 +96,17 @@
                                     <td>${incident.timeClose}</td>
                                 </tr>
                             </c:if>
+                            <tr>
+                                <td>Вложение</td>
+                                <c:choose>
+                                    <c:when test="${incident.attachment ne null}">
+                                        <td><img src='<c:url value="/screens/${incident.attachment}"/>' tabindex="0"></td>
+                                        </c:when>
+                                        <c:otherwise>
+                                        <td>Нет</td>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tr>
                         </tbody>
                     </table>
                     <c:choose>
@@ -139,12 +150,12 @@
                                     </c:forEach>
                             </table>
                             <c:if test="${incident.status.id == 5}">
-                            <table class="commgo">
-                                <tr>
-                                    <td style="width: 70%"><textarea placeholder="Комментировать..." name="textcomm" class="commEdit"/></textarea></td>
-                                    <td style="width: 30%"><input type="submit" value="Отправить" name="bCommGo" class="ibuttcomm"/></td>
-                                </tr>
-                            </table>
+                                <table class="commgo">
+                                    <tr>
+                                        <td style="width: 70%"><textarea placeholder="Комментировать..." name="textcomm" class="commEdit"/></textarea></td>
+                                        <td style="width: 30%"><input type="submit" value="Отправить" name="bCommGo" class="ibuttcomm"/></td>
+                                    </tr>
+                                </table>
                             </c:if>
                             <input type="submit" value="Скрыть комментарии" name="bCommOff" class="plashka"/>
                         </c:when>

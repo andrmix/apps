@@ -44,7 +44,9 @@ public class user_controller extends HttpServlet {
             Users user = ms.findUser(request.getUserPrincipal().getName());
             request.setAttribute("user", user);
             getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "none"));
+            getServletContext().setAttribute("openIncidentsNew", ms.getOpenIncidentsNew(user));
             getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "none"));
+            getServletContext().setAttribute("closedIncidentsNew", ms.getClosedIncidentsNew(user));
             request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
         } else if (request.isUserInRole("admin")) {
             response.sendRedirect("admin");

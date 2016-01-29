@@ -44,10 +44,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findByTitle", query = "SELECT i FROM Incidents i WHERE i.title = :title"),
     @NamedQuery(name = "Incidents.findByText", query = "SELECT i FROM Incidents i WHERE i.text = :text"),
     @NamedQuery(name = "Incidents.findByDecision", query = "SELECT i FROM Incidents i WHERE i.decision = :decision"),
+    @NamedQuery(name = "Incidents.findByDateInWork", query = "SELECT i FROM Incidents i WHERE i.dateInWork = :dateInWork"),
+    @NamedQuery(name = "Incidents.findByTimeInWork", query = "SELECT i FROM Incidents i WHERE i.timeInWork = :timeInWork"),
     @NamedQuery(name = "Incidents.findByDateDone", query = "SELECT i FROM Incidents i WHERE i.dateDone = :dateDone"),
     @NamedQuery(name = "Incidents.findByTimeDone", query = "SELECT i FROM Incidents i WHERE i.timeDone = :timeDone"),
     @NamedQuery(name = "Incidents.findByUser", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user"),
     @NamedQuery(name = "Incidents.findByUser1Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status = :status"),
+    @NamedQuery(name = "Incidents.findByUser1StatusNew", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status = :status AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findByUser3Status", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3)"),
     @NamedQuery(name = "Incidents.findByUser3StatusOrderName", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3) ORDER BY i.title"),
     @NamedQuery(name = "Incidents.findByUser3StatusOrderDate", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3) ORDER BY i.dateIncident"),
@@ -60,8 +63,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findByUser4StatusOrderSpec", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3 OR i.status = :status4) ORDER BY i.specialist"),
     @NamedQuery(name = "Incidents.findBySpecialist1Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status"),
     @NamedQuery(name = "Incidents.findBySpecialist2Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2)"),
+    @NamedQuery(name = "Incidents.findBySpecialist2StatusNew", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findBySpecialist3Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3)"),
     @NamedQuery(name = "Incidents.findUnallocated", query = "SELECT i FROM Incidents i WHERE i.status = :status"),
+    @NamedQuery(name = "Incidents.findUnallocatedNew", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.title"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.dateIncident"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.status"),
@@ -73,7 +78,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findAllocatedOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 ORDER BY i.zayavitel"),
     @NamedQuery(name = "Incidents.findAllocatedOrderSpec", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 ORDER BY i.specialist"),
     @NamedQuery(name = "Incidents.findByDateClose", query = "SELECT i FROM Incidents i WHERE i.dateClose = :dateClose"),
-    @NamedQuery(name = "Incidents.findByTimeClose", query = "SELECT i FROM Incidents i WHERE i.timeClose = :timeClose")})
+    @NamedQuery(name = "Incidents.findByTimeClose", query = "SELECT i FROM Incidents i WHERE i.timeClose = :timeClose"),
+    @NamedQuery(name = "Incidents.findByRevisionCount", query = "SELECT i FROM Incidents i WHERE i.revisionCount = :revisionCount"),
+    @NamedQuery(name = "Incidents.findByNew1", query = "SELECT i FROM Incidents i WHERE i.new1 = :new1"),
+    @NamedQuery(name = "Incidents.findByAttachment", query = "SELECT i FROM Incidents i WHERE i.attachment = :attachment")})
 public class Incidents implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -104,6 +112,12 @@ public class Incidents implements Serializable {
     @Size(max = 255)
     @Column(name = "decision")
     private String decision;
+    @Column(name = "dateInWork")
+    @Temporal(TemporalType.DATE)
+    private Date dateInWork;
+    @Column(name = "timeInWork")
+    @Temporal(TemporalType.TIME)
+    private Date timeInWork;
     @Column(name = "dateDone")
     @Temporal(TemporalType.DATE)
     private Date dateDone;
@@ -116,6 +130,13 @@ public class Incidents implements Serializable {
     @Column(name = "timeClose")
     @Temporal(TemporalType.TIME)
     private Date timeClose;
+    @Column(name = "revisionCount")
+    private Integer revisionCount;
+    @Column(name = "new")
+    private Integer new1;
+    @Size(max = 255)
+    @Column(name = "attachment")
+    private String attachment;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "incident")
     private Collection<Comments> commentsCollection;
     @JoinColumn(name = "status", referencedColumnName = "id")
@@ -204,6 +225,30 @@ public class Incidents implements Serializable {
         this.decision = decision;
     }
 
+    public String getDateInWork() {
+        try {
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateInWork);
+        } catch (NullPointerException e) {
+            return "Дата не определена";
+        }
+    }
+
+    public void setDateInWork(Date dateInWork) {
+        this.dateInWork = dateInWork;
+    }
+
+    public String getTimeInWork() {
+        try {
+            return new SimpleDateFormat("HH:mm:ss").format(this.timeInWork);
+        } catch (NullPointerException e) {
+            return "Время не определено";
+        }
+    }
+
+    public void setTimeInWork(Date timeInWork) {
+        this.timeInWork = timeInWork;
+    }
+
     public String getDateDone() {
         try {
             return new SimpleDateFormat("dd.MM.yyyy").format(this.dateDone);
@@ -250,6 +295,30 @@ public class Incidents implements Serializable {
 
     public void setTimeClose(Date timeClose) {
         this.timeClose = timeClose;
+    }
+
+    public Integer getRevisionCount() {
+        return revisionCount;
+    }
+
+    public void setRevisionCount(Integer revisionCount) {
+        this.revisionCount = revisionCount;
+    }
+
+    public Integer getNew1() {
+        return new1;
+    }
+
+    public void setNew1(Integer new1) {
+        this.new1 = new1;
+    }
+
+    public String getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(String attachment) {
+        this.attachment = attachment;
     }
 
     @XmlTransient

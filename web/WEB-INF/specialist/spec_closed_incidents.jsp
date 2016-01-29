@@ -18,19 +18,12 @@
         </div>
         <div id="sidebar">
             <p><a href='<c:url value="/specialist"/>'>Активные обращения 
-                    <c:if test="${openIncidents.size() gt 0}">
-                        <span class="count">${openIncidents.size()}</span>
+                    <c:if test="${openIncidentsNew.size() gt 0}">
+                        <span class="count">${openIncidentsNew.size()}</span>
                     </c:if>
                 </a></p>
-            <p><a href='<c:url value="/specialist/spec_done_incidents"/>'>Выполненные обращения 
-                    <c:if test="${doneIncidents.size() gt 0}">
-                        <span class="count">${doneIncidents.size()}</span>
-                    </c:if>
-                </a></p>
+            <p><a href='<c:url value="/specialist/spec_done_incidents"/>'>Выполненные обращения</a></p>
             <p><a href='<c:url value="/specialist/spec_closed_incidents"/>'><span class="videl">Закрытые обращения
-                        <c:if test="${closedIncidents.size() gt 0}">
-                            <span class="videlc">${closedIncidents.size()}</span>
-                        </c:if>
                     </span></a></p>
             <p><a href='<c:url value="/specialist/statistic"/>'>Статистика</a></p>
         </div>

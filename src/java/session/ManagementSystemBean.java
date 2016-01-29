@@ -90,6 +90,17 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     }
 
     @Override
+    public List<Incidents> getClosedIncidentsNew(Users user) {
+        List statuses = getStatuses();
+        Query q = null;
+        q = em.createNamedQuery("Incidents.findByUser1StatusNew");
+        q.setParameter("user", user);
+        q.setParameter("status", statuses.get(6));//7
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
     public List<Incidents> getOpenIncidents(Users user, String sort) {
         List statuses = getStatuses();
         Query q = null;
@@ -115,6 +126,17 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         q.setParameter("status2", statuses.get(0));
         q.setParameter("status3", statuses.get(5));
         q.setParameter("status4", statuses.get(2));
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Incidents> getOpenIncidentsNew(Users user) {
+        List statuses = getStatuses();
+        Query q = null;
+        q = em.createNamedQuery("Incidents.findByUser1StatusNew");
+        q.setParameter("user", user);
+        q.setParameter("status", statuses.get(2));//3
         List resultList = q.getResultList();
         return resultList;
     }
@@ -264,6 +286,17 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     }
 
     @Override
+    public List<Incidents> getSpecialistOpenIncidentsNew(Users specialist) {
+        List statuses = getStatuses();
+        Query q = em.createNamedQuery("Incidents.findBySpecialist2StatusNew");
+        q.setParameter("specialist", specialist);
+        q.setParameter("status1", statuses.get(5));//6
+        q.setParameter("status2", statuses.get(4));//5
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
     public List<Incidents> getSpecialistDoneIncidents(Users specialist) {
         List statuses = getStatuses();
         Query q = em.createNamedQuery("Incidents.findBySpecialist1Status");
@@ -341,6 +374,16 @@ public class ManagementSystemBean implements ManagementSystemLocal {
                 q = em.createNamedQuery("Incidents.findUnallocatedOrderZay");
                 break;
         }
+        List statuses = getStatuses();
+        q.setParameter("status", statuses.get(0));
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Incidents> getUnallocatedIncidentsNew() {
+        Query q = null;
+        q = em.createNamedQuery("Incidents.findUnallocatedNew");
         List statuses = getStatuses();
         q.setParameter("status", statuses.get(0));
         List resultList = q.getResultList();
@@ -507,7 +550,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     /* add добавление =================================================================================================*/
     @Override
     public void addIncident(String title, String text, Users zayavitel,
-            Typeincident ti, boolean addIncident, int id) {
+            Typeincident ti, boolean addIncident, int id, String attachment) {
         Incidents incident;
         if (addIncident) {
             incident = new Incidents();
@@ -522,6 +565,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setText(text);
         incident.setZayavitel(zayavitel);
         incident.setTypeIncident(ti);
+        incident.setAttachment(attachment);
+        incident.setNew1(1);
         if (addIncident) {
             em.persist(incident);
         } else {
@@ -605,7 +650,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public void addSpecialist(Incidents incident, Users specialist) {
         incident.setSpecialist(specialist);
-        incident.setStatus(getStatuses().get(5));
+        incident.setStatus(getStatuses().get(5));//6
+        incident.setNew1(1);
         em.merge(incident);
     }
 
@@ -672,10 +718,12 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     /* actions действия ==============================================================================================*/
     @Override
     public void cancelIncident(Incidents incident, String textp, String tstatus, Users user, boolean it) {
+        int revCount = 0;
         Statuses status = null;
         if (tstatus.equals("1") || tstatus.equals("6") || tstatus.equals("5")) {
             if (it) {
                 status = em.find(Statuses.class, 7);
+                incident.setNew1(1);
             } else {
                 status = em.find(Statuses.class, 2);
             }
@@ -685,6 +733,15 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         }
         if (tstatus.equals("3")) {
             status = em.find(Statuses.class, 5);
+            incident.setDateInWork(new Date());
+            incident.setTimeInWork(new Date());
+            if (incident.getRevisionCount() != null) {
+                revCount = incident.getRevisionCount() + 1;
+            } else {
+                revCount = 1;
+            }
+            incident.setNew1(1);
+            incident.setRevisionCount(revCount);
             addComment(textp, user, incident);
         }
         incident.setStatus(status);
@@ -693,6 +750,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
 
     @Override
     public void inWork(Incidents incident) {
+        incident.setDateInWork(new Date());
+        incident.setTimeInWork(new Date());
         incident.setStatus(getStatuses().get(4));
         em.merge(incident);
     }
@@ -701,8 +760,9 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     public void doneIncident(Incidents incident, String decision) {
         incident.setDateDone(new Date());
         incident.setTimeDone(new Date());
-        incident.setStatus(getStatuses().get(2));
+        incident.setStatus(getStatuses().get(2));//3
         incident.setDecision(decision);
+        incident.setNew1(1);
         em.merge(incident);
     }
 
@@ -711,6 +771,12 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setStatus(getStatuses().get(3));
         incident.setDateClose(new Date());
         incident.setTimeClose(new Date());
+        em.merge(incident);
+    }
+
+    @Override
+    public void setNotNewIncident(Incidents incident) {
+        incident.setNew1(0);
         em.merge(incident);
     }
 }

@@ -13,6 +13,10 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>upload_controller</servlet-name>
+        <servlet-class>controller.upload_controller</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.css</url-pattern>
@@ -24,6 +28,18 @@
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.png</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.jpg</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.jpeg</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>upload_controller</servlet-name>
+        <url-pattern>/user/new_incident_file</url-pattern>
     </servlet-mapping>
     <error-page>
         <error-code>403</error-code>
@@ -110,4 +126,16 @@
         <description/>
         <role-name>specialist</role-name>
     </security-role>
+    <context-param>
+        <param-name>file-upload-linux</param-name>
+        <param-value>
+            /home/and/screens/
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>file-upload-windows</param-name>
+        <param-value>
+            c:\screens\
+        </param-value>
+    </context-param>
 </web-app>
