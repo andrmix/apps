@@ -49,6 +49,8 @@ public class Statuses implements Serializable {
     @OneToMany(mappedBy = "status")
     private Collection<Incidents> incidentsCollection;
     @OneToMany(mappedBy = "status")
+    private Collection<History> historyCollection;
+    @OneToMany(mappedBy = "status")
     private Collection<Acts> actsCollection;
 
     public Statuses() {
@@ -86,6 +88,15 @@ public class Statuses implements Serializable {
 
     public void setIncidentsCollection(Collection<Incidents> incidentsCollection) {
         this.incidentsCollection = incidentsCollection;
+    }
+
+    @XmlTransient
+    public Collection<History> getHistoryCollection() {
+        return historyCollection;
+    }
+
+    public void setHistoryCollection(Collection<History> historyCollection) {
+        this.historyCollection = historyCollection;
     }
 
     @XmlTransient

@@ -9,12 +9,9 @@ import entity.Comments;
 import entity.Incidents;
 import entity.Typeincident;
 import entity.Users;
-import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,7 +35,8 @@ public class incident_controller extends HttpServlet {
         String userPath = request.getServletPath();
         Users user = ms.findUser(request.getUserPrincipal().getName());
         request.setAttribute("user", user);
-
+        
+        //сортировка =================================================================================================
         if ("/sort_by_name".equals(userPath)) {
             getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "name"));
             request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
@@ -71,21 +69,28 @@ public class incident_controller extends HttpServlet {
             getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "spec"));
             request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
         }
-
+        
+        //форма обращения =================================================================================================
         if ("/user/user_incident".equals(userPath)) {
             String answer = null;
             answer = checkAction(request);
             Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
-            if (incident.getNew1().equals(1) && (incident.getStatus().getId().equals(3) || incident.getStatus().getId().equals(7))){
+            if (incident.getNew1().equals(1) && (incident.getStatus().getId().equals(3) || incident.getStatus().getId().equals(7))) {
                 ms.setNotNewIncident(incident);
             }
+            
+            //отмена
             if (answer.equals("Cancel")) {
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
+            
+            //закрыть
             if (answer.equals("Close")) {
                 request.setAttribute("commenta", 1);
             }
+            
+            //редактировать
             if (answer.equals("Edit")) {
                 List<Typeincident> typs = ms.getTypesIncidentsForEdit(incident.getTypeIncident());
                 request.setAttribute("incident", incident);
@@ -93,53 +98,78 @@ public class incident_controller extends HttpServlet {
                 request.setAttribute("editincident", 1);
                 request.getRequestDispatcher("/WEB-INF/user/new_incident.jsp").forward(request, response);
             }
+            
+            //отменить
             if (answer.equals("Done")) {
                 ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), user, false);
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
+            
+            //подтвердить
             if (answer.equals("Accept")) {
-                
+                ms.acceptIncident(incident);
+                response.sendRedirect(request.getContextPath() + "/user");
+                return;
             }
+            
+            //не подтверждать
             if (answer.equals("NoAccept")) {
                 request.setAttribute("commenta", 1);
             }
+            
+            //комментарии открыть
             if (answer.equals("bCommOn")) {
                 request.setAttribute("commento", 1);
             }
+            
+            //комментарии закрыть
             if (answer.equals("bCommOff")) {
                 request.setAttribute("commento", 0);
             }
+            
+            //комментировать
             if (answer.equals("bCommGo")) {
                 request.setAttribute("commento", 1);
                 ms.addComment(request.getParameter("textcomm"), user, incident);
             }
+            
             request.setAttribute("incident", incident);
             List<Comments> comments = ms.getComments(incident);
             request.setAttribute("comments", comments);
         }
 
+        //новое обращения =================================================================================================
         if ("/user/new_incident".equals(userPath)) {
             String answer = null;
             answer = checkAction(request);
+            
+            //отмена
             if (answer.equals("Cancel")) {
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
+            
+            //добавить
             if (answer.equals("Add")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                 ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, true, 0, null);
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
+            
+            //редактировать
             if (answer.equals("Edit")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                 ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, false, Integer.parseInt(request.getParameter("id")), null);
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
+            
+            //добавить вложение
             if (answer.equals("addAttachment")) {
                 List<Typeincident> typs = null;
+                int editInca = 0;
                 if (request.getParameter("typId") != null) {
                     Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                     typs = ms.getTypesIncidentsForEdit(ti);
@@ -149,22 +179,30 @@ public class incident_controller extends HttpServlet {
                     request.setAttribute("editincident", 0);
                 }
                 request.setAttribute("typs", typs);
-                Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
-                request.setAttribute("incident", incident);
-                request.setAttribute("editincidenta", Integer.parseInt(request.getParameter("editInc")));
+                editInca = Integer.parseInt(request.getParameter("editInc"));
+                if (editInca == 1) {
+                    request.setAttribute("id", Integer.parseInt(request.getParameter("id")));
+                }
+                request.setAttribute("title", request.getParameter("title"));
+                request.setAttribute("texti", request.getParameter("texti"));
+                request.setAttribute("editincidenta", editInca);
                 request.getRequestDispatcher("/WEB-INF/user/new_incident_file.jsp").forward(request, response);
             }
+            
             getServletContext().setAttribute("editincident", 0);
             List<Typeincident> typs = ms.getAllTypesIncident("none");
             request.setAttribute("typs", typs);
         }
 
+        //закрытые обращения =================================================================================================
         if ("/user/closed_incidents".equals(userPath)) {
             String answer = null;
             answer = checkAction(request);
-            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "none"));
+            getServletContext().setAttribute("openIncidentsNew", ms.getOpenIncidentsNew(user));
+            getServletContext().setAttribute("closedIncidentsNew", ms.getClosedIncidentsNew(user));
             getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "none"));
         }
+        
         request.getRequestDispatcher("/WEB-INF" + userPath + ".jsp").forward(request, response);
     }
 

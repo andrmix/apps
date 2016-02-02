@@ -42,7 +42,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findAllOrderFio", query = "SELECT u FROM Users u ORDER BY u.name"),
     @NamedQuery(name = "Users.findAllOrderEmail", query = "SELECT u FROM Users u ORDER BY u.email"),
     @NamedQuery(name = "Users.findAllOrderDepart", query = "SELECT u FROM Users u ORDER BY u.depart"),
-    @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email")})
+    @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email"),
+    @NamedQuery(name = "Users.findByChangePassword", query = "SELECT u FROM Users u WHERE u.changePassword = :changePassword")})
 public class Users implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -67,6 +68,8 @@ public class Users implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "email")
     private String email;
+    @Column(name = "changePassword")
+    private Integer changePassword;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin", orphanRemoval = true)
     private Collection<Groupuser> groupuserCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin")
@@ -75,6 +78,8 @@ public class Users implements Serializable {
     private Collection<Incidents> incidentsCollection;
     @OneToMany(mappedBy = "specialist")
     private Collection<Incidents> incidentsCollection1;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "actioner")
+    private Collection<History> historyCollection;
     @JoinColumn(name = "depart", referencedColumnName = "id")
     @ManyToOne
     private Departs depart;
@@ -125,6 +130,14 @@ public class Users implements Serializable {
         this.email = email;
     }
 
+    public Integer getChangePassword() {
+        return changePassword;
+    }
+
+    public void setChangePassword(Integer changePassword) {
+        this.changePassword = changePassword;
+    }
+
     @XmlTransient
     public Collection<Groupuser> getGroupuserCollection() {
         return groupuserCollection;
@@ -159,6 +172,15 @@ public class Users implements Serializable {
 
     public void setIncidentsCollection1(Collection<Incidents> incidentsCollection1) {
         this.incidentsCollection1 = incidentsCollection1;
+    }
+
+    @XmlTransient
+    public Collection<History> getHistoryCollection() {
+        return historyCollection;
+    }
+
+    public void setHistoryCollection(Collection<History> historyCollection) {
+        this.historyCollection = historyCollection;
     }
 
     public Departs getDepart() {

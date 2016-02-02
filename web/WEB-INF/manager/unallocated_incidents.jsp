@@ -17,18 +17,20 @@
             <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Нераспределенные обращения</div></div>
         </div>
         <div id="sidebar">
+            <p><a href='<c:url value="/manager/new_task"/>'>Новое задание</a></p>
             <p><a href='<c:url value="/manager"/>'><span class="videl">Нераспределенные обращения
                         <c:if test="${unallocatedIncidentsNew.size() gt 0}">
                             <span class="videlc">${unallocatedIncidentsNew.size()}</span>
                         </c:if>
                     </span></a></p>
             <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения</a></p>
-            <p><a href='<c:url value="/manager/specialists"/>'>Специалисты</a></p>
-            <p><a href='<c:url value="/manager/done_incidents"/>'>На согласование
-                    <c:if test="${doneIncidents.size() gt 0}">
-                        <span class="count">${doneIncidents.size()}</span>
+            <p><a href='<c:url value="/manager/closed"/>'>Завершенные обращения</a></p>
+            <p><a href='<c:url value="/manager/on_agreement"/>'>На согласование
+                    <c:if test="${agreeIncidentsNew.size() gt 0}">
+                        <span class="count">${agreeIncidentsNew.size()}</span>
                     </c:if>
                 </a></p>
+            <p><a href='<c:url value="/manager/specialists"/>'>Специалисты</a></p>
         </div>
         <div id="content">
             <table class="incidents_tab">
@@ -54,7 +56,7 @@
                             <tr> 
                             </c:otherwise>
                         </c:choose>
-                        <td><a href='<c:url value="/manager/incident_data?id=${incident.id}&un=da"/>'>${incident.title}</a></td>
+                        <td><a href='<c:url value="/manager/incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
                         <td>${incident.dateIncident}</td>
                         <td>${incident.timeIncident}</td>
                         <td>${incident.status.name}</td>

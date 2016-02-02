@@ -31,11 +31,15 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>ID инцидента</td>
+                                <td>ИД обращения</td>
                                 <td>${incident.id}</td>
                             </tr>
                             <tr>
-                                <td>Тип инцидента</td>
+                                <td>Дата и время</td>
+                                <td>${incident.dateIncident} ${incident.timeIncident}</td>
+                            </tr>
+                            <tr>
+                                <td>Тип обращения</td>
                                 <td>${incident.typeIncident.name}</td>
                             </tr>
                             <tr>
@@ -43,57 +47,37 @@
                                 <td>${incident.text}</td>
                             </tr>
                             <tr>
-                                <td>Дата</td>
-                                <td>${incident.dateIncident}</td>
-                            </tr>
-                            <tr>
-                                <td>Время</td>
-                                <td>${incident.timeIncident}</td>
-                            </tr>
-                            <tr>
                                 <td>Статус</td>
                                 <td>${incident.status.name}</td>
                             </tr>
-                            <c:if test="${incident.status.id == 3 || incident.status.id == 4}">
-                                <tr>
-                                    <td>Решение</td>
-                                    <td>${incident.decision}</td>
-                                </tr>
-                                <tr>
-                                    <td>Дата выполнения</td>
-                                    <td>${incident.dateDone}</td>
-                                </tr>
-                                <tr>
-                                    <td>Время выполнения</td>
-                                    <td>${incident.timeDone}</td>
-                                </tr>
-                                <tr>
-                                    <td>Исполнитель</td>
-                                    <td>${incident.specialist.name}</td>
-                                </tr>
-                            </c:if>
-                            <c:if test="${incident.status.id == 4}">
-                                <tr>
-                                    <td>Дата закрытия</td>
-                                    <td>${incident.dateClose}</td>
-                                </tr>
-                                <tr>
-                                    <td>Время закрытия</td>
-                                    <td>${incident.timeClose}</td>
-                                </tr>
-                            </c:if>
+                            <tr>
+                                <td>Исполнитель</td>
+                                <td>${incident.specialist.name}</td>
+                            </tr>
+                            <tr>
+                                <td>Решение</td>
+                                <td>${incident.decision}</td>
+                            </tr>
+                            <tr>
+                                <td>Дата и время выполнения</td>
+                                <td>${incident.dateDone} ${incident.timeDone}</td>
+                            </tr>
+                            <tr>
+                                <td>Количество доработок</td>
+                                <td>${incident.revisionCount}</td>
+                            </tr>
+                            <tr>
+                                <td>Дата и время закрытия</td>
+                                <td>${incident.dateClose} ${incident.timeClose}</td>
+                            </tr>
                             <c:if test="${incident.status.id == 2 || incident.status.id == 7}">
                                 <tr>
-                                    <td>Причина</td>
+                                    <td>Причина отклонения/отмены</td>
                                     <td>${incident.decision}</td>
                                 </tr>
                                 <tr>
-                                    <td>Дата отклонения/отмены</td>
-                                    <td>${incident.dateClose}</td>
-                                </tr>
-                                <tr>
-                                    <td>Время отклонения/отмены</td>
-                                    <td>${incident.timeClose}</td>
+                                    <td>Дата и время отклонения/отмены</td>
+                                    <td>${incident.dateClose} ${incident.timeClose}</td>
                                 </tr>
                             </c:if>
                             <tr>

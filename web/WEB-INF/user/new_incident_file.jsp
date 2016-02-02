@@ -21,7 +21,7 @@
                 <p><a href='<c:url value="/user"/>'>< Назад</a></p>
             </div>
             <div id="content">
-                <input type="hidden" name="id" value="${incident.id}"/>
+                <input type="hidden" name="id" value="${id}"/>
                 <div class="addEdit">
                     <ul>
                         <li>
@@ -35,10 +35,10 @@
                             </select>
                         </li>
                         <li>
-                            <input placeholder="Введите заголовок" type="text" name="title" class="editAddEdit" value="${incident.title}"/>
+                            <input placeholder="Введите заголовок" type="text" name="title" class="editAddEdit" value="${title}"/>
                         </li>
                         <li>
-                            <textarea placeholder="Введите текст инцидента" name="texti" class="editAddArea"/>${incident.text}</textarea>
+                            <textarea placeholder="Введите текст инцидента" name="texti" class="editAddArea"/>${texti}</textarea>
                         </li>
                         <li>
                             <input type="file" name="file"/>

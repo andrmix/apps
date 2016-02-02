@@ -19,18 +19,20 @@
                 <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Сотрудники</div></div>
             </div>
             <div id="sidebar">
+                <p><a href='<c:url value="/manager/new_task"/>'>Новое задание</a></p>
                 <p><a href='<c:url value="/manager"/>'>Нераспределенные обращения
                         <c:if test="${unallocatedIncidentsNew.size() gt 0}">
                             <span class="count">${unallocatedIncidentsNew.size()}</span>
                         </c:if>
                     </a></p>
                 <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения</a></p>
-                <p><a href='<c:url value="/manager/specialists"/>'><span class="videl">Специалисты</span></a></p>
-                <p><a href='<c:url value="/manager/done_incidents"/>'>На согласование
-                        <c:if test="${doneIncidents.size() gt 0}">
-                            <span class="count">${doneIncidents.size()}</span>
+                <p><a href='<c:url value="/manager/closed"/>'>Завершенные обращения</a></p>
+                <p><a href='<c:url value="/manager/on_agreement"/>'>На согласование
+                        <c:if test="${agreeIncidentsNew.size() gt 0}">
+                            <span class="count">${agreeIncidentsNew.size()}</span>
                         </c:if>
                     </a></p>
+                <p><a href='<c:url value="/manager/specialists"/>'><span class="videl">Специалисты</span></a></p>
             </div>
             <div id="content">
                 <table class="incidents_tab">

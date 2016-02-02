@@ -23,21 +23,20 @@
                         <span class="count">${unallocatedIncidentsNew.size()}</span>
                     </c:if>
                 </a></p>
-            <p><a href='<c:url value="/manager/allocated"/>'><span class="videl">Распределенные обращения
-                    </span></a></p>
+            <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения</a></p>
             <p><a href='<c:url value="/manager/closed"/>'>Завершенные обращения</a></p>
-            <p><a href='<c:url value="/manager/on_agreement"/>'>На согласование
-                    <c:if test="${agreeIncidentsNew.size() gt 0}">
-                        <span class="count">${agreeIncidentsNew.size()}</span>
-                    </c:if>
-                </a></p>
+            <p><a href='<c:url value="/manager/on_agreement"/>'><span class="videl">На согласование
+                        <c:if test="${agreeIncidentsNew.size() gt 0}">
+                            <span class="count">${agreeIncidentsNew.size()}</span>
+                        </c:if>
+                    </span></a></p>
             <p><a href='<c:url value="/manager/specialists"/>'>Специалисты</a></p>
         </div>
         <div id="content">
             <table class="incidents_tab">
                 <thead>
                     <tr>
-                        <th><a href='<c:url value="/sort_by_name_allo"/>'>Заголовок инцидента</a></th>
+                        <th><a href='<c:url value="/sort_by_name_allo"/>'>Заголовок обращения</a></th>
                         <th><a href='<c:url value="/sort_by_date_allo"/>'>Дата</a></th>
                         <th>Время</th>
                         <th><a href='<c:url value="/sort_by_status_allo"/>'>Статус</a></th>
@@ -46,11 +45,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:if test="${allocatedIncidents.isEmpty()}">
-                    <td colspan="6" style="text-align: center;">Распределенных инцидентов нет</td>
+                    <c:if test="${agreeIncidents.isEmpty()}">
+                    <td colspan="6" style="text-align: center;">Обращений на согласование нет</td>
                 </c:if>
-                <c:forEach var="incident" items="${allocatedIncidents}">
-                    <tr>
+                <c:forEach var="incident" items="${agreeIncidents}">
+                    <c:choose>
+                        <c:when test="${incident.new1 == 1}">
+                            <tr class="vyd">
+                            </c:when>
+                            <c:otherwise>
+                            <tr> 
+                            </c:otherwise>
+                        </c:choose>
                         <td><a href='<c:url value="/manager/incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
                         <td>${incident.dateIncident}</td>
                         <td>${incident.timeIncident}</td>

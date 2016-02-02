@@ -29,6 +29,8 @@ public interface ManagementSystemLocal {
     public List<Incidents> getOpenIncidents(Users user, String sort);
 
     public void addIncident(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id, String attachment);
+    
+    public void addTask(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id, Users specialist);
 
     public void cancelIncident(Incidents incident, String textp, String tstatus, Users user, boolean it);
 
@@ -76,7 +78,7 @@ public interface ManagementSystemLocal {
 
     public List<Users> getSpecialists(String sort);
 
-    public void addSpecialist(Incidents incident, Users specialist);
+    public void addSpecialist(Incidents incident, Users specialist, Users manager);
 
     public void inWork(Incidents incident);
 
@@ -96,7 +98,7 @@ public interface ManagementSystemLocal {
 
     public void acceptIncident(Incidents incident);
 
-    public List<Incidents> getAllocatedIncidents(String sort);
+    public List<Incidents> getAllocatedIncidents(String sort, Users manager);
 
     public List getSpecialistsStatistics();
     
@@ -113,4 +115,14 @@ public interface ManagementSystemLocal {
     public List<Incidents> getUnallocatedIncidentsNew();
     
     public List<Incidents> getSpecialistOpenIncidentsNew(Users specialist);
+    
+    public boolean isTask(Users manager, Incidents incident);
+    
+    public List<Incidents> getAgreeIncidents(Users manager);
+    
+    public List<Incidents> getAgreeIncidentsNew(Users manager);
+    
+    public void agreeIncident(Incidents incident);
+    
+    public void addHistory(Incidents incident, Users actioner, String text);
 }

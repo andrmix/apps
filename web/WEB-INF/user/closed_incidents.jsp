@@ -34,7 +34,7 @@
                 <table class="incidents_tab">
                     <thead>
                         <tr>
-                            <th><a href='<c:url value="/sort_by_name_closed"/>'>Заголовок инцидента</a></th>
+                            <th><a href='<c:url value="/sort_by_name_closed"/>'>Заголовок обращения</a></th>
                             <th><a href='<c:url value="/sort_by_date_closed"/>'>Дата</a></th>
                             <th>Время</th>
                             <th><a href='<c:url value="/sort_by_status_closed"/>'>Статус</a></th>
@@ -49,11 +49,11 @@
                     </c:if>
                     <c:forEach var="incident" items="${closedIncidents}">
                         <c:choose>
-                            <c:when test="${incident.new1 == 1}">
+                            <c:when test="${incident.new1 == 1 && incident.status.id == 7}">
                                 <tr class="vyd">
                                 </c:when>
                                 <c:otherwise>
-                                <tr> 
+                                <tr>
                                 </c:otherwise>
                             </c:choose>
                             <td><a href='<c:url value="/user/user_incident?id=${incident.id}"/>'>${incident.title}</a></td>

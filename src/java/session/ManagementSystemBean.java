@@ -8,6 +8,7 @@ package session;
 import entity.Comments;
 import entity.Departs;
 import entity.Groupuser;
+import entity.History;
 import entity.Incidents;
 import entity.Statuses;
 import entity.Typeincident;
@@ -66,25 +67,26 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         Query q = null;
         switch (sort) {
             case "none":
-                q = em.createNamedQuery("Incidents.findByUser3Status");
+                q = em.createNamedQuery("Incidents.findByUser4Status");
                 break;
             case "name":
-                q = em.createNamedQuery("Incidents.findByUser3StatusOrderName");
+                q = em.createNamedQuery("Incidents.findByUser4StatusOrderName");
                 break;
             case "date":
-                q = em.createNamedQuery("Incidents.findByUser3StatusOrderDate");
+                q = em.createNamedQuery("Incidents.findByUserStatusOrderDate");
                 break;
             case "status":
-                q = em.createNamedQuery("Incidents.findByUser3StatusOrderStatus");
+                q = em.createNamedQuery("Incidents.findByUser4StatusOrderStatus");
                 break;
             case "spec":
-                q = em.createNamedQuery("Incidents.findByUser3StatusOrderSpec");
+                q = em.createNamedQuery("Incidents.findByUser4StatusOrderSpec");
                 break;
         }
         q.setParameter("user", user);
-        q.setParameter("status1", statuses.get(1));
-        q.setParameter("status2", statuses.get(3));
-        q.setParameter("status3", statuses.get(6));
+        q.setParameter("status1", statuses.get(1));//2
+        q.setParameter("status2", statuses.get(3));//4
+        q.setParameter("status3", statuses.get(6));//7
+        q.setParameter("status4", statuses.get(7));//8
         List resultList = q.getResultList();
         return resultList;
     }
@@ -299,9 +301,10 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public List<Incidents> getSpecialistDoneIncidents(Users specialist) {
         List statuses = getStatuses();
-        Query q = em.createNamedQuery("Incidents.findBySpecialist1Status");
+        Query q = em.createNamedQuery("Incidents.findBySpecialist2Status");
         q.setParameter("specialist", specialist);
-        q.setParameter("status", statuses.get(2));
+        q.setParameter("status1", statuses.get(2));//3
+        q.setParameter("status2", statuses.get(7));//8
         List resultList = q.getResultList();
         return resultList;
     }
@@ -311,7 +314,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         List statuses = getStatuses();
         Query q = em.createNamedQuery("Incidents.findBySpecialist1Status");
         q.setParameter("specialist", specialist);
-        q.setParameter("status", statuses.get(3));
+        q.setParameter("status", statuses.get(3));//4
         List resultList = q.getResultList();
         return resultList;
     }
@@ -325,7 +328,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     }
 
     @Override
-    public List<Incidents> getAllocatedIncidents(String sort) {
+    public List<Incidents> getAllocatedIncidents(String sort, Users manager) {
         Query q = null;
         switch (sort) {
             case "none":
@@ -348,8 +351,10 @@ public class ManagementSystemBean implements ManagementSystemLocal {
                 break;
         }
         List statuses = getStatuses();
-        q.setParameter("status1", statuses.get(5));
-        q.setParameter("status2", statuses.get(4));
+        q.setParameter("status1", statuses.get(5));//6
+        q.setParameter("status2", statuses.get(4));//5
+        q.setParameter("status3", statuses.get(2));//3
+        q.setParameter("manager", manager);
         List resultList = q.getResultList();
         return resultList;
     }
@@ -375,7 +380,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
                 break;
         }
         List statuses = getStatuses();
-        q.setParameter("status", statuses.get(0));
+        q.setParameter("status", statuses.get(0));//1
         List resultList = q.getResultList();
         return resultList;
     }
@@ -385,7 +390,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         Query q = null;
         q = em.createNamedQuery("Incidents.findUnallocatedNew");
         List statuses = getStatuses();
-        q.setParameter("status", statuses.get(0));
+        q.setParameter("status", statuses.get(0));//1
         List resultList = q.getResultList();
         return resultList;
     }
@@ -547,6 +552,30 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         return resList;
     }
 
+    @Override
+    public List<Incidents> getAgreeIncidents(Users manager) {
+        Query q = null;
+        q = em.createNamedQuery("Incidents.findAgree");
+        List statuses = getStatuses();
+        q.setParameter("status1", statuses.get(7));//8
+        q.setParameter("status2", statuses.get(2));//3
+        q.setParameter("manager", manager);
+        List resultList = q.getResultList();
+        return resultList;
+    }
+    
+    @Override
+    public List<Incidents> getAgreeIncidentsNew(Users manager) {
+        Query q = null;
+        q = em.createNamedQuery("Incidents.findAgreeNew");
+        List statuses = getStatuses();
+        q.setParameter("status1", statuses.get(7));//8
+        q.setParameter("status2", statuses.get(2));//3
+        q.setParameter("manager", manager);
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
     /* add добавление =================================================================================================*/
     @Override
     public void addIncident(String title, String text, Users zayavitel,
@@ -569,8 +598,39 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setNew1(1);
         if (addIncident) {
             em.persist(incident);
+        //    addHistory(incident, zayavitel, null);
         } else {
             em.merge(incident);
+        //    addHistory(incident, zayavitel, "Исправление");
+        }
+    }
+
+    @Override
+    public void addTask(String title, String text, Users manager,
+            Typeincident ti, boolean addIncident, int id, Users specialist) {
+        Incidents incident;
+        if (addIncident) {
+            incident = new Incidents();
+        } else {
+            incident = findIncident(id);
+        }
+        incident.setDateIncident(new Date());
+        incident.setTimeIncident(new Date());
+        Statuses status = em.find(Statuses.class, 6);
+        incident.setStatus(status);
+        incident.setTitle(title);
+        incident.setText(text);
+        incident.setZayavitel(manager);
+        incident.setSpecialist(specialist);
+        incident.setTypeIncident(ti);
+        incident.setAttachment(null);
+        incident.setNew1(1);
+        if (addIncident) {
+            em.persist(incident);
+            //    addHistory(incident, manager, null);
+        } else {
+            em.merge(incident);
+            //    addHistory(incident, manager, "Исправление");
         }
     }
 
@@ -648,11 +708,13 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     }
 
     @Override
-    public void addSpecialist(Incidents incident, Users specialist) {
+    public void addSpecialist(Incidents incident, Users specialist, Users manager) {
         incident.setSpecialist(specialist);
         incident.setStatus(getStatuses().get(5));//6
+        //incident.setManager(manager);
         incident.setNew1(1);
         em.merge(incident);
+        //addHistory(incident, manager, specialist.getName());
     }
 
     @Override
@@ -664,6 +726,18 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         comment.setUsersLogin(commentator);
         comment.setIncident(incident);
         em.persist(comment);
+    }
+    
+    @Override
+    public void addHistory(Incidents incident, Users actioner, String text) {
+        History history = new History();
+        history.setIncident(incident);
+        history.setActioner(actioner);
+        history.setDateAction(new Date());
+        history.setTimeAction(new Date());
+        history.setStatus(incident.getStatus());
+        //history.setText(text);
+        em.persist(history);
     }
 
     /* delete удаление ===============================================================================================*/
@@ -754,6 +828,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setTimeInWork(new Date());
         incident.setStatus(getStatuses().get(4));
         em.merge(incident);
+        //addHistory(incident, incident.getSpecialist(), null);
     }
 
     @Override
@@ -764,19 +839,40 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setDecision(decision);
         incident.setNew1(1);
         em.merge(incident);
+        //addHistory(incident, incident.getSpecialist(), null);
     }
 
     @Override
     public void acceptIncident(Incidents incident) {
-        incident.setStatus(getStatuses().get(3));
-        incident.setDateClose(new Date());
-        incident.setTimeClose(new Date());
+        incident.setStatus(getStatuses().get(7));//8
+        incident.setDateAccept(new Date());
+        incident.setTimeAccept(new Date());
+        incident.setNew1(1);
         em.merge(incident);
+        //addHistory(incident, incident.getZayavitel(), null);
     }
 
     @Override
     public void setNotNewIncident(Incidents incident) {
         incident.setNew1(0);
         em.merge(incident);
+    }
+
+    @Override
+    public boolean isTask(Users manager, Incidents incident) {
+        boolean result = false;
+        if (incident.getZayavitel().equals(manager)) {
+            result = true;
+        }
+        return result;
+    }
+    
+    @Override
+    public void agreeIncident(Incidents incident) {
+        incident.setStatus(getStatuses().get(3));//4
+        incident.setDateClose(new Date());
+        incident.setTimeClose(new Date());
+        em.merge(incident);
+        //addHistory(incident, manager, null);
     }
 }
