@@ -32,25 +32,21 @@
                 <thead>
                     <tr>
                         <th><a href='<c:url value="/sort_by_name"/>'>Заголовок инцидента</a></th>
-                        <th><a href='<c:url value="/sort_by_date"/>'>Дата</a></th>
-                        <th>Время</th>
+                        <th><a href='<c:url value="/sort_by_date"/>'>Дата/Время</a></th>
                         <th><a href='<c:url value="/sort_by_spec"/>'>Заявитель</a></th>
-                        <th>Дата закрытия</th>
-                        <th>Время закрытия</th>
+                        <th>Дата/Время закрытия</th>
                     </tr>
                 </thead>
                 <tbody>
                     <c:if test="${closedIncidents.isEmpty()}">
-                    <td colspan="6" style="text-align: center;">Закрытых инцидентов нет</td>
+                    <td colspan="4" style="text-align: center;">Закрытых инцидентов нет</td>
                 </c:if>
                 <c:forEach var="incident" items="${closedIncidents}">
                     <tr>
                         <td><a href='<c:url value="/specialist/spec_incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
-                        <td>${incident.dateIncident}</td>
-                        <td>${incident.timeIncident}</td>
+                        <td>${incident.dateIncident} ${incident.timeIncident}</td>
                         <td>${incident.zayavitel.name}</td>
-                        <td>${incident.dateClose}</td>
-                        <td>${incident.timeClose}</td>
+                        <td>${incident.dateClose} ${incident.timeClose}</td>
                     </tr>
                 </c:forEach>
                 </tbody>

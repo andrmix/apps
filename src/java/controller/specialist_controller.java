@@ -6,6 +6,7 @@
 package controller;
 
 import entity.Comments;
+import entity.History;
 import entity.Incidents;
 import entity.Users;
 import java.io.IOException;
@@ -34,23 +35,24 @@ public class specialist_controller extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         Users specialist = ms.findUser(request.getUserPrincipal().getName());
         request.setAttribute("user", specialist);
-        getServletContext().setAttribute("openIncidents", ms.getSpecialistOpenIncidents(specialist));
         getServletContext().setAttribute("openIncidentsNew", ms.getSpecialistOpenIncidentsNew(specialist));
-        getServletContext().setAttribute("doneIncidents", ms.getSpecialistDoneIncidents(specialist));
-        getServletContext().setAttribute("closedIncidents", ms.getSpecialistClosedIncidents(specialist));
-
+        
+        //обращения =============================================================================================================
         if ("/specialist".equals(request.getServletPath())) {
+            getServletContext().setAttribute("openIncidents", ms.getSpecialistOpenIncidents(specialist));
             request.getRequestDispatcher("/WEB-INF/specialist/spec_incidents.jsp").forward(request, response);
         }
 
+        //данные обращения =============================================================================================================        
         if ("/specialist/spec_incident_data".equals(request.getServletPath())) {
             Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
             request.setAttribute("incident", incident);
             request.setAttribute("done", 0);
             request.setAttribute("otmena", 0);
+            request.setAttribute("commento", 1);
+            request.setAttribute("ihistory", 0);
             String answer = null;
             answer = checkAction(request);
             
@@ -84,34 +86,50 @@ public class specialist_controller extends HttpServlet {
 
             //Отменить - Готово
             if (answer.equals("pDone")) {
-                ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), null, true);
+                ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), true, null);
                 response.sendRedirect(request.getContextPath() + "/specialist");
                 return;
             }
 
-            if (answer.equals("bCommOn")) {
+            //комментарии
+            if (answer.equals("bComm")) {
                 request.setAttribute("commento", 1);
+                request.setAttribute("ihistory", 0);
             }
-            if (answer.equals("bCommOff")) {
-                request.setAttribute("commento", 0);
-            }
+
+            //комментировать
             if (answer.equals("bCommGo")) {
                 request.setAttribute("commento", 1);
+                request.setAttribute("ihistory", 0);
                 ms.addComment(request.getParameter("textcomm"), specialist, incident);
             }
+
+            //история
+            if (answer.equals("bHist")) {
+                request.setAttribute("ihistory", 1);
+                request.setAttribute("commento", 0);
+            }
+            
             List<Comments> comments = ms.getComments(incident);
             request.setAttribute("comments", comments);
+            List<History> history = ms.getHistory(incident);
+            request.setAttribute("allhistory", history);
             request.getRequestDispatcher("/WEB-INF/specialist/spec_incident_data.jsp").forward(request, response);
         }
 
+        //выполненные обращения ==================================================================================================
         if ("/specialist/spec_done_incidents".equals(request.getServletPath())) {
+            getServletContext().setAttribute("doneIncidents", ms.getSpecialistDoneIncidents(specialist));
             request.getRequestDispatcher("/WEB-INF/specialist/spec_done_incidents.jsp").forward(request, response);
         }
 
+        //закрытые обращения ==================================================================================================
         if ("/specialist/spec_closed_incidents".equals(request.getServletPath())) {
+            getServletContext().setAttribute("closedIncidents", ms.getSpecialistClosedIncidents(specialist));
             request.getRequestDispatcher("/WEB-INF/specialist/spec_closed_incidents.jsp").forward(request, response);
         }
         
+        //статистика ==================================================================================================
         if ("/specialist/statistic".equals(request.getServletPath())) {
             List stats = ms.getOneSpecialistsStatistics(specialist.getLogin());
             request.setAttribute("statList", stats);
@@ -121,13 +139,6 @@ public class specialist_controller extends HttpServlet {
             request.setAttribute("statYearList2", statsYear2);
             request.getRequestDispatcher("/WEB-INF/specialist/statistic.jsp").forward(request, response);
         }
-
-        if ("/specialist/spec_done_incident_data".equals(request.getServletPath())) {
-            Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
-            request.setAttribute("incident", incident);
-            request.getRequestDispatcher("/WEB-INF/specialist/spec_done_incident_data.jsp").forward(request, response);
-        }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -185,14 +196,14 @@ public class specialist_controller extends HttpServlet {
         if (req.getParameter("pDone") != null) {
             return "pDone";
         }
-        if (req.getParameter("bCommOn") != null) {
-            return "bCommOn";
-        }
-        if (req.getParameter("bCommOff") != null) {
-            return "bCommOff";
+        if (req.getParameter("bComm") != null) {
+            return "bComm";
         }
         if (req.getParameter("bCommGo") != null) {
             return "bCommGo";
+        }
+        if (req.getParameter("bHist") != null) {
+            return "bHist";
         }
         return "none";
     }

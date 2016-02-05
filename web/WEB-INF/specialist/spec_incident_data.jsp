@@ -54,22 +54,33 @@
                                 <td>Заявитель</td>
                                 <td>${incident.zayavitel.name}</td>
                             </tr>
-                            <tr>
-                                <td>Решение</td>
-                                <td>${incident.decision}</td>
-                            </tr>
-                            <tr>
-                                <td>Дата и время выполнения</td>
-                                <td>${incident.dateDone} ${incident.timeDone}</td>
-                            </tr>
-                            <tr>
-                                <td>Количество доработок</td>
-                                <td>${incident.revisionCount}</td>
-                            </tr>
-                            <tr>
-                                <td>Дата и время закрытия</td>
-                                <td>${incident.dateClose} ${incident.timeClose}</td>
-                            </tr>
+                            <c:if test="${incident.status.id == 3 || incident.status.id == 4 || incident.status.id == 8}">
+                                <tr>
+                                    <td>Решение</td>
+                                    <td>${incident.decision}</td>
+                                </tr>
+                                <tr>
+                                    <td>Дата и время выполнения</td>
+                                    <td>${incident.dateDone} ${incident.timeDone}</td>
+                                </tr>
+                                <tr>
+                                    <td>Количество доработок</td>
+                                    <c:choose>
+                                        <c:when test="${incident.revisionCount ne null}">
+                                            <td>${incident.revisionCount}</td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td>0</td>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tr>
+                            </c:if>
+                            <c:if test="${incident.status.id == 4}">
+                                <tr>
+                                    <td>Дата и время закрытия</td>
+                                    <td>${incident.dateClose} ${incident.timeClose}</td>
+                                </tr>
+                            </c:if>
                             <c:if test="${incident.status.id == 2 || incident.status.id == 7}">
                                 <tr>
                                     <td>Причина отклонения/отмены</td>
@@ -131,15 +142,12 @@
                         </c:otherwise>
                     </c:choose>
 
-
                     <c:choose>
                         <c:when test="${commento == 1}">
+                            <br>
+                            <input type="submit" value="Комментарии" name="bComm" class="plashka_on"/>
+                            <input type="submit" value="История" name="bHist" class="plashka_off"/>
                             <table class="comments">
-                                <thead>
-                                    <tr>
-                                        <th colspan="3">Комментарии</th>
-                                    </tr>
-                                </thead>
                                 <tbody>
                                     <c:forEach var="comment" items="${comments}">
                                         <tr>
@@ -157,12 +165,29 @@
                                     </tr>
                                 </table>
                             </c:if>
-                            <input type="submit" value="Скрыть комментарии" name="bCommOff" class="plashka"/>
+                        </c:when>
+                        <c:when test="${ihistory == 1}">
+                            <br>
+                            <input type="submit" value="Комментарии" name="bComm" class="plashka_off"/>
+                            <input type="submit" value="История" name="bHist" class="plashka_on"/>
+                            <table class="comments">
+                                <tbody>
+                                    <c:forEach var="hist" items="${allhistory}">
+                                        <tr>
+                                            <td style="width: 20%">${hist.status.name}</td>
+                                            <td style="width: 20%">${hist.dateAction} ${hist.timeAction}</td>
+                                            <td style="width: 30%">${hist.actioner.name}</td>
+                                            <td style="width: 30%">${hist.text}</td>
+                                        </tr>
+                                    </c:forEach>
+                            </table>
                         </c:when>
                         <c:otherwise>
-                            <input type="submit" value="Показать комментарии (${comments.size()})" name="bCommOn" class="plashka"/>
+                            <br>
+                            <input type="submit" value="Комментарии" name="bComm" class="plashka_off"/>
+                            <input type="submit" value="История" name="bHist" class="plashka_off"/>
                         </c:otherwise>
-                    </c:choose>           
+                    </c:choose>          
                 </div>
             </div>
         </form>

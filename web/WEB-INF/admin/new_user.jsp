@@ -24,7 +24,6 @@
                 <div class="addEdit">
                     <ul>
                         <li><input placeholder="Логин" type="text" name="login" class="editAddEdit" value="${login}"/></li>
-                        <li><input placeholder="Пароль" type="password" name="pass" class="editAddEdit" value="${pass}"/></li>
                         <li><input placeholder="ФИО" type="text" name="fio" class="editAddEdit" value="${fio}"/></li>
                         <li><input placeholder="E-mail" type="text" name="email" class="editAddEdit" value="${email}"/></li>
                         <li>

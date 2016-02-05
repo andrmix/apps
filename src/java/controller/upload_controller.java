@@ -9,14 +9,10 @@ import entity.Typeincident;
 import entity.Users;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -83,6 +79,8 @@ public class upload_controller extends HttpServlet {
             if (fi.isFormField()) {
                 String name = fi.getFieldName();
                 String value = fi.getString();
+                
+                //данные
                 if (name.equals("title")) {
                     title = value;
                 }
@@ -96,9 +94,12 @@ public class upload_controller extends HttpServlet {
                     id = value;
                 }
 
+                //отмена
                 if (name.equals("Cancel")) {
                     request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
                 }
+                
+                //добавить или редактировать
                 if (name.equals("Add") || name.equals("Edit")) {
                     String path = null;
                     String fName = null;
@@ -130,12 +131,17 @@ public class upload_controller extends HttpServlet {
                     }
                     Users user = ms.findUser(request.getUserPrincipal().getName());
                     Typeincident ti = ms.findTypeIncident(Integer.parseInt(typId));
+                    
+                    //добавить
                     if (name.equals("Add")) {
                         ms.addIncident(title, texti, user, ti, true, 0, fName);
                     }
+                    
+                    //редактировать
                     if (name.equals("Edit")) {
                         ms.addIncident(title, texti, user, ti, false, Integer.parseInt(id), fName);
                     }
+                    
                     getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "none"));
                     getServletContext().setAttribute("openIncidentsNew", ms.getOpenIncidentsNew(user));
                     getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "none"));

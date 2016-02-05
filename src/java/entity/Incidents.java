@@ -67,18 +67,19 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findBySpecialist2Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2)"),
     @NamedQuery(name = "Incidents.findBySpecialist2StatusNew", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findBySpecialist3Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2 OR i.status = :status3)"),
+    @NamedQuery(name = "Incidents.findClosedManager", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2"),
     @NamedQuery(name = "Incidents.findUnallocated", query = "SELECT i FROM Incidents i WHERE i.status = :status"),
     @NamedQuery(name = "Incidents.findUnallocatedNew", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.title"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.dateIncident"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.status"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.zayavitel"),
-    @NamedQuery(name = "Incidents.findAllocated", query = "SELECT i FROM Incidents i WHERE (i.status = :status1 OR i.status = :status2 OR i.status = :status3) AND i.zayavitel != :manager"),
-    @NamedQuery(name = "Incidents.findAllocatedOrderName", query = "SELECT i FROM Incidents i WHERE (i.status = :status1 OR i.status = :status2 OR i.status = :status3) AND i.zayavitel != :manager ORDER BY i.title"),
-    @NamedQuery(name = "Incidents.findAllocatedOrderDate", query = "SELECT i FROM Incidents i WHERE (i.status = :status1 OR i.status = :status2 OR i.status = :status3) AND i.zayavitel != :manager ORDER BY i.dateIncident"),
-    @NamedQuery(name = "Incidents.findAllocatedOrderStatus", query = "SELECT i FROM Incidents i WHERE (i.status = :status1 OR i.status = :status2 OR i.status = :status3) AND i.zayavitel != :manager ORDER BY i.status"),
-    @NamedQuery(name = "Incidents.findAllocatedOrderZay", query = "SELECT i FROM Incidents i WHERE (i.status = :status1 OR i.status = :status2 OR i.status = :status3) AND i.zayavitel != :manager ORDER BY i.zayavitel"),
-    @NamedQuery(name = "Incidents.findAllocatedOrderSpec", query = "SELECT i FROM Incidents i WHERE (i.status = :status1 OR i.status = :status2 OR i.status = :status3) AND i.zayavitel != :manager ORDER BY i.specialist"),
+    @NamedQuery(name = "Incidents.findAllocated", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager)"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.title"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.dateIncident"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.status"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.zayavitel"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderSpec", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.specialist"),
     @NamedQuery(name = "Incidents.findAgree", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR (i.status = :status2 AND i.zayavitel = :manager)"),
     @NamedQuery(name = "Incidents.findAgreeNew", query = "SELECT i FROM Incidents i WHERE (i.status = :status1 OR (i.status = :status2 AND i.zayavitel = :manager)) AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findByDateClose", query = "SELECT i FROM Incidents i WHERE i.dateClose = :dateClose"),
@@ -161,6 +162,9 @@ public class Incidents implements Serializable {
     @JoinColumn(name = "specialist", referencedColumnName = "login")
     @ManyToOne
     private Users specialist;
+    @JoinColumn(name = "manager", referencedColumnName = "login")
+    @ManyToOne
+    private Users manager;
     @OneToMany(mappedBy = "incident")
     private Collection<History> historyCollection;
     @OneToMany(mappedBy = "incident")
@@ -193,7 +197,7 @@ public class Incidents implements Serializable {
         try {
             return new SimpleDateFormat("dd.MM.yyyy").format(this.dateIncident);
         } catch (NullPointerException e) {
-            return "Дата не определена";
+            return "";
         }
     }
 
@@ -205,7 +209,7 @@ public class Incidents implements Serializable {
         try {
             return new SimpleDateFormat("HH:mm:ss").format(this.timeIncident);
         } catch (NullPointerException e) {
-            return "Время не определено";
+            return "";
         }
     }
 
@@ -241,7 +245,7 @@ public class Incidents implements Serializable {
         try {
             return new SimpleDateFormat("dd.MM.yyyy").format(this.dateInWork);
         } catch (NullPointerException e) {
-            return "Дата не определена";
+            return "";
         }
     }
 
@@ -253,7 +257,7 @@ public class Incidents implements Serializable {
         try {
             return new SimpleDateFormat("HH:mm:ss").format(this.timeInWork);
         } catch (NullPointerException e) {
-            return "Время не определено";
+            return "";
         }
     }
 
@@ -265,7 +269,7 @@ public class Incidents implements Serializable {
         try {
             return new SimpleDateFormat("dd.MM.yyyy").format(this.dateDone);
         } catch (NullPointerException e) {
-            return "Дата не определена";
+            return "";
         }
     }
 
@@ -277,7 +281,7 @@ public class Incidents implements Serializable {
         try {
             return new SimpleDateFormat("HH:mm:ss").format(this.timeDone);
         } catch (NullPointerException e) {
-            return "Время не определено";
+            return "";
         }
     }
 
@@ -289,7 +293,7 @@ public class Incidents implements Serializable {
         try {
             return new SimpleDateFormat("dd.MM.yyyy").format(this.dateAccept);
         } catch (NullPointerException e) {
-            return "Дата не определена";
+            return "";
         }
     }
 
@@ -301,7 +305,7 @@ public class Incidents implements Serializable {
         try {
             return new SimpleDateFormat("HH:mm:ss").format(this.timeAccept);
         } catch (NullPointerException e) {
-            return "Время не определено";
+            return "";
         }
     }
 
@@ -313,7 +317,7 @@ public class Incidents implements Serializable {
         try {
             return new SimpleDateFormat("dd.MM.yyyy").format(this.dateClose);
         } catch (NullPointerException e) {
-            return "Дата не определена";
+            return "";
         }
     }
 
@@ -325,7 +329,7 @@ public class Incidents implements Serializable {
         try {
             return new SimpleDateFormat("HH:mm:ss").format(this.timeClose);
         } catch (NullPointerException e) {
-            return "Время не определено";
+            return "";
         }
     }
 
@@ -396,6 +400,14 @@ public class Incidents implements Serializable {
 
     public void setSpecialist(Users specialist) {
         this.specialist = specialist;
+    }
+
+    public Users getManager() {
+        return manager;
+    }
+
+    public void setManager(Users manager) {
+        this.manager = manager;
     }
 
     @XmlTransient

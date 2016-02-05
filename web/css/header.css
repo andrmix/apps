@@ -1,14 +1,14 @@
 h1{
-    font-size: 36px;
+    font-size: 40px;
     margin: 0;
-    color: #fff;
+    color: #FFFFFF;
 }
 
 .galka{
     position: absolute;
-    left: 25px;
-    top: 5px;
-    height: 60px;
+    left: 30px;
+    top: 10px;
+    height: 48px;
 }
 
 #header{

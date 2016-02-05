@@ -90,6 +90,33 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         List resultList = q.getResultList();
         return resultList;
     }
+    
+    @Override
+    public List<Incidents> getClosedIncidentsManager(String sort) {
+        List statuses = getStatuses();
+        Query q = null;
+        switch (sort) {
+            case "none":
+                q = em.createNamedQuery("Incidents.findClosedManager");
+                break;
+            case "name":
+                q = em.createNamedQuery("Incidents.findByUser4StatusOrderName");
+                break;
+            case "date":
+                q = em.createNamedQuery("Incidents.findByUserStatusOrderDate");
+                break;
+            case "status":
+                q = em.createNamedQuery("Incidents.findByUser4StatusOrderStatus");
+                break;
+            case "spec":
+                q = em.createNamedQuery("Incidents.findByUser4StatusOrderSpec");
+                break;
+        }
+        q.setParameter("status1", statuses.get(3));//4
+        q.setParameter("status2", statuses.get(6));//7
+        List resultList = q.getResultList();
+        return resultList;
+    }
 
     @Override
     public List<Incidents> getClosedIncidentsNew(Users user) {
@@ -312,9 +339,10 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public List<Incidents> getSpecialistClosedIncidents(Users specialist) {
         List statuses = getStatuses();
-        Query q = em.createNamedQuery("Incidents.findBySpecialist1Status");
+        Query q = em.createNamedQuery("Incidents.findBySpecialist2Status");
         q.setParameter("specialist", specialist);
-        q.setParameter("status", statuses.get(3));//4
+        q.setParameter("status1", statuses.get(3));//4
+        q.setParameter("status2", statuses.get(6));//7
         List resultList = q.getResultList();
         return resultList;
     }
@@ -322,6 +350,14 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public List<Comments> getComments(Incidents incident) {
         Query q = em.createNamedQuery("Comments.findByIncident");
+        q.setParameter("incident", incident);
+        List resultList = q.getResultList();
+        return resultList;
+    }
+    
+    @Override
+    public List<History> getHistory(Incidents incident) {
+        Query q = em.createNamedQuery("History.findByIncident");
         q.setParameter("incident", incident);
         List resultList = q.getResultList();
         return resultList;
@@ -563,7 +599,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         List resultList = q.getResultList();
         return resultList;
     }
-    
+
     @Override
     public List<Incidents> getAgreeIncidentsNew(Users manager) {
         Query q = null;
@@ -598,10 +634,10 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setNew1(1);
         if (addIncident) {
             em.persist(incident);
-        //    addHistory(incident, zayavitel, null);
+            addHistory(incident, zayavitel, null);
         } else {
             em.merge(incident);
-        //    addHistory(incident, zayavitel, "Исправление");
+            addHistory(incident, zayavitel, "Исправление");
         }
     }
 
@@ -621,24 +657,24 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setTitle(title);
         incident.setText(text);
         incident.setZayavitel(manager);
+        incident.setManager(manager);
         incident.setSpecialist(specialist);
         incident.setTypeIncident(ti);
         incident.setAttachment(null);
         incident.setNew1(1);
         if (addIncident) {
             em.persist(incident);
-            //    addHistory(incident, manager, null);
+            addHistory(incident, manager, null);
         } else {
             em.merge(incident);
-            //    addHistory(incident, manager, "Исправление");
+            addHistory(incident, manager, "Исправление");
         }
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void addUser(String login, String pass,
-            String fio, String email, Departs depart,
-            String role, boolean addUser) {
+    public void addUser(String login, String fio, String email,
+            Departs depart, String role, boolean addUser) {
         try {
             Users user;
             if (addUser) {
@@ -650,8 +686,9 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             user.setEmail(email);
             user.setLogin(login);
             user.setName(fio);
-            user.setPass(pass);
             if (addUser) {
+                user.setPass("12345678");
+                user.setChangePassword(1);
                 em.persist(user);
             } else {
                 em.merge(user);
@@ -711,10 +748,10 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     public void addSpecialist(Incidents incident, Users specialist, Users manager) {
         incident.setSpecialist(specialist);
         incident.setStatus(getStatuses().get(5));//6
-        //incident.setManager(manager);
+        incident.setManager(manager);
         incident.setNew1(1);
         em.merge(incident);
-        //addHistory(incident, manager, specialist.getName());
+        addHistory(incident, manager, specialist.getName());
     }
 
     @Override
@@ -727,7 +764,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         comment.setIncident(incident);
         em.persist(comment);
     }
-    
+
     @Override
     public void addHistory(Incidents incident, Users actioner, String text) {
         History history = new History();
@@ -736,7 +773,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         history.setDateAction(new Date());
         history.setTimeAction(new Date());
         history.setStatus(incident.getStatus());
-        //history.setText(text);
+        history.setText(text);
         em.persist(history);
     }
 
@@ -791,7 +828,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
 
     /* actions действия ==============================================================================================*/
     @Override
-    public void cancelIncident(Incidents incident, String textp, String tstatus, Users user, boolean it) {
+    public void cancelIncident(Incidents incident, String textp, String tstatus, boolean it, Users manager) {
         int revCount = 0;
         Statuses status = null;
         if (tstatus.equals("1") || tstatus.equals("6") || tstatus.equals("5")) {
@@ -816,19 +853,35 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             }
             incident.setNew1(1);
             incident.setRevisionCount(revCount);
-            addComment(textp, user, incident);
+            addComment(textp, incident.getZayavitel(), incident);
         }
         incident.setStatus(status);
         em.merge(incident);
+        if (tstatus.equals("1") && it) {
+            addHistory(incident, manager, null);
+        }
+        if (tstatus.equals("1") && !it) {
+            addHistory(incident, incident.getZayavitel(), null);
+        }
+        if (tstatus.equals("6") || tstatus.equals("5")) {
+            if (it) {
+                addHistory(incident, incident.getSpecialist(), null);
+            } else {
+                addHistory(incident, incident.getZayavitel(), null);
+            }
+        }
+        if (tstatus.equals("3")) {
+            addHistory(incident, incident.getZayavitel(), "На доработку");
+        }
     }
 
     @Override
     public void inWork(Incidents incident) {
         incident.setDateInWork(new Date());
         incident.setTimeInWork(new Date());
-        incident.setStatus(getStatuses().get(4));
+        incident.setStatus(getStatuses().get(4));//5
         em.merge(incident);
-        //addHistory(incident, incident.getSpecialist(), null);
+        addHistory(incident, incident.getSpecialist(), null);
     }
 
     @Override
@@ -839,7 +892,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setDecision(decision);
         incident.setNew1(1);
         em.merge(incident);
-        //addHistory(incident, incident.getSpecialist(), null);
+        addHistory(incident, incident.getSpecialist(), null);
     }
 
     @Override
@@ -849,7 +902,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setTimeAccept(new Date());
         incident.setNew1(1);
         em.merge(incident);
-        //addHistory(incident, incident.getZayavitel(), null);
+        addHistory(incident, incident.getZayavitel(), null);
     }
 
     @Override
@@ -866,13 +919,36 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         }
         return result;
     }
-    
+
     @Override
     public void agreeIncident(Incidents incident) {
         incident.setStatus(getStatuses().get(3));//4
         incident.setDateClose(new Date());
         incident.setTimeClose(new Date());
         em.merge(incident);
-        //addHistory(incident, manager, null);
+        addHistory(incident, incident.getManager(), null);
+    }
+
+    @Override
+    public void resetPassword(Users user) {
+        user.setPass("12345678");
+        user.setChangePassword(1);
+        em.merge(user);
+    }
+
+    @Override
+    public boolean isChangePassword(Users user) {
+        boolean result = false;
+        if (user.getChangePassword() == 1){
+            result = true;
+        }
+        return result;
+    }
+
+    @Override
+    public void setNewPassword(Users user, String newPassword) {
+        user.setPass(newPassword);
+        user.setChangePassword(0);
+        em.merge(user);
     }
 }

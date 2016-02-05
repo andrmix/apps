@@ -4,13 +4,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="css/style_login.css">
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/style_login.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
     </head>
     <body>
         <div id="header">
-            <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
+            <img class="galka" src='<c:url value="/img/galka_z_or.png"/>'><div class="resh">Решение</div>
         </div>
             <form action="j_security_check" method="POST">
     <div id="lb">

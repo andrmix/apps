@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -34,7 +36,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "History.findAll", query = "SELECT h FROM History h"),
     @NamedQuery(name = "History.findById", query = "SELECT h FROM History h WHERE h.id = :id"),
     @NamedQuery(name = "History.findByDateAction", query = "SELECT h FROM History h WHERE h.dateAction = :dateAction"),
-    @NamedQuery(name = "History.findByTimeAction", query = "SELECT h FROM History h WHERE h.timeAction = :timeAction")})
+    @NamedQuery(name = "History.findByTimeAction", query = "SELECT h FROM History h WHERE h.timeAction = :timeAction"),
+    @NamedQuery(name = "History.findByIncident", query = "SELECT h FROM History h WHERE h.incident = :incident"),
+    @NamedQuery(name = "History.findByText", query = "SELECT h FROM History h WHERE h.text = :text")})
 public class History implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -52,6 +56,9 @@ public class History implements Serializable {
     @Column(name = "timeAction")
     @Temporal(TemporalType.TIME)
     private Date timeAction;
+    @Size(max = 255)
+    @Column(name = "text")
+    private String text;
     @JoinColumn(name = "incident", referencedColumnName = "id")
     @ManyToOne
     private Incidents incident;
@@ -83,20 +90,36 @@ public class History implements Serializable {
         this.id = id;
     }
 
-    public Date getDateAction() {
-        return dateAction;
+    public String getDateAction() {
+        try {
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateAction);
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public void setDateAction(Date dateAction) {
         this.dateAction = dateAction;
     }
 
-    public Date getTimeAction() {
-        return timeAction;
+    public String getTimeAction() {
+        try {
+            return new SimpleDateFormat("HH:mm:ss").format(this.timeAction);
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public void setTimeAction(Date timeAction) {
         this.timeAction = timeAction;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public Incidents getIncident() {

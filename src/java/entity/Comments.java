@@ -102,7 +102,7 @@ public class Comments implements Serializable {
         try {
             return new SimpleDateFormat("dd.MM.yyyy").format(this.dateComment);
         } catch (NullPointerException e) {
-            return "Дата не определена";
+            return "";
         }
     }
 
@@ -114,7 +114,7 @@ public class Comments implements Serializable {
         try {
             return new SimpleDateFormat("HH:mm:ss").format(this.timeComment);
         } catch (NullPointerException e) {
-            return "Время не определено";
+            return "";
         }
     }
 

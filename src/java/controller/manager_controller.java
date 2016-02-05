@@ -1,6 +1,7 @@
 package controller;
 
 import entity.Comments;
+import entity.History;
 import entity.Incidents;
 import entity.Typeincident;
 import entity.Users;
@@ -24,7 +25,8 @@ import session.ManagementSystemLocal;
             "/sort_by_zay_un", "/sort_by_name_allo", "/sort_by_date_allo",
             "/sort_by_status_allo", "/sort_by_zay_allo", "/sort_by_spec_allo",
             "/manager/specialists", "/manager/specialist_data", "/manager/new_task",
-            "/manager/on_agreement"})
+            "/manager/on_agreement", "/manager/closed", "/manager/manager_incidents",
+            "/manager/manager_done_incidents"})
 public class manager_controller extends HttpServlet {
 
     @EJB(name = "ManagementSystem")
@@ -35,12 +37,15 @@ public class manager_controller extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         Users manager = ms.findUser(request.getUserPrincipal().getName());
         request.setAttribute("user", manager);
-        getServletContext().setAttribute("unallocatedIncidents", ms.getUnallocatedIncidents("none"));
         getServletContext().setAttribute("unallocatedIncidentsNew", ms.getUnallocatedIncidentsNew());
-        getServletContext().setAttribute("allocatedIncidents", ms.getAllocatedIncidents("none", manager));
-        getServletContext().setAttribute("agreeIncidents", ms.getAgreeIncidents(manager));
         getServletContext().setAttribute("agreeIncidentsNew", ms.getAgreeIncidentsNew(manager));
+        getServletContext().setAttribute("openIncidentsManagerNew", ms.getSpecialistOpenIncidentsNew(manager));
 
+        String answera = null;
+        answera = checkAction(request);
+        onSideBar(answera);
+
+        //сортировка нераспределенных обращений =============================================================================================================
         if ("/sort_by_name_un".equals(request.getServletPath())) {
             getServletContext().setAttribute("unallocatedIncidents", ms.getUnallocatedIncidents("name"));
             request.getRequestDispatcher("/WEB-INF/manager/unallocated_incidents.jsp").forward(request, response);
@@ -58,17 +63,24 @@ public class manager_controller extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/manager/unallocated_incidents.jsp").forward(request, response);
         }
 
+        //список нераспределенных обращений =============================================================================================================
         if ("/manager".equals(request.getServletPath())) {
+            getServletContext().setAttribute("unallocatedIncidents", ms.getUnallocatedIncidents("none"));
             request.getRequestDispatcher("/WEB-INF/manager/unallocated_incidents.jsp").forward(request, response);
         }
 
+        //новое задание =============================================================================================================
         if ("/manager/new_task".equals(request.getServletPath())) {
             String answer = null;
             answer = checkAction(request);
+
+            //отмена
             if (answer.equals("Cancel")) {
                 response.sendRedirect(request.getContextPath() + "/manager");
                 return;
             }
+
+            //добавить
             if (answer.equals("Add")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                 Users specialist = ms.findUser(request.getParameter("specId"));
@@ -76,6 +88,8 @@ public class manager_controller extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/manager");
                 return;
             }
+
+            //редактировать
             if (answer.equals("Edit")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                 Users specialist = ms.findUser(request.getParameter("specId"));
@@ -83,12 +97,14 @@ public class manager_controller extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/manager");
                 return;
             }
+
             request.setAttribute("typs", ms.getAllTypesIncident("none"));
             request.setAttribute("editincident", 0);
             getServletContext().setAttribute("specialists", ms.getSpecialists("none"));
             request.getRequestDispatcher("/WEB-INF/manager/new_task.jsp").forward(request, response);
         }
 
+        //сортировка распределенных обращений =============================================================================================================
         if ("/sort_by_name_allo".equals(request.getServletPath())) {
             getServletContext().setAttribute("allocatedIncidents", ms.getAllocatedIncidents("name", manager));
             request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
@@ -110,20 +126,25 @@ public class manager_controller extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
         }
 
+        //список распределенных обращений =============================================================================================================
         if ("/manager/allocated".equals(request.getServletPath())) {
+            getServletContext().setAttribute("allocatedIncidents", ms.getAllocatedIncidents("none", manager));
             request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
         }
 
+        //сортировка списка специалистов =============================================================================================================
         if ("/sort_by_fio_spec".equals(request.getServletPath())) {
             getServletContext().setAttribute("specialistList", ms.getSpecialistsStatistics());
             request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
         }
 
+        //список специалистов =============================================================================================================
         if ("/manager/specialists".equals(request.getServletPath())) {
             getServletContext().setAttribute("specialistList", ms.getSpecialistsStatistics());
             request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
         }
 
+        //данные специалиста =============================================================================================================
         if ("/manager/specialist_data".equals(request.getServletPath())) {
             Users specialist = ms.findUser(request.getParameter("id"));
             List stats = ms.getOneSpecialistsStatistics(specialist.getLogin());
@@ -134,21 +155,33 @@ public class manager_controller extends HttpServlet {
             request.setAttribute("statYearList2", statsYear2);
             request.getRequestDispatcher("/WEB-INF/manager/specialist_data.jsp").forward(request, response);
         }
-        
+
+        //на согласовании =============================================================================================================
         if ("/manager/on_agreement".equals(request.getServletPath())) {
+            getServletContext().setAttribute("agreeIncidents", ms.getAgreeIncidents(manager));
             request.getRequestDispatcher("/WEB-INF/manager/on_agreement.jsp").forward(request, response);
         }
 
+        //данные обращения =============================================================================================================
         if ("/manager/incident_data".equals(request.getServletPath())) {
             Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
-            if (incident.getNew1().equals(1) && incident.getStatus().getId().equals(1)) {
-                ms.setNotNewIncident(incident);
-            }
-            if (incident.getNew1().equals(1) && ms.isTask(manager, incident) && incident.getStatus().getId().equals(3)) {
-                ms.setNotNewIncident(incident);
-            }
-            if (incident.getNew1().equals(1) && incident.getStatus().getId().equals(8)) {
-                ms.setNotNewIncident(incident);
+            request.setAttribute("commento", 1);
+            request.setAttribute("ihistory", 0);
+            if (incident.getNew1().equals(1)) {
+                if (incident.getStatus().getId().equals(1)) {
+                    ms.setNotNewIncident(incident);
+                }
+                if (incident.getZayavitel().equals(incident.getManager())
+                        && incident.getStatus().getId().equals(3)) {
+                    ms.setNotNewIncident(incident);
+                }
+                if (incident.getStatus().getId().equals(8)) {
+                    ms.setNotNewIncident(incident);
+                }
+                if (incident.getStatus().getId().equals(6)
+                        && incident.getSpecialist().equals(incident.getManager())) {
+                    ms.setNotNewIncident(incident);
+                }
             }
             request.setAttribute("incident", incident);
             getServletContext().setAttribute("commenta", 0);
@@ -156,49 +189,108 @@ public class manager_controller extends HttpServlet {
             answer = checkAction(request);
             getServletContext().setAttribute("appoint", 0);
             getServletContext().setAttribute("task", 0);
-            if (ms.isTask(manager, incident)){
+            if (ms.isTask(manager, incident)) {
                 getServletContext().setAttribute("task", 1);
             }
+
+            //назначить
             if (answer.equals("Appoint")) {
                 getServletContext().setAttribute("specialists", ms.getSpecialists("none"));
                 getServletContext().setAttribute("appoint", 1);
             }
+
+            //готово - назначение специалиста
             if (answer.equals("Done")) {
                 Users user = ms.findUser(request.getParameter("specId"));
                 ms.addSpecialist(incident, user, manager);
                 response.sendRedirect(request.getContextPath() + "/manager");
                 return;
             }
+
+            //отклонить
             if (answer.equals("Close")) {
                 getServletContext().setAttribute("commenta", 1);
             }
+
+            //согласовать
             if (answer.equals("Agree")) {
                 ms.agreeIncident(incident);
                 response.sendRedirect(request.getContextPath() + "/manager/on_agreement");
                 return;
             }
+
+            //готово - отклонение/отмена
             if (answer.equals("pDone")) {
                 if (ms.isTask(manager, incident)) {
-                    ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), null, false);
+                    ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), false, manager);
                 } else {
-                    ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), null, true);
+                    ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), true, manager);
                 }
                 response.sendRedirect(request.getContextPath() + "/manager");
                 return;
             }
-            if (answer.equals("bCommOn")) {
+
+            //комментарии
+            if (answer.equals("bComm")) {
                 request.setAttribute("commento", 1);
+                request.setAttribute("ihistory", 0);
             }
-            if (answer.equals("bCommOff")) {
-                request.setAttribute("commento", 0);
-            }
+
+            //комментировать
             if (answer.equals("bCommGo")) {
                 request.setAttribute("commento", 1);
+                request.setAttribute("ihistory", 0);
                 ms.addComment(request.getParameter("textcomm"), manager, incident);
             }
+            
+            //история
+            if (answer.equals("bHist")) {
+                request.setAttribute("ihistory", 1);
+                request.setAttribute("commento", 0);
+            }
+
+            //в работу
+            if (answer.equals("InWork")) {
+                ms.inWork(incident);
+                response.sendRedirect(request.getContextPath() + "/manager");
+                return;
+            }
+            
+            //выполнить
+            if (answer.equals("Doit")) {
+                request.setAttribute("done", 1);
+            }
+            
+            //Выполнить - Готово
+            if (answer.equals("gDone")) {
+                ms.doneIncident(incident, request.getParameter("decision"));
+                response.sendRedirect(request.getContextPath() + "/manager/manager_done_incidents");
+                return;
+            }
+
             List<Comments> comments = ms.getComments(incident);
             request.setAttribute("comments", comments);
+            List<History> history = ms.getHistory(incident);
+            request.setAttribute("allhistory", history);
             request.getRequestDispatcher("/WEB-INF/manager/incident_data.jsp").forward(request, response);
+        }
+
+        //список закрытых обращений =============================================================================================================
+        if ("/manager/closed".equals(request.getServletPath())) {
+            getServletContext().setAttribute("closedIncidentsManager", ms.getClosedIncidentsManager("none"));
+            request.getRequestDispatcher("/WEB-INF/manager/closed.jsp").forward(request, response);
+        }
+
+        //список обращений менеджера =============================================================================================================
+        if ("/manager/manager_incidents".equals(request.getServletPath())) {
+            getServletContext().setAttribute("openIncidentsManager", ms.getSpecialistOpenIncidents(manager));
+            request.getRequestDispatcher("/WEB-INF/manager/manager_incidents.jsp").forward(request, response);
+        }
+
+        //список обращений менеджера =============================================================================================================
+        if ("/manager/manager_done_incidents".equals(request.getServletPath())) {
+            getServletContext().setAttribute("doneIncidentsManager", ms.getSpecialistDoneIncidents(manager));
+            request.getRequestDispatcher("/WEB-INF/manager/manager_done_incidents.jsp").forward(request, response);
         }
     }
 
@@ -266,16 +358,44 @@ public class manager_controller extends HttpServlet {
         if (req.getParameter("Agree") != null) {
             return "Agree";
         }
-        if (req.getParameter("bCommOn") != null) {
-            return "bCommOn";
-        }
-        if (req.getParameter("bCommOff") != null) {
-            return "bCommOff";
+        if (req.getParameter("bComm") != null) {
+            return "bComm";
         }
         if (req.getParameter("bCommGo") != null) {
             return "bCommGo";
         }
+        if (req.getParameter("bHist") != null) {
+            return "bHist";
+        }
+        if (req.getParameter("rolemoder") != null) {
+            return "rolemoder";
+        }
+        if (req.getParameter("rolespec") != null) {
+            return "rolespec";
+        }
+        if (req.getParameter("InWork") != null) {
+            return "InWork";
+        }
+        if (req.getParameter("Doit") != null) {
+            return "Doit";
+        }
+        if (req.getParameter("gDone") != null) {
+            return "gDone";
+        }
         return "none";
     }
 
+    private void onSideBar(String role) {
+        //руководитель
+        if (role.equals("rolemoder")) {
+            getServletContext().setAttribute("ismoder", 1);
+            getServletContext().setAttribute("isspec", 0);
+        }
+
+        //специалист
+        if (role.equals("rolespec")) {
+            getServletContext().setAttribute("ismoder", 0);
+            getServletContext().setAttribute("isspec", 1);
+        }
+    }
 }

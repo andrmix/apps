@@ -20,7 +20,8 @@ import session.ManagementSystemLocal;
  *
  * @author admin
  */
-@WebServlet(name = "user_controller", urlPatterns = {"/", "/user", "/logout"})
+@WebServlet(name = "user_controller",
+        urlPatterns = {"/", "/user", "/logout", "/change_password"})
 public class user_controller extends HttpServlet {
 
     @EJB(name = "ManagementSystem")
@@ -29,31 +30,92 @@ public class user_controller extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
+        //корень =============================================================================================================
         if ("/".equals(request.getServletPath())) {
             response.sendRedirect("user");
         }
+
+        //выход =============================================================================================================
         if ("/logout".equals(request.getServletPath())) {
             HttpSession session = request.getSession(false);
-            if (session!= null){
+            if (session != null) {
                 session.invalidate();
             }
             response.sendRedirect("/help");
             return;
         }
+
+        //смена пароля =============================================================================================================
+        if ("/change_password".equals(request.getServletPath())) {
+            getServletContext().setAttribute("no", 0);
+
+            //отмена
+            if (request.getParameter("cancel") != null) {
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    session.invalidate();
+                }
+                response.sendRedirect("/help");
+                return;
+            }
+
+            //сброс пароля
+            if (request.getParameter("resetPass") != null) {
+                String pass1 = request.getParameter("pass1");
+                String pass2 = request.getParameter("pass2");
+                if (pass1.equals(pass2)) {
+                    Users user = ms.findUser(request.getUserPrincipal().getName());
+                    ms.setNewPassword(user, pass1);
+                    HttpSession session = request.getSession(false);
+                    if (session != null) {
+                        session.invalidate();
+                    }
+                    response.sendRedirect("/help");
+                    return;
+                } else {
+                    getServletContext().setAttribute("no", 1);
+                }
+            }
+
+            request.getRequestDispatcher("/WEB-INF/change_password.jsp").forward(request, response);
+        }
+
+        //пользователь =============================================================================================================
         if (request.isUserInRole("user")) {
             Users user = ms.findUser(request.getUserPrincipal().getName());
-            request.setAttribute("user", user);
-            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "none"));
-            getServletContext().setAttribute("openIncidentsNew", ms.getOpenIncidentsNew(user));
-            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "none"));
-            getServletContext().setAttribute("closedIncidentsNew", ms.getClosedIncidentsNew(user));
-            request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
+            if (ms.isChangePassword(user)) {
+                response.sendRedirect("change_password");
+            } else {
+                request.setAttribute("user", user);
+                getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "none"));
+                getServletContext().setAttribute("openIncidentsNew", ms.getOpenIncidentsNew(user));
+                getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "none"));
+                getServletContext().setAttribute("closedIncidentsNew", ms.getClosedIncidentsNew(user));
+                request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
+            }
+            
+            //админ ============================================================================================================= 
         } else if (request.isUserInRole("admin")) {
             response.sendRedirect("admin");
+            
+            //руководитель =============================================================================================================
         } else if (request.isUserInRole("manager")) {
-            response.sendRedirect("manager");
+            Users manager = ms.findUser(request.getUserPrincipal().getName());
+            if (ms.isChangePassword(manager)) {
+                response.sendRedirect("change_password");
+            } else {
+                response.sendRedirect("manager");
+            }
+            
+            //специалист =============================================================================================================
         } else if (request.isUserInRole("specialist")) {
-            response.sendRedirect("specialist");
+            Users specialist = ms.findUser(request.getUserPrincipal().getName());
+            if (ms.isChangePassword(specialist)) {
+                response.sendRedirect("change_password");
+            } else {
+                response.sendRedirect("specialist");
+            }
         }
     }
 

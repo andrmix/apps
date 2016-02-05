@@ -46,6 +46,7 @@
                     </table>
                     <input type="submit" value="Редактировать" name="Edit" class="ibutt"/>
                     <input type="submit" value="Удалить" name="Delete" class="ibutt"/>
+                    <input type="submit" value="Сброс пароля" name="resetPass" class="ibutt"/>
                     <input type="submit" value="Отмена" name="Cancel" class="ibutt"/>
                 </div>
             </div>

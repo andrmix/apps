@@ -12,10 +12,10 @@
         <title>Решение</title>
     </head>
     <body>
-        <form action='<c:url value="/manager/allocated"/>' method="POST">
+        <form action='<c:url value="/manager/manager_done_incidents"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Нераспределенные обращения</div></div>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Выполненные обращения</div></div>
             </div>
             <div id="sidebar">
                 <c:choose>
@@ -28,7 +28,7 @@
                                         <span class="count">${unallocatedIncidentsNew.size()}</span>
                                     </c:if>
                                 </a></p>
-                            <p><a href='<c:url value="/manager/allocated"/>'><span class="videl">Распределенные обращения</span></a></p>
+                            <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения</a></p>
                             <p><a href='<c:url value="/manager/on_agreement"/>'>На согласование
                                     <c:if test="${agreeIncidentsNew.size() gt 0}">
                                         <span class="count">${agreeIncidentsNew.size()}</span>
@@ -52,7 +52,7 @@
                                         <span class="count">${openIncidentsManagerNew.size()}</span>
                                     </c:if>
                                 </a></p>
-                            <p><a href='<c:url value="/manager/manager_done_incidents"/>'>Выполненные обращения</a></p>
+                            <p><a href='<c:url value="/manager/manager_done_incidents"/>'><span class="videl">Выполненные обращения</span></a></p>
                         </div>
                     </c:when>
                     <c:otherwise>
@@ -64,24 +64,22 @@
                 <table class="incidents_tab">
                     <thead>
                         <tr>
-                            <th><a href='<c:url value="/sort_by_name_allo"/>'>Заголовок инцидента</a></th>
-                            <th><a href='<c:url value="/sort_by_date_allo"/>'>Дата/Время</a></th>
-                            <th><a href='<c:url value="/sort_by_status_allo"/>'>Статус</a></th>
-                            <th><a href='<c:url value="/sort_by_zay_allo"/>'>Заявитель</a></th>
-                            <th><a href='<c:url value="/sort_by_spec_allo"/>'>Специалист</a></th>
+                            <th><a href='<c:url value="/sort_by_name"/>'>Заголовок инцидента</a></th>
+                            <th><a href='<c:url value="/sort_by_date"/>'>Дата/Время</a></th>
+                            <th><a href='<c:url value="/sort_by_spec"/>'>Заявитель</a></th>
+                            <th>Дата/Время выполнения</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:if test="${allocatedIncidents.isEmpty()}">
-                        <td colspan="5" style="text-align: center;">Распределенных инцидентов нет</td>
+                        <c:if test="${doneIncidentsManager.isEmpty()}">
+                        <td colspan="4" style="text-align: center;">Выполненных инцидентов нет</td>
                     </c:if>
-                    <c:forEach var="incident" items="${allocatedIncidents}">
+                    <c:forEach var="incident" items="${doneIncidentsManager}">
                         <tr>
                             <td><a href='<c:url value="/manager/incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
                             <td>${incident.dateIncident} ${incident.timeIncident}</td>
-                            <td>${incident.status.name}</td>
                             <td>${incident.zayavitel.name}</td>
-                            <td>${incident.specialist.name}</td>
+                            <td>${incident.dateDone} ${incident.timeDone}</td>
                         </tr>
                     </c:forEach>
                     </tbody>

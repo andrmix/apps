@@ -43,3 +43,33 @@
     margin-left: 10px;
     color: #3a3633;
 }
+
+#pan_moder{
+    width: 287px;
+    padding: 5px;
+    background: #696969;
+}
+
+.ibutta{
+    margin-left: 30px;
+    color: #C0C0C0;
+    border: 0;
+    background: #3a3633;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.ibutta:hover{
+    color: #FFFFFF;
+}
+
+.ibuttav{
+    margin-left: 30px;
+    color: #FFA500;
+    border: 0;
+    background: #3a3633;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 10px;
+}

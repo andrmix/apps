@@ -35,17 +35,15 @@
                     <thead>
                         <tr>
                             <th><a href='<c:url value="/sort_by_name_closed"/>'>Заголовок обращения</a></th>
-                            <th><a href='<c:url value="/sort_by_date_closed"/>'>Дата</a></th>
-                            <th>Время</th>
+                            <th><a href='<c:url value="/sort_by_date_closed"/>'>Дата/Время</a></th>
                             <th><a href='<c:url value="/sort_by_status_closed"/>'>Статус</a></th>
                             <th><a href='<c:url value="/sort_by_spec_closed"/>'>Исполнитель</a></th>
-                            <th>Дата закрытия</th>
-                            <th>Время закрытия</th>
+                            <th>Дата/Время закрытия</th>
                         </tr>
                     </thead>
                     <tbody>
                         <c:if test="${closedIncidents.isEmpty()}">
-                        <td colspan="7" style="text-align: center;">Закрытых инцидентов нет</td>
+                        <td colspan="5" style="text-align: center;">Закрытых инцидентов нет</td>
                     </c:if>
                     <c:forEach var="incident" items="${closedIncidents}">
                         <c:choose>
@@ -57,12 +55,10 @@
                                 </c:otherwise>
                             </c:choose>
                             <td><a href='<c:url value="/user/user_incident?id=${incident.id}"/>'>${incident.title}</a></td>
-                            <td>${incident.dateIncident}</td>
-                            <td>${incident.timeIncident}</td>
+                            <td>${incident.dateIncident} ${incident.timeIncident}</td>
                             <td>${incident.status.name}</td>
                             <td>${incident.specialist.name}</td>
-                            <td>${incident.dateClose}</td>
-                            <td>${incident.timeClose}</td>
+                            <td>${incident.dateClose} ${incident.timeClose}</td>
                         </tr>
                     </c:forEach>
                     </tbody>

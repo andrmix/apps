@@ -78,6 +78,8 @@ public class Users implements Serializable {
     private Collection<Incidents> incidentsCollection;
     @OneToMany(mappedBy = "specialist")
     private Collection<Incidents> incidentsCollection1;
+    @OneToMany(mappedBy = "manager")
+    private Collection<Incidents> incidentsCollection2;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "actioner")
     private Collection<History> historyCollection;
     @JoinColumn(name = "depart", referencedColumnName = "id")
@@ -172,6 +174,15 @@ public class Users implements Serializable {
 
     public void setIncidentsCollection1(Collection<Incidents> incidentsCollection1) {
         this.incidentsCollection1 = incidentsCollection1;
+    }
+
+    @XmlTransient
+    public Collection<Incidents> getIncidentsCollection2() {
+        return incidentsCollection2;
+    }
+
+    public void setIncidentsCollection2(Collection<Incidents> incidentsCollection2) {
+        this.incidentsCollection2 = incidentsCollection2;
     }
 
     @XmlTransient

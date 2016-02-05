@@ -5,38 +5,32 @@
 body {
     font-family: '9369';
     margin: 0;
+    background: #F0F8FF;
 }
 
-h1 {
-    font-size: 36px;
-    margin: 0;
-    color: #fff;
-}
-   
 .galka{
-    position: absolute;
-    left: 60px;
-    top: 20px;
-    height: 80px;
+    height: 150px;
 }
-   
+
+.resh{
+    font-size: 100px;
+    margin-top: 0;
+    color: #3a3633;
+}
+
 #header {
-    position: fixed;
-    background: #808080;
-    padding: 10px;
-    padding-left: 150px;
-    padding-top: 40px;
-    top: 0;
-    left: 0;
-    height: 80px;
-    width: 100%;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    margin: auto;
+    margin-top: 50px;
+    height: 320px;
+    width: 700px;
+    text-align: center;
+    border-bottom: 1px solid #1A1817;
 }
-   
+
 #lb{
     margin: auto;
     text-align: center;
-    margin-top: 250px;
+    margin-top: 60px;
     width: 450px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
@@ -45,11 +39,11 @@ h1 {
     margin-left: 0;
     padding-left: 0;
 }
-    
+
 #lb #loginBox li{
     list-style-type: none;
 }
-    
+
 #lb #loginBox .submit{
     font-family: '9369';
     cursor: pointer;

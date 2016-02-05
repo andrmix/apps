@@ -33,11 +33,11 @@
     padding: 10px;
 }
 
-.plashka{
+.plashka_on{
     font-family: '9369';
     cursor: pointer;
     background: #808080;
-    width: 100%;
+    width: 49.8%;
     height: 30px;
     font-size: 15px;
     color: #Ffffff;
@@ -45,25 +45,32 @@
     margin-top: 20px;
 }
 
-.plashka:hover{
+.plashka_on:hover{
+    color: #000000;
+}
+.plashka_off{
+    font-family: '9369';
+    cursor: pointer;
     background: #A9A9A9;
+    width: 49.8%;
+    height: 30px;
+    font-size: 15px;
+    color: #Ffffff;
+    border: 0;
+    margin-top: 20px;
+}
+
+.plashka_off:hover{
+    color: #000000;
 }
 
 .comments{
     margin: 0;
-    margin-top: 20px;
     font-family: '9369';
     font-size: 15px;
     border-collapse: collapse;
     text-align: left;
     width: 100%;
-}
-
-.comments th{
-    background: #808080;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
 }
 
 .comments td {
@@ -73,8 +80,12 @@
     padding: 10px;
 }
 
+.comments tbody tr {
+    background: white;
+}
+
 .comments tbody tr:nth-child(odd) {
-    background: #FFFAFA;
+    background: #F0F8FF;
 }
 
 .commgo{

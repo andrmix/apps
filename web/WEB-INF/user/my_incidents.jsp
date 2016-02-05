@@ -35,8 +35,7 @@
                     <thead>
                         <tr>
                             <th><a href='<c:url value="/sort_by_name"/>'>Заголовок инцидента</a></th>
-                            <th><a href='<c:url value="/sort_by_date"/>'>Дата</a></th>
-                            <th>Время</th>
+                            <th><a href='<c:url value="/sort_by_date"/>'>Дата/Время</a></th>
                             <th><a href='<c:url value="/sort_by_status"/>'>Статус</a></th>
                             <th><a href='<c:url value="/sort_by_spec"/>'>Исполнитель</a></th>
                             <th>Вложение</th>
@@ -44,7 +43,7 @@
                     </thead>
                     <tbody>
                         <c:if test="${openIncidents.isEmpty()}">
-                        <td colspan="6" style="text-align: center;">Активных инцидентов нет</td>
+                        <td colspan="5" style="text-align: center;">Активных инцидентов нет</td>
                     </c:if>
                     <c:forEach var="incident" items="${openIncidents}">
                         <c:choose>
@@ -56,8 +55,7 @@
                                 </c:otherwise>
                             </c:choose>
                             <td><a href='<c:url value="/user/user_incident?id=${incident.id}"/>'>${incident.title}</a></td>
-                            <td>${incident.dateIncident}</td>
-                            <td>${incident.timeIncident}</td>
+                            <td>${incident.dateIncident} ${incident.timeIncident}</td>
                             <td>${incident.status.name}</td>
                             <td><c:if test="${incident.specialist ne null}">
                                     ${incident.specialist.name}

@@ -13,26 +13,53 @@
         <title>Решение</title>
     </head>
     <body>
-        <form action='<c:url value="/admin"/>' method="POST">
+        <form action='<c:url value="/manager/specialists"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
                 <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Сотрудники</div></div>
             </div>
             <div id="sidebar">
-                <p><a href='<c:url value="/manager/new_task"/>'>Новое задание</a></p>
-                <p><a href='<c:url value="/manager"/>'>Нераспределенные обращения
-                        <c:if test="${unallocatedIncidentsNew.size() gt 0}">
-                            <span class="count">${unallocatedIncidentsNew.size()}</span>
-                        </c:if>
-                    </a></p>
-                <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения</a></p>
-                <p><a href='<c:url value="/manager/closed"/>'>Завершенные обращения</a></p>
-                <p><a href='<c:url value="/manager/on_agreement"/>'>На согласование
-                        <c:if test="${agreeIncidentsNew.size() gt 0}">
-                            <span class="count">${agreeIncidentsNew.size()}</span>
-                        </c:if>
-                    </a></p>
-                <p><a href='<c:url value="/manager/specialists"/>'><span class="videl">Специалисты</span></a></p>
+            <c:choose>
+                <c:when test="${ismoder == 1}">
+                    <input type="submit" value="[ - ] Руководитель" name="rolemoder" class="ibuttav"/>
+                    <div id="pan_moder">
+                        <p><a href='<c:url value="/manager/new_task"/>'>Новое задание</a></p>
+                        <p><a href='<c:url value="/manager"/>'>Нераспределенные обращения
+                                <c:if test="${unallocatedIncidentsNew.size() gt 0}">
+                                    <span class="count">${unallocatedIncidentsNew.size()}</span>
+                                </c:if>
+                            </a></p>
+                        <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения</a></p>
+                        <p><a href='<c:url value="/manager/on_agreement"/>'>На согласование
+                                <c:if test="${agreeIncidentsNew.size() gt 0}">
+                                    <span class="count">${agreeIncidentsNew.size()}</span>
+                                </c:if>
+                            </a></p>
+                        <p><a href='<c:url value="/manager/closed"/>'>Архив обращений</a></p>
+                        <p><a href='<c:url value="/manager/specialists"/>'><span class="videl">Специалисты</span></a></p>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <input type="submit" value="[+] Руководитель" name="rolemoder" class="ibutta"/>
+                </c:otherwise>
+            </c:choose>
+            <br>
+            <c:choose>
+                <c:when test="${isspec == 1}">
+                    <input type="submit" value="[ - ] Специалист" name="rolespec" class="ibuttav"/>
+                    <div id="pan_moder">
+                        <p><a href='<c:url value="/manager/manager_incidents"/>'>Активные обращения 
+                                <c:if test="${openIncidentsManagerNew.size() gt 0}">
+                                    <span class="count">${openIncidentsManagerNew.size()}</span>
+                                </c:if>
+                            </a></p>
+                        <p><a href='<c:url value="/manager/manager_done_incidents"/>'>Выполненные обращения</a></p>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <input type="submit" value="[+] Специалист" name="rolespec" class="ibutta"/>
+                </c:otherwise>
+            </c:choose>
             </div>
             <div id="content">
                 <table class="incidents_tab">
