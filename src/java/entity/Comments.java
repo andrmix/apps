@@ -36,10 +36,17 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Comments.findAll", query = "SELECT c FROM Comments c"),
     @NamedQuery(name = "Comments.findById", query = "SELECT c FROM Comments c WHERE c.id = :id"),
     @NamedQuery(name = "Comments.findByText", query = "SELECT c FROM Comments c WHERE c.text = :text"),
-    @NamedQuery(name = "Comments.findByIncident", query = "SELECT c FROM Comments c WHERE c.incident = :incident"),
     @NamedQuery(name = "Comments.findByDateComment", query = "SELECT c FROM Comments c WHERE c.dateComment = :dateComment"),
-    @NamedQuery(name = "Comments.findByTimeComment", query = "SELECT c FROM Comments c WHERE c.timeComment = :timeComment")})
+    @NamedQuery(name = "Comments.findByTimeComment", query = "SELECT c FROM Comments c WHERE c.timeComment = :timeComment"),
+
+    @NamedQuery(name = "Comments.findByIncident", query = "SELECT c FROM Comments c WHERE c.incident = :incident"),
+    @NamedQuery(name = "Comments.findByArcIncident", query = "SELECT c FROM Comments c WHERE c.arcincident = :arcincident"),
+    @NamedQuery(name = "Comments.updateClosed", query = "UPDATE Comments c SET c.arcincident = :arcincident WHERE c.incident = :incident"),
+    @NamedQuery(name = "Comments.deleteClosed", query = "DELETE FROM Comments c WHERE c.arcincident = :arcincident"),
+    @NamedQuery(name = "Comments.deleteOpen", query = "DELETE FROM Comments c WHERE c.incident = :incident")
+})
 public class Comments implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,8 +68,11 @@ public class Comments implements Serializable {
     @Column(name = "timeComment")
     @Temporal(TemporalType.TIME)
     private Date timeComment;
+    @JoinColumn(name = "arcincident", referencedColumnName = "id")
+    @ManyToOne
+    private Arcincidents arcincident;
     @JoinColumn(name = "incident", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Incidents incident;
     @JoinColumn(name = "usersLogin", referencedColumnName = "login")
     @ManyToOne(optional = false)
@@ -122,6 +132,14 @@ public class Comments implements Serializable {
         this.timeComment = timeComment;
     }
 
+    public Arcincidents getArcincident() {
+        return arcincident;
+    }
+
+    public void setArcincident(Arcincidents arcincident) {
+        this.arcincident = arcincident;
+    }
+
     public Incidents getIncident() {
         return incident;
     }
@@ -162,5 +180,5 @@ public class Comments implements Serializable {
     public String toString() {
         return "entity.Comments[ id=" + id + " ]";
     }
-    
+
 }

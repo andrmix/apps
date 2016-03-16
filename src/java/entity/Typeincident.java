@@ -31,11 +31,13 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Typeincident.findAll", query = "SELECT t FROM Typeincident t"),
-    @NamedQuery(name = "Typeincident.findAllOrderName", query = "SELECT t FROM Typeincident t ORDER BY t.name"),
     @NamedQuery(name = "Typeincident.findById", query = "SELECT t FROM Typeincident t WHERE t.id = :id"),
-    @NamedQuery(name = "Typeincident.findSearch", query = "SELECT t FROM Typeincident t WHERE t.name like :typeincident"),
-    @NamedQuery(name = "Typeincident.findByName", query = "SELECT t FROM Typeincident t WHERE t.name = :name")})
+    @NamedQuery(name = "Typeincident.findByName", query = "SELECT t FROM Typeincident t WHERE t.name = :name"),
+
+    @NamedQuery(name = "Typeincident.findAllOrderName", query = "SELECT t FROM Typeincident t ORDER BY t.name"),
+    @NamedQuery(name = "Typeincident.findSearch", query = "SELECT t FROM Typeincident t WHERE t.name like :typeincident")})
 public class Typeincident implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +49,8 @@ public class Typeincident implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "name")
     private String name;
+    @OneToMany(mappedBy = "typeIncident")
+    private Collection<Arcincidents> arcincidentsCollection;
     @OneToMany(mappedBy = "typeIncident")
     private Collection<Incidents> incidentsCollection;
 
@@ -76,6 +80,15 @@ public class Typeincident implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @XmlTransient
+    public Collection<Arcincidents> getArcincidentsCollection() {
+        return arcincidentsCollection;
+    }
+
+    public void setArcincidentsCollection(Collection<Arcincidents> arcincidentsCollection) {
+        this.arcincidentsCollection = arcincidentsCollection;
     }
 
     @XmlTransient
@@ -111,5 +124,5 @@ public class Typeincident implements Serializable {
     public String toString() {
         return "entity.Typeincident[ id=" + id + " ]";
     }
-    
+
 }

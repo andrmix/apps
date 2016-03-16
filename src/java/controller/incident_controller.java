@@ -1,16 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controller;
 
+import entity.Arcincidents;
 import entity.Comments;
 import entity.History;
 import entity.Incidents;
 import entity.Typeincident;
 import entity.Users;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -18,17 +16,26 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import session.GetterBeanLocal;
 import session.ManagementSystemLocal;
 
 @WebServlet(name = "incident_controller", urlPatterns = {"/user/user_incident",
     "/user/new_incident", "/user/closed_incidents", "/user/done_incidents",
     "/sort_by_name", "/sort_by_date", "/sort_by_status", "/sort_by_spec",
-    "/sort_by_name_closed", "/sort_by_date_closed", "/sort_by_status_closed",
-    "/sort_by_spec_closed"})
+    "/sort_by_name_closed", "/sort_by_dateo_closed", "/sort_by_status_closed",
+    "/sort_by_spec_closed", "/sort_by_datec_closed"})
 public class incident_controller extends HttpServlet {
 
-    @EJB(name = "ManagementSystem")
+    @EJB
     private ManagementSystemLocal ms;
+
+    @EJB
+    private GetterBeanLocal gb;
+
+    boolean filtered = false;
+    String dateBeg = null;
+    String dateEnd = null;
+    String filterParam = null;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -39,35 +46,45 @@ public class incident_controller extends HttpServlet {
 
         //сортировка =================================================================================================
         if ("/sort_by_name".equals(userPath)) {
-            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "name"));
+            getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "name"));
             request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
         }
         if ("/sort_by_date".equals(userPath)) {
-            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "date"));
+            getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "date"));
             request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
         }
         if ("/sort_by_status".equals(userPath)) {
-            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "status"));
+            getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "status"));
             request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
         }
         if ("/sort_by_spec".equals(userPath)) {
-            getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "spec"));
+            getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "spec"));
             request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
         }
+
         if ("/sort_by_name_closed".equals(userPath)) {
-            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "name"));
+            getServletContext().setAttribute("action", userPath);
+            filterOn(request, user, "name");
             request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
         }
-        if ("/sort_by_date_closed".equals(userPath)) {
-            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "date"));
+        if ("/sort_by_dateo_closed".equals(userPath)) {
+            getServletContext().setAttribute("action", userPath);
+            filterOn(request, user, "dateo");
+            request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
+        }
+        if ("/sort_by_datec_closed".equals(userPath)) {
+            getServletContext().setAttribute("action", userPath);
+            filterOn(request, user, "datec");
             request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
         }
         if ("/sort_by_status_closed".equals(userPath)) {
-            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "status"));
+            getServletContext().setAttribute("action", userPath);
+            filterOn(request, user, "status");
             request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
         }
         if ("/sort_by_spec_closed".equals(userPath)) {
-            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "spec"));
+            getServletContext().setAttribute("action", userPath);
+            filterOn(request, user, "spec");
             request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
         }
 
@@ -75,11 +92,96 @@ public class incident_controller extends HttpServlet {
         if ("/user/user_incident".equals(userPath)) {
             String answer = null;
             answer = checkAction(request);
-            Incidents incident = ms.findIncident(Integer.parseInt(request.getParameter("id")));
-            request.setAttribute("commento", 1);
+            request.setAttribute("commento", 0);
             request.setAttribute("ihistory", 0);
-            if (incident.getNew1().equals(1) && (incident.getStatus().getId().equals(3) || incident.getStatus().getId().equals(7))) {
-                ms.setNotNewIncident(incident);
+
+            int idIncident = 0;
+            idIncident = Integer.parseInt(request.getParameter("id"));
+            Incidents incident = ms.findIncident(idIncident);
+            if (incident == null) {
+                Arcincidents arcincident = ms.findArcIncident(idIncident);
+
+                if (arcincident.getNew1().equals(1) && arcincident.getStatus().getId().equals(8)) {
+                    ms.setNotNewIncident(null, arcincident);
+                }
+
+                //комментарии
+                if (answer.equals("bComm")) {
+                    request.setAttribute("commento", 1);
+                    request.setAttribute("ihistory", 0);
+                    List<Comments> comments = gb.getComments(null, arcincident);
+                    request.setAttribute("comments", comments);
+                }
+
+                //история
+                if (answer.equals("bHist")) {
+                    request.setAttribute("ihistory", 1);
+                    request.setAttribute("commento", 0);
+                    List<History> history = gb.getHistory(null, arcincident);
+                    request.setAttribute("allhistory", history);
+                }
+
+                request.setAttribute("incident", arcincident);
+            } else {
+
+                if (incident.getNew1().equals(1) && incident.getStatus().getId().equals(4)) {
+                    ms.setNotNewIncident(incident, null);
+                }
+
+                //редактировать
+                if (answer.equals("Edit")) {
+                    List<Typeincident> typs = gb.getTypesIncidentsForEdit(incident.getTypeIncident());
+                    request.setAttribute("incident", incident);
+                    request.setAttribute("typs", typs);
+                    request.setAttribute("editincident", 1);
+                    request.getRequestDispatcher("/WEB-INF/user/new_incident.jsp").forward(request, response);
+                }
+
+                //отменить
+                if (answer.equals("Done")) {
+                    ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), false, null);
+                    response.sendRedirect(request.getContextPath() + "/user");
+                    return;
+                }
+
+                //подтвердить
+                if (answer.equals("Accept")) {
+                    ms.acceptIncident(incident);
+                    response.sendRedirect(request.getContextPath() + "/user");
+                    return;
+                }
+
+                //не подтверждать
+                if (answer.equals("NoAccept")) {
+                    request.setAttribute("commenta", 1);
+                }
+
+                //комментировать
+                if (answer.equals("bCommGo")) {
+                    request.setAttribute("commento", 1);
+                    request.setAttribute("ihistory", 0);
+                    ms.addComment(request.getParameter("textcomm"), user, incident);
+                    List<Comments> comments = gb.getComments(incident, null);
+                    request.setAttribute("comments", comments);
+                }
+
+                //комментарии
+                if (answer.equals("bComm")) {
+                    request.setAttribute("commento", 1);
+                    request.setAttribute("ihistory", 0);
+                    List<Comments> comments = gb.getComments(incident, null);
+                    request.setAttribute("comments", comments);
+                }
+
+                //история
+                if (answer.equals("bHist")) {
+                    request.setAttribute("ihistory", 1);
+                    request.setAttribute("commento", 0);
+                    List<History> history = gb.getHistory(incident, null);
+                    request.setAttribute("allhistory", history);
+                }
+
+                request.setAttribute("incident", incident);
             }
 
             //отмена
@@ -92,59 +194,6 @@ public class incident_controller extends HttpServlet {
             if (answer.equals("Close")) {
                 request.setAttribute("commenta", 1);
             }
-
-            //редактировать
-            if (answer.equals("Edit")) {
-                List<Typeincident> typs = ms.getTypesIncidentsForEdit(incident.getTypeIncident());
-                request.setAttribute("incident", incident);
-                request.setAttribute("typs", typs);
-                request.setAttribute("editincident", 1);
-                request.getRequestDispatcher("/WEB-INF/user/new_incident.jsp").forward(request, response);
-            }
-
-            //отменить
-            if (answer.equals("Done")) {
-                ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), false, null);
-                response.sendRedirect(request.getContextPath() + "/user");
-                return;
-            }
-
-            //подтвердить
-            if (answer.equals("Accept")) {
-                ms.acceptIncident(incident);
-                response.sendRedirect(request.getContextPath() + "/user");
-                return;
-            }
-
-            //не подтверждать
-            if (answer.equals("NoAccept")) {
-                request.setAttribute("commenta", 1);
-            }
-
-            //комментарии
-            if (answer.equals("bComm")) {
-                request.setAttribute("commento", 1);
-                request.setAttribute("ihistory", 0);
-            }
-
-            //комментировать
-            if (answer.equals("bCommGo")) {
-                request.setAttribute("commento", 1);
-                request.setAttribute("ihistory", 0);
-                ms.addComment(request.getParameter("textcomm"), user, incident);
-            }
-
-            //история
-            if (answer.equals("bHist")) {
-                request.setAttribute("ihistory", 1);
-                request.setAttribute("commento", 0);
-            }
-
-            request.setAttribute("incident", incident);
-            List<Comments> comments = ms.getComments(incident);
-            request.setAttribute("comments", comments);
-            List<History> history = ms.getHistory(incident);
-            request.setAttribute("allhistory", history);
         }
 
         //новое обращения =================================================================================================
@@ -180,10 +229,10 @@ public class incident_controller extends HttpServlet {
                 int editInca = 0;
                 if (request.getParameter("typId") != null) {
                     Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
-                    typs = ms.getTypesIncidentsForEdit(ti);
+                    typs = gb.getTypesIncidentsForEdit(ti);
                     request.setAttribute("editincident", 1);
                 } else {
-                    typs = ms.getAllTypesIncident("none");
+                    typs = gb.getAllTypesIncident("none");
                     request.setAttribute("editincident", 0);
                 }
                 request.setAttribute("typs", typs);
@@ -198,17 +247,17 @@ public class incident_controller extends HttpServlet {
             }
 
             getServletContext().setAttribute("editincident", 0);
-            List<Typeincident> typs = ms.getAllTypesIncident("none");
+            List<Typeincident> typs = gb.getAllTypesIncident("none");
             request.setAttribute("typs", typs);
         }
 
         //закрытые обращения =================================================================================================
         if ("/user/closed_incidents".equals(userPath)) {
-            String answer = null;
-            answer = checkAction(request);
-            getServletContext().setAttribute("openIncidentsNew", ms.getOpenIncidentsNew(user));
-            getServletContext().setAttribute("closedIncidentsNew", ms.getClosedIncidentsNew(user));
-            getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "none"));
+            getServletContext().setAttribute("openIncidentsNew", gb.getOpenIncidentsNew(user));
+            getServletContext().setAttribute("closedIncidentsNew", gb.getClosedIncidentsNew(user));
+            getServletContext().setAttribute("action", userPath);
+            filtered = false;
+            filterOn(request, user, "none");
         }
 
         request.getRequestDispatcher("/WEB-INF" + userPath + ".jsp").forward(request, response);
@@ -287,7 +336,76 @@ public class incident_controller extends HttpServlet {
         if (req.getParameter("bHist") != null) {
             return "bHist";
         }
+        if (req.getParameter("bToolsOn") != null) {
+            return "bToolsOn";
+        }
+        if (req.getParameter("bToolsOff") != null) {
+            return "bToolsOff";
+        }
+        if (req.getParameter("dFilter") != null) {
+            return "dFilter";
+        }
         return "none";
+    }
+
+    private void filterOn(HttpServletRequest req, Users user, String attrib) {
+        String answer = null;
+        answer = checkAction(req);
+
+        getServletContext().setAttribute("openr", 0);
+        getServletContext().setAttribute("closer", 1);
+        getServletContext().setAttribute("tools", 0);
+
+        if (!filtered) {
+            getServletContext().setAttribute("dateb", new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+            getServletContext().setAttribute("datee", new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+        }
+
+        //открыть панель
+        if (answer.equals("bToolsOn")) {
+            getServletContext().setAttribute("tools", 1);
+        }
+
+        //фильтр
+        if (answer.equals("dFilter") || filtered) {
+            if (req.getParameter("dateBegin") != null) {
+                dateBeg = req.getParameter("dateBegin");
+                dateEnd = req.getParameter("dateEnd");
+            }
+            if (req.getParameter("group1") != null) {
+                String param = req.getParameter("group1");
+                if (param != null) {
+                    if (param.equals("dClose")) {
+                        filterParam = "close";
+                    }
+                    if (param.equals("dOpen")) {
+                        filterParam = "open";
+                    }
+                }
+            }
+            if (filterParam.equals("open")) {
+                getServletContext().setAttribute("openr", 1);
+                getServletContext().setAttribute("closer", 0);
+            }
+            if (filterParam.equals("close")) {
+                getServletContext().setAttribute("openr", 0);
+                getServletContext().setAttribute("closer", 1);
+            }
+            getServletContext().setAttribute("closedIncidents",
+                    gb.getClosedIncidentsF(user, attrib, dateBeg, dateEnd, filterParam));
+            getServletContext().setAttribute("tools", 1);
+            getServletContext().setAttribute("dateb", dateBeg);
+            getServletContext().setAttribute("datee", dateEnd);
+            filtered = true;
+        } else {
+            getServletContext().setAttribute("closedIncidents", gb.getClosedIncidents(user, attrib));
+        }
+
+        //закрыть панель
+        if (answer.equals("bToolsOff")) {
+            getServletContext().setAttribute("tools", 0);
+        }
+
     }
 
 }

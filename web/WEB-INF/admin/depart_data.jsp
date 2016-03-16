@@ -15,7 +15,11 @@
         <form action='<c:url value="/admin/depart_data"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Отделы / Данные отдела</div></div>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                    <div class="heada">${usera.name} 
+                        (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                    </div><div class="headb">/ Отделы / Данные отдела</div>
+                </div>
             </div>
             <div id="sidebar">
                 <p><a href='<c:url value="/admin/departs"/>'>< Назад</a></p>

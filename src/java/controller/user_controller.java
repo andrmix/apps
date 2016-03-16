@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import session.GetterBeanLocal;
 import session.ManagementSystemLocal;
 
 /**
@@ -24,8 +25,11 @@ import session.ManagementSystemLocal;
         urlPatterns = {"/", "/user", "/logout", "/change_password"})
 public class user_controller extends HttpServlet {
 
-    @EJB(name = "ManagementSystem")
+    @EJB
     private ManagementSystemLocal ms;
+
+    @EJB
+    private GetterBeanLocal gb;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -84,21 +88,25 @@ public class user_controller extends HttpServlet {
         //пользователь =============================================================================================================
         if (request.isUserInRole("user")) {
             Users user = ms.findUser(request.getUserPrincipal().getName());
+            getServletContext().setAttribute("blo", 0);
+            if (ms.isBlockedUser(user)) {
+                getServletContext().setAttribute("blo", 1);
+                request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
+            }
             if (ms.isChangePassword(user)) {
                 response.sendRedirect("change_password");
             } else {
                 request.setAttribute("user", user);
-                getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "none"));
-                getServletContext().setAttribute("openIncidentsNew", ms.getOpenIncidentsNew(user));
-                getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "none"));
-                getServletContext().setAttribute("closedIncidentsNew", ms.getClosedIncidentsNew(user));
+                getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "none"));
+                getServletContext().setAttribute("openIncidentsNew", gb.getOpenIncidentsNew(user));
+                getServletContext().setAttribute("closedIncidentsNew", gb.getClosedIncidentsNew(user));
                 request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
             }
-            
+
             //админ ============================================================================================================= 
         } else if (request.isUserInRole("admin")) {
             response.sendRedirect("admin");
-            
+
             //руководитель =============================================================================================================
         } else if (request.isUserInRole("manager")) {
             Users manager = ms.findUser(request.getUserPrincipal().getName());
@@ -107,9 +115,10 @@ public class user_controller extends HttpServlet {
             } else {
                 response.sendRedirect("manager");
             }
-            
+
             //специалист =============================================================================================================
         } else if (request.isUserInRole("specialist")) {
+            getServletContext().setAttribute("blo", 0);
             Users specialist = ms.findUser(request.getUserPrincipal().getName());
             if (ms.isChangePassword(specialist)) {
                 response.sendRedirect("change_password");
@@ -119,17 +128,17 @@ public class user_controller extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+/**
+ * Handles the HTTP <code>GET</code> method.
+ *
+ * @param request servlet request
+ * @param response servlet response
+ * @throws ServletException if a servlet-specific error occurs
+ * @throws IOException if an I/O error occurs
+ */
+@Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -143,7 +152,7 @@ public class user_controller extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -154,7 +163,7 @@ public class user_controller extends HttpServlet {
      * @return a String containing servlet description
      */
     @Override
-    public String getServletInfo() {
+        public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 

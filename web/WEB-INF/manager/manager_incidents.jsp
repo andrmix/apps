@@ -15,7 +15,11 @@
         <form action='<c:url value="/manager/manager_incidents"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Активные обращения</div></div>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                    <div class="heada">${user.name}
+                        (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                    </div><div class="headb">/ Активные обращения</div>
+                </div>
             </div>
             <div id="sidebar">
                 <c:choose>
@@ -36,6 +40,7 @@
                                 </a></p>
                             <p><a href='<c:url value="/manager/closed"/>'>Архив обращений</a></p>
                             <p><a href='<c:url value="/manager/specialists"/>'>Специалисты</a></p>
+                            <p><a href='<c:url value="/manager/manager_tools"/>'>Настройки</a></p>
                         </div>
                     </c:when>
                     <c:otherwise>
@@ -64,15 +69,15 @@
                 <table class="incidents_tab">
                     <thead>
                         <tr>
-                            <th><a href='<c:url value="/sort_by_name"/>'>Заголовок инцидента</a></th>
-                            <th><a href='<c:url value="/sort_by_date"/>'>Дата/Время</a></th>
-                            <th><a href='<c:url value="/sort_by_status"/>'>Статус</a></th>
-                            <th><a href='<c:url value="/sort_by_spec"/>'>Заявитель</a></th>
+                            <th><a href='<c:url value="/sort_by_name_m_act"/>'>Заголовок обращения</a></th>
+                            <th><a href='<c:url value="/sort_by_date_m_act"/>'>Дата/Время создания</a></th>
+                            <th><a href='<c:url value="/sort_by_status_m_act"/>'>Статус</a></th>
+                            <th><a href='<c:url value="/sort_by_zay_m_act"/>'>Заявитель</a></th>
                         </tr>
                     </thead>
                     <tbody>
                         <c:if test="${openIncidentsManager.isEmpty()}">
-                        <td colspan="4" style="text-align: center;">Активных инцидентов нет</td>
+                        <td colspan="4" style="text-align: center;">Активных обращений нет</td>
                     </c:if>
                     <c:forEach var="incident" items="${openIncidentsManager}">
                         <c:choose>

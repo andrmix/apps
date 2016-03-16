@@ -15,7 +15,11 @@
         <form action='<c:url value="/admin/user_data"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Сотрудники / Данные сотрудника</div></div>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                    <div class="heada">${usera.name}
+                        (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                    </div><div class="headb">/ Сотрудники / Данные сотрудника</div>
+                </div>
             </div>
             <div id="sidebar">
                 <p><a href='<c:url value="/admin"/>'>< Назад</a></p>
@@ -47,6 +51,14 @@
                     <input type="submit" value="Редактировать" name="Edit" class="ibutt"/>
                     <input type="submit" value="Удалить" name="Delete" class="ibutt"/>
                     <input type="submit" value="Сброс пароля" name="resetPass" class="ibutt"/>
+                    <c:choose>
+                        <c:when test="${user.changePassword == 2}">
+                            <input type="submit" value="Разблокировать" name="unblockUser" class="ibutt"/>
+                        </c:when>
+                        <c:otherwise>
+                            <input type="submit" value="Заблокировать" name="blockUser" class="ibutt"/>
+                        </c:otherwise>
+                    </c:choose>
                     <input type="submit" value="Отмена" name="Cancel" class="ibutt"/>
                 </div>
             </div>

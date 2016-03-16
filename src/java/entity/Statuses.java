@@ -32,9 +32,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Statuses.findAll", query = "SELECT s FROM Statuses s"),
     @NamedQuery(name = "Statuses.findById", query = "SELECT s FROM Statuses s WHERE s.id = :id"),
-    @NamedQuery(name = "Statuses.findAllOrder", query = "SELECT s FROM Statuses s ORDER BY s.id"),
-    @NamedQuery(name = "Statuses.findByName", query = "SELECT s FROM Statuses s WHERE s.name = :name")})
+    @NamedQuery(name = "Statuses.findByName", query = "SELECT s FROM Statuses s WHERE s.name = :name"),
+
+    @NamedQuery(name = "Statuses.findAllOrder", query = "SELECT s FROM Statuses s ORDER BY s.id")})
 public class Statuses implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,11 +49,11 @@ public class Statuses implements Serializable {
     @Column(name = "name")
     private String name;
     @OneToMany(mappedBy = "status")
+    private Collection<Arcincidents> arcincidentsCollection;
+    @OneToMany(mappedBy = "status")
     private Collection<Incidents> incidentsCollection;
     @OneToMany(mappedBy = "status")
     private Collection<History> historyCollection;
-    @OneToMany(mappedBy = "status")
-    private Collection<Acts> actsCollection;
 
     public Statuses() {
     }
@@ -82,6 +84,15 @@ public class Statuses implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Arcincidents> getArcincidentsCollection() {
+        return arcincidentsCollection;
+    }
+
+    public void setArcincidentsCollection(Collection<Arcincidents> arcincidentsCollection) {
+        this.arcincidentsCollection = arcincidentsCollection;
+    }
+
+    @XmlTransient
     public Collection<Incidents> getIncidentsCollection() {
         return incidentsCollection;
     }
@@ -97,15 +108,6 @@ public class Statuses implements Serializable {
 
     public void setHistoryCollection(Collection<History> historyCollection) {
         this.historyCollection = historyCollection;
-    }
-
-    @XmlTransient
-    public Collection<Acts> getActsCollection() {
-        return actsCollection;
-    }
-
-    public void setActsCollection(Collection<Acts> actsCollection) {
-        this.actsCollection = actsCollection;
     }
 
     @Override
@@ -132,5 +134,5 @@ public class Statuses implements Serializable {
     public String toString() {
         return "entity.Statuses[ id=" + id + " ]";
     }
-    
+
 }

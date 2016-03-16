@@ -37,9 +37,16 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "History.findById", query = "SELECT h FROM History h WHERE h.id = :id"),
     @NamedQuery(name = "History.findByDateAction", query = "SELECT h FROM History h WHERE h.dateAction = :dateAction"),
     @NamedQuery(name = "History.findByTimeAction", query = "SELECT h FROM History h WHERE h.timeAction = :timeAction"),
+    @NamedQuery(name = "History.findByText", query = "SELECT h FROM History h WHERE h.text = :text"),
+
     @NamedQuery(name = "History.findByIncident", query = "SELECT h FROM History h WHERE h.incident = :incident"),
-    @NamedQuery(name = "History.findByText", query = "SELECT h FROM History h WHERE h.text = :text")})
+    @NamedQuery(name = "History.findByArcIncident", query = "SELECT h FROM History h WHERE h.arcincident = :arcincident"),
+    @NamedQuery(name = "History.updateClosed", query = "UPDATE History h SET h.arcincident = :arcincident WHERE h.incident = :incident"),
+    @NamedQuery(name = "History.deleteClosed", query = "DELETE FROM History h WHERE h.arcincident = :arcincident"),
+    @NamedQuery(name = "History.deleteOpen", query = "DELETE FROM History h WHERE h.incident = :incident")
+})
 public class History implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +66,9 @@ public class History implements Serializable {
     @Size(max = 255)
     @Column(name = "text")
     private String text;
+    @JoinColumn(name = "arcincident", referencedColumnName = "id")
+    @ManyToOne
+    private Arcincidents arcincident;
     @JoinColumn(name = "incident", referencedColumnName = "id")
     @ManyToOne
     private Incidents incident;
@@ -122,6 +132,14 @@ public class History implements Serializable {
         this.text = text;
     }
 
+    public Arcincidents getArcincident() {
+        return arcincident;
+    }
+
+    public void setArcincident(Arcincidents arcincident) {
+        this.arcincident = arcincident;
+    }
+
     public Incidents getIncident() {
         return incident;
     }
@@ -170,5 +188,5 @@ public class History implements Serializable {
     public String toString() {
         return "entity.History[ id=" + id + " ]";
     }
-    
+
 }

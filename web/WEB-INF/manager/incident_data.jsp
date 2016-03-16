@@ -14,7 +14,12 @@
     <body>
         <div id="header">
             <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-            <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Обращения / Данные обращения</div></div>
+            <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                <div class="heada">${user.name}
+                    (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                </div>
+                <div class="headb">/ Обращения / Данные обращения</div>
+            </div>
         </div>
         <div id="sidebar">
             <p><a href='<c:url value="/manager"/>'>< Назад</a></p>
@@ -37,7 +42,7 @@
                                 <td>${incident.id}</td>
                             </tr>
                             <tr>
-                                <td>Дата и время</td>
+                                <td>Дата и время создания</td>
                                 <td>${incident.dateIncident} ${incident.timeIncident}</td>
                             </tr>
                             <tr>
@@ -61,14 +66,14 @@
                                 <td>Исполнитель</td>
                                 <td>${incident.specialist.name}</td>
                             </tr>
-                            <c:if test="${incident.status.id == 3 || incident.status.id == 4 || incident.status.id == 8}">
+                            <c:if test="${incident.status.id == 4 || incident.status.id == 5}">
                                 <tr>
                                     <td>Решение</td>
                                     <td>${incident.decision}</td>
                                 </tr>
                                 <tr>
                                     <td>Дата и время выполнения</td>
-                                    <td>${incident.dateDone} ${incident.timeDone}</td>
+                                    <td>${incident.dateStatus} ${incident.timeStatus}</td>
                                 </tr>
                                 <tr>
                                     <td>Количество доработок</td>
@@ -82,13 +87,28 @@
                                     </c:choose>
                                 </tr>
                             </c:if>
-                            <c:if test="${incident.status.id == 4}">
+                            <c:if test="${incident.status.id == 6}">
+                                <tr>
+                                    <td>Решение</td>
+                                    <td>${incident.decision}</td>
+                                </tr>
                                 <tr>
                                     <td>Дата и время закрытия</td>
                                     <td>${incident.dateClose} ${incident.timeClose}</td>
                                 </tr>
+                                <tr>
+                                    <td>Количество доработок</td>
+                                    <c:choose>
+                                        <c:when test="${incident.revisionCount ne null}">
+                                            <td>${incident.revisionCount}</td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td>0</td>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tr>
                             </c:if>
-                            <c:if test="${incident.status.id == 2 || incident.status.id == 7}">
+                            <c:if test="${incident.status.id == 7 || incident.status.id == 8}">
                                 <tr>
                                     <td>Причина отклонения/отмены</td>
                                     <td>${incident.decision}</td>
@@ -147,23 +167,27 @@
                                         <input type="submit" value="Назначить" name="Appoint" class="ibutt"/>
                                         <input type="submit" value="Отклонить" name="Close" class="ibutt"/>
                                     </c:if>
-                                    <c:if test="${incident.status.id == 6 || incident.status.id == 5}">
+                                    <c:if test="${incident.status.id == 2 || incident.status.id == 3}">
                                         <input type="submit" value="Переназначить" name="Appoint" class="ibutt"/>
                                     </c:if>
-                                    <c:if test="${incident.status.id == 6 && incident.specialist.login == incident.manager.login}">
+                                    <c:if test="${incident.status.id == 2 && incident.specialist.login == incident.manager.login}">
                                         <input type="submit" value="В работу" name="InWork" class="ibutt"/>
                                         <input type="submit" value="Отклонить" name="Close" class="ibutt"/>
                                     </c:if>
-                                    <c:if test="${incident.status.id == 5 && incident.specialist.login == incident.manager.login}">
+                                    <c:if test="${incident.status.id == 3 && incident.specialist.login == incident.manager.login}">
                                         <input type="submit" value="Выполнить" name="Doit" class="ibutt"/>
                                         <input type="submit" value="Отклонить" name="Close" class="ibutt"/>
                                     </c:if>
-                                    <c:if test="${task == 1 && (incident.status.id == 6 || incident.status.id == 5)}">
+                                    <c:if test="${task == 1 && (incident.status.id == 2 || incident.status.id == 3)}">
                                         <input type="submit" value="Отменить" name="Close" class="ibutt"/>
                                     </c:if>
-                                    <c:if test="${(task == 1 && incident.status.id == 3) || incident.status.id == 8}">
+                                    <c:if test="${(task == 1 && incident.status.id == 4) || incident.status.id == 5}">
                                         <input type="submit" value="Согласовать" name="Agree" class="ibutt"/>
                                     </c:if>
+                                    <c:if test="${incident.status.id == 8 || incident.status.id == 6}">
+                                        <input type="submit" value="Удалить" name="Delete" class="ibutt"/>
+                                    </c:if>
+                                        <input type="submit" value="to mail" name="Send" class="ibutt"/>
                                 </c:otherwise>
                             </c:choose>
                         </c:otherwise>
@@ -184,7 +208,7 @@
                                         </tr>
                                     </c:forEach>
                             </table>
-                            <c:if test="${incident.status.id == 5}">
+                            <c:if test="${incident.status.id == 3}">
                                 <table class="commgo">
                                     <tr>
                                         <td style="width: 70%"><textarea placeholder="Комментировать..." name="textcomm" class="commEdit"/></textarea></td>

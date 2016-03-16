@@ -5,6 +5,7 @@
  */
 package session;
 
+import entity.Arcincidents;
 import entity.Comments;
 import entity.Departs;
 import entity.Groupuser;
@@ -13,27 +14,31 @@ import entity.Incidents;
 import entity.Statuses;
 import entity.Typeincident;
 import entity.Users;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import javax.annotation.Resource;
-import javax.ejb.EJBException;
+import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-/**
- *
- * @author admin
- */
-@Stateless(name = "ManagementSystem")
+@Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
 public class ManagementSystemBean implements ManagementSystemLocal {
 
@@ -43,574 +48,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @PersistenceContext(unitName = "helpPU")
     private EntityManager em;
 
-    /* get lists списки =================================================================================================*/
-    @Override
-    public List<Incidents> getIncidentsByUser(Users user, Statuses status) {
-        Query q = em.createNamedQuery("Incidents.findByUser1Status");
-        q.setParameter("user", user);
-        q.setParameter("status", status);
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Users> getUsersByDepart(Departs depart) {
-        Query q = em.createNamedQuery("Users.findByDepart");
-        q.setParameter("depart", depart);
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getClosedIncidents(Users user, String sort) {
-        List statuses = getStatuses();
-        Query q = null;
-        switch (sort) {
-            case "none":
-                q = em.createNamedQuery("Incidents.findByUser4Status");
-                break;
-            case "name":
-                q = em.createNamedQuery("Incidents.findByUser4StatusOrderName");
-                break;
-            case "date":
-                q = em.createNamedQuery("Incidents.findByUserStatusOrderDate");
-                break;
-            case "status":
-                q = em.createNamedQuery("Incidents.findByUser4StatusOrderStatus");
-                break;
-            case "spec":
-                q = em.createNamedQuery("Incidents.findByUser4StatusOrderSpec");
-                break;
-        }
-        q.setParameter("user", user);
-        q.setParameter("status1", statuses.get(1));//2
-        q.setParameter("status2", statuses.get(3));//4
-        q.setParameter("status3", statuses.get(6));//7
-        q.setParameter("status4", statuses.get(7));//8
-        List resultList = q.getResultList();
-        return resultList;
-    }
-    
-    @Override
-    public List<Incidents> getClosedIncidentsManager(String sort) {
-        List statuses = getStatuses();
-        Query q = null;
-        switch (sort) {
-            case "none":
-                q = em.createNamedQuery("Incidents.findClosedManager");
-                break;
-            case "name":
-                q = em.createNamedQuery("Incidents.findByUser4StatusOrderName");
-                break;
-            case "date":
-                q = em.createNamedQuery("Incidents.findByUserStatusOrderDate");
-                break;
-            case "status":
-                q = em.createNamedQuery("Incidents.findByUser4StatusOrderStatus");
-                break;
-            case "spec":
-                q = em.createNamedQuery("Incidents.findByUser4StatusOrderSpec");
-                break;
-        }
-        q.setParameter("status1", statuses.get(3));//4
-        q.setParameter("status2", statuses.get(6));//7
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getClosedIncidentsNew(Users user) {
-        List statuses = getStatuses();
-        Query q = null;
-        q = em.createNamedQuery("Incidents.findByUser1StatusNew");
-        q.setParameter("user", user);
-        q.setParameter("status", statuses.get(6));//7
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getOpenIncidents(Users user, String sort) {
-        List statuses = getStatuses();
-        Query q = null;
-        switch (sort) {
-            case "none":
-                q = em.createNamedQuery("Incidents.findByUser4Status");
-                break;
-            case "name":
-                q = em.createNamedQuery("Incidents.findByUser4StatusOrderName");
-                break;
-            case "date":
-                q = em.createNamedQuery("Incidents.findByUser4StatusOrderDate");
-                break;
-            case "status":
-                q = em.createNamedQuery("Incidents.findByUser4StatusOrderStatus");
-                break;
-            case "spec":
-                q = em.createNamedQuery("Incidents.findByUser4StatusOrderSpec");
-                break;
-        }
-        q.setParameter("user", user);
-        q.setParameter("status1", statuses.get(4));
-        q.setParameter("status2", statuses.get(0));
-        q.setParameter("status3", statuses.get(5));
-        q.setParameter("status4", statuses.get(2));
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getOpenIncidentsNew(Users user) {
-        List statuses = getStatuses();
-        Query q = null;
-        q = em.createNamedQuery("Incidents.findByUser1StatusNew");
-        q.setParameter("user", user);
-        q.setParameter("status", statuses.get(2));//3
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Statuses> getStatuses() {
-        List resultList = em.createNamedQuery("Statuses.findAllOrder").getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Users> getAllUsers(String sort) {
-        Query q = null;
-        switch (sort) {
-            case "none":
-                q = em.createNamedQuery("Users.findAllOrder");
-                break;
-            case "fio":
-                q = em.createNamedQuery("Users.findAllOrderFio");
-                break;
-            case "login":
-                q = em.createNamedQuery("Users.findAllOrder");
-                break;
-            case "email":
-                q = em.createNamedQuery("Users.findAllOrderEmail");
-                break;
-            case "depart":
-                q = em.createNamedQuery("Users.findAllOrderDepart");
-                break;
-        }
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Departs> getAllDeparts(String sort) {
-        Query q = null;
-        switch (sort) {
-            case "none":
-                q = em.createNamedQuery("Departs.findAll");
-                break;
-            case "name":
-                q = em.createNamedQuery("Departs.findAllOrderName");
-                break;
-        }
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Typeincident> getAllTypesIncident(String sort) {
-        Query q = null;
-        switch (sort) {
-            case "none":
-                q = em.createNamedQuery("Typeincident.findAll");
-                break;
-            case "name":
-                q = em.createNamedQuery("Typeincident.findAllOrderName");
-                break;
-        }
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Users> getUsersSearch(String searchText) {
-        Query q = em.createNamedQuery("Users.findSearch");
-        q.setParameter("user", "%" + searchText + "%");
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Departs> getDepartsSearch(String searchText) {
-        Query q = em.createNamedQuery("Departs.findSearch");
-        q.setParameter("depart", "%" + searchText + "%");
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Typeincident> getTypesIncidentSearch(String searchText) {
-        Query q = em.createNamedQuery("Typeincident.findSearch");
-        q.setParameter("typeincident", "%" + searchText + "%");
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Departs> getDepartsForEdit(Departs depart) {
-        List resultList = em.createNamedQuery("Departs.findAll").getResultList();
-        Departs departA = null, departB = null;
-        Iterator iterator = resultList.iterator();
-        while (iterator.hasNext()) {
-            departA = (Departs) iterator.next();
-            if (depart.equals(departA)) {
-                departB = departA;
-                iterator.remove();
-            }
-        }
-        resultList.add(departB);
-        return resultList;
-    }
-
-    @Override
-    public List<Typeincident> getTypesIncidentsForEdit(Typeincident typeincident) {
-        List resultList = em.createNamedQuery("Typeincident.findAll").getResultList();
-        Typeincident tiA = null, tiB = null;
-        Iterator iterator = resultList.iterator();
-        while (iterator.hasNext()) {
-            tiA = (Typeincident) iterator.next();
-            if (typeincident.equals(tiA)) {
-                tiB = tiA;
-                iterator.remove();
-            }
-        }
-        resultList.add(tiB);
-        return resultList;
-    }
-
-    @Override
-    public List<Users> getSpecialists(String sort) {
-        Query q = null;
-        switch (sort) {
-            case "none":
-                q = em.createNamedQuery("Users.findByDepart");
-                break;
-            case "name":
-                q = em.createNamedQuery("Users.findByDepartOrderName");
-                break;
-        }
-        Departs depart = findDepart(3);
-        q.setParameter("depart", depart);
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getSpecialistOpenIncidents(Users specialist) {
-        List statuses = getStatuses();
-        Query q = em.createNamedQuery("Incidents.findBySpecialist2Status");
-        q.setParameter("specialist", specialist);
-        q.setParameter("status1", statuses.get(5));
-        q.setParameter("status2", statuses.get(4));
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getSpecialistOpenIncidentsNew(Users specialist) {
-        List statuses = getStatuses();
-        Query q = em.createNamedQuery("Incidents.findBySpecialist2StatusNew");
-        q.setParameter("specialist", specialist);
-        q.setParameter("status1", statuses.get(5));//6
-        q.setParameter("status2", statuses.get(4));//5
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getSpecialistDoneIncidents(Users specialist) {
-        List statuses = getStatuses();
-        Query q = em.createNamedQuery("Incidents.findBySpecialist2Status");
-        q.setParameter("specialist", specialist);
-        q.setParameter("status1", statuses.get(2));//3
-        q.setParameter("status2", statuses.get(7));//8
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getSpecialistClosedIncidents(Users specialist) {
-        List statuses = getStatuses();
-        Query q = em.createNamedQuery("Incidents.findBySpecialist2Status");
-        q.setParameter("specialist", specialist);
-        q.setParameter("status1", statuses.get(3));//4
-        q.setParameter("status2", statuses.get(6));//7
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Comments> getComments(Incidents incident) {
-        Query q = em.createNamedQuery("Comments.findByIncident");
-        q.setParameter("incident", incident);
-        List resultList = q.getResultList();
-        return resultList;
-    }
-    
-    @Override
-    public List<History> getHistory(Incidents incident) {
-        Query q = em.createNamedQuery("History.findByIncident");
-        q.setParameter("incident", incident);
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getAllocatedIncidents(String sort, Users manager) {
-        Query q = null;
-        switch (sort) {
-            case "none":
-                q = em.createNamedQuery("Incidents.findAllocated");
-                break;
-            case "name":
-                q = em.createNamedQuery("Incidents.findAllocatedOrderName");
-                break;
-            case "date":
-                q = em.createNamedQuery("Incidents.findAllocatedOrderDate");
-                break;
-            case "status":
-                q = em.createNamedQuery("Incidents.findAllocatedOrderStatus");
-                break;
-            case "zay":
-                q = em.createNamedQuery("Incidents.findAllocatedOrderZay");
-                break;
-            case "spec":
-                q = em.createNamedQuery("Incidents.findAllocatedOrderSpec");
-                break;
-        }
-        List statuses = getStatuses();
-        q.setParameter("status1", statuses.get(5));//6
-        q.setParameter("status2", statuses.get(4));//5
-        q.setParameter("status3", statuses.get(2));//3
-        q.setParameter("manager", manager);
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getUnallocatedIncidents(String sort) {
-        Query q = null;
-        switch (sort) {
-            case "none":
-                q = em.createNamedQuery("Incidents.findUnallocated");
-                break;
-            case "name":
-                q = em.createNamedQuery("Incidents.findUnallocatedOrderName");
-                break;
-            case "date":
-                q = em.createNamedQuery("Incidents.findUnallocatedOrderDate");
-                break;
-            case "status":
-                q = em.createNamedQuery("Incidents.findUnallocatedOrderStatus");
-                break;
-            case "zay":
-                q = em.createNamedQuery("Incidents.findUnallocatedOrderZay");
-                break;
-        }
-        List statuses = getStatuses();
-        q.setParameter("status", statuses.get(0));//1
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getUnallocatedIncidentsNew() {
-        Query q = null;
-        q = em.createNamedQuery("Incidents.findUnallocatedNew");
-        List statuses = getStatuses();
-        q.setParameter("status", statuses.get(0));//1
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List getSpecialistsStatistics() {
-        Query q = em.createNativeQuery("SELECT u.name, "
-                + "tab_act_on_today.cnt AS cnt_act_on_today, "
-                + "tab_act_today.cnt AS cnt_act_today, "
-                + "tab_end_today.cnt AS cnt_end_today, "
-                + "tab_end_month.cnt AS cnt_end_month, "
-                + "tab_end_all.cnt AS cnt_end_all, "
-                + "u.login "
-                + "FROM users AS u "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 5 OR i.status = 3 OR i.status = 6) "
-                + "AND i.specialist IS NOT NULL "
-                + "GROUP BY i.specialist"
-                + ") AS tab_act_on_today ON u.login = tab_act_on_today.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 5 OR i.status = 3 OR i.status = 6) "
-                + "AND i.specialist IS NOT NULL "
-                + "AND i.dateIncident = CURDATE() "
-                + "GROUP BY i.specialist"
-                + ") AS tab_act_today ON u.login = tab_act_today.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 4) "
-                + "AND i.specialist IS NOT NULL "
-                + "AND i.dateIncident = CURDATE() "
-                + "GROUP BY i.specialist"
-                + ") AS tab_end_today ON u.login = tab_end_today.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 4) "
-                + "AND i.specialist IS NOT NULL "
-                + "AND (i.dateIncident <= CURDATE() AND i.dateIncident >= DATE(ADDDATE(NOW(), INTERVAL -(DAY(CURDATE()-1)) DAY))) "
-                + "GROUP BY i.specialist"
-                + ") AS tab_end_month ON u.login = tab_end_month.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 4) "
-                + "AND i.specialist IS NOT NULL "
-                + "GROUP BY i.specialist"
-                + ") AS tab_end_all ON u.login = tab_end_all.spec "
-                + "WHERE u.depart = 3 "
-                + "GROUP BY u.name;");
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List getOneSpecialistsStatistics(String specialist) {
-        Query q = em.createNativeQuery("SELECT u.name,"
-                + "tab_act_today.cnt AS cnt_act_today,"
-                + "tab_act_on_today.cnt AS cnt_act_on_today,"
-                + "tab_end_today.cnt AS cnt_end_today,"
-                + "tab_end_month.cnt AS cnt_end_month,"
-                + "tab_end_all.cnt AS cnt_end_all,"
-                + "tab_cancel_today.cnt AS cnt_cancel_today,"
-                + "tab_cancel_month.cnt AS cnt_cancel_month,"
-                + "tab_cancel_all.cnt AS cnt_cancel_all,"
-                + "u.login "
-                + "FROM users AS u "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 5 OR i.status = 3 OR i.status = 6) "
-                + "AND i.specialist IS NOT NULL "
-                + "GROUP BY i.specialist"
-                + ") AS tab_act_on_today ON u.login = tab_act_on_today.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 5 OR i.status = 3 OR i.status = 6) "
-                + "AND i.specialist IS NOT NULL "
-                + "AND i.dateIncident = CURDATE() "
-                + "GROUP BY i.specialist"
-                + ") AS tab_act_today ON u.login = tab_act_today.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 4) "
-                + "AND i.specialist IS NOT NULL "
-                + "AND i.dateIncident = CURDATE() "
-                + "GROUP BY i.specialist"
-                + ") AS tab_end_today ON u.login = tab_end_today.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 4) "
-                + "AND i.specialist IS NOT NULL "
-                + "AND (i.dateIncident <= CURDATE() AND i.dateIncident >= DATE(ADDDATE(NOW(), INTERVAL -(DAY(CURDATE()-1)) DAY))) "
-                + "GROUP BY i.specialist"
-                + ") AS tab_end_month ON u.login = tab_end_month.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 4) "
-                + "AND i.specialist IS NOT NULL "
-                + "GROUP BY i.specialist"
-                + ") AS tab_end_all ON u.login = tab_end_all.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 7) "
-                + "AND i.specialist IS NOT NULL "
-                + "AND i.dateIncident = CURDATE() "
-                + "GROUP BY i.specialist"
-                + ") AS tab_cancel_today ON u.login = tab_cancel_today.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 7) "
-                + "AND i.specialist IS NOT NULL "
-                + "AND (i.dateIncident <= CURDATE() AND i.dateIncident >= DATE(ADDDATE(NOW(), INTERVAL -(DAY(CURDATE()-1)) DAY))) "
-                + "GROUP BY i.specialist"
-                + ") AS tab_cancel_month ON u.login = tab_cancel_month.spec "
-                + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 7) "
-                + "AND i.specialist IS NOT NULL "
-                + "GROUP BY i.specialist"
-                + ") AS tab_cancel_all ON u.login = tab_cancel_all.spec "
-                + "WHERE u.login = ? "
-                + "GROUP BY u.name;");
-        q.setParameter(1, specialist);
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List getYearStatistic(String year, String specialist, int period) {
-        List resList = new ArrayList();
-        Query q = em.createNativeQuery("SELECT COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE i.specialist IS NOT NULL AND i.specialist = ? "
-                + "AND i.status = 4 AND year(i.dateIncident) = ? "
-                + "AND month(i.dateIncident) = ? "
-                + "GROUP BY i.specialist;");
-        q.setParameter(1, specialist);
-        q.setParameter(2, year);
-        for (int i = period; i < period + 6; i++) {
-            q.setParameter(3, Integer.toString(i));
-            if (!q.getResultList().isEmpty()) {
-                resList.add(q.getResultList().get(0));
-            } else {
-                resList.add("0");
-            }
-        }
-        return resList;
-    }
-
-    @Override
-    public List<Incidents> getAgreeIncidents(Users manager) {
-        Query q = null;
-        q = em.createNamedQuery("Incidents.findAgree");
-        List statuses = getStatuses();
-        q.setParameter("status1", statuses.get(7));//8
-        q.setParameter("status2", statuses.get(2));//3
-        q.setParameter("manager", manager);
-        List resultList = q.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<Incidents> getAgreeIncidentsNew(Users manager) {
-        Query q = null;
-        q = em.createNamedQuery("Incidents.findAgreeNew");
-        List statuses = getStatuses();
-        q.setParameter("status1", statuses.get(7));//8
-        q.setParameter("status2", statuses.get(2));//3
-        q.setParameter("manager", manager);
-        List resultList = q.getResultList();
-        return resultList;
-    }
+    @EJB
+    private GetterBeanLocal gb;
 
     /* add добавление =================================================================================================*/
     @Override
@@ -624,6 +63,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         }
         incident.setDateIncident(new Date());
         incident.setTimeIncident(new Date());
+        incident.setDateStatus(new Date());
+        incident.setTimeStatus(new Date());
         Statuses status = em.find(Statuses.class, 1);
         incident.setStatus(status);
         incident.setTitle(title);
@@ -635,10 +76,37 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         if (addIncident) {
             em.persist(incident);
             addHistory(incident, zayavitel, null);
+            if (isAuto()) {
+                autoAppoint(incident);
+            }
         } else {
             em.merge(incident);
             addHistory(incident, zayavitel, "Исправление");
         }
+    }
+
+    @Override
+    public void addIncidentInArc(Incidents incident) {
+        Arcincidents arcincident = new Arcincidents();
+        arcincident.setId(incident.getId());
+        arcincident.setDateIncident(incident.getDateIncidentD());
+        arcincident.setTimeIncident(incident.getTimeIncidentD());
+        arcincident.setTitle(incident.getTitle());
+        arcincident.setText(incident.getText());
+        arcincident.setDecision(incident.getDecision());
+        arcincident.setZayavitel(incident.getZayavitel());
+        arcincident.setSpecialist(incident.getSpecialist());
+        arcincident.setManager(incident.getManager());
+        arcincident.setStatus(incident.getStatus());
+        arcincident.setTypeIncident(incident.getTypeIncident());
+        arcincident.setDateClose(new Date());
+        arcincident.setTimeClose(new Date());
+        arcincident.setRevisionCount(incident.getRevisionCount());
+        arcincident.setNew1(incident.getNew1());
+        arcincident.setAttachment(incident.getAttachment());
+        em.persist(arcincident);
+        editHAndCInArc(incident, arcincident);
+        deleteIncident(incident);
     }
 
     @Override
@@ -652,7 +120,9 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         }
         incident.setDateIncident(new Date());
         incident.setTimeIncident(new Date());
-        Statuses status = em.find(Statuses.class, 6);
+        incident.setDateStatus(new Date());
+        incident.setTimeStatus(new Date());
+        Statuses status = em.find(Statuses.class, 2);
         incident.setStatus(status);
         incident.setTitle(title);
         incident.setText(text);
@@ -747,7 +217,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public void addSpecialist(Incidents incident, Users specialist, Users manager) {
         incident.setSpecialist(specialist);
-        incident.setStatus(getStatuses().get(5));//6
+        incident.setStatus(gb.getStatuses().get(1));//2
         incident.setManager(manager);
         incident.setNew1(1);
         em.merge(incident);
@@ -796,6 +266,38 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         em.remove(toBeRemoved);
     }
 
+    @Override
+    public void deleteIncident(Incidents incident) {
+        Incidents toBeRemoved = em.merge(incident);
+        em.remove(toBeRemoved);
+    }
+
+    @Override
+    public void deleteIncidentFull(Incidents incident, Arcincidents arcincident) {
+        Query q = null;
+        if (incident != null) {
+            q = em.createNamedQuery("History.deleteOpen");
+            q.setParameter("incident", incident);
+        } else {
+            q = em.createNamedQuery("History.deleteClosed");
+            q.setParameter("arcincident", arcincident);
+        }
+        q.executeUpdate();
+        if (incident != null) {
+            q = em.createNamedQuery("Comments.deleteOpen");
+            q.setParameter("incident", incident);
+            q.executeUpdate();
+            Incidents toBeRemoved = em.merge(incident);
+            em.remove(toBeRemoved);
+        } else {
+            q = em.createNamedQuery("Comments.deleteClosed");
+            q.setParameter("arcincident", arcincident);
+            q.executeUpdate();
+            Arcincidents toBeRemoved = em.merge(arcincident);
+            em.remove(toBeRemoved);
+        }
+    }
+
     /* find поиск ====================================================================================================*/
     @Override
     public Users findUser(Object id) {
@@ -805,6 +307,11 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public Incidents findIncident(Object id) {
         return em.find(Incidents.class, id);
+    }
+
+    @Override
+    public Arcincidents findArcIncident(Object id) {
+        return em.find(Arcincidents.class, id);
     }
 
     @Override
@@ -830,22 +337,22 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public void cancelIncident(Incidents incident, String textp, String tstatus, boolean it, Users manager) {
         int revCount = 0;
+        boolean inArc = false;
         Statuses status = null;
-        if (tstatus.equals("1") || tstatus.equals("6") || tstatus.equals("5")) {
+        if (tstatus.equals("1") || tstatus.equals("2") || tstatus.equals("3")) {
             if (it) {
-                status = em.find(Statuses.class, 7);
+                status = em.find(Statuses.class, 8);
                 incident.setNew1(1);
             } else {
-                status = em.find(Statuses.class, 2);
+                status = em.find(Statuses.class, 7);
             }
-            incident.setDateClose(new Date());
-            incident.setTimeClose(new Date());
+            inArc = true;
             incident.setDecision(textp);
         }
-        if (tstatus.equals("3")) {
-            status = em.find(Statuses.class, 5);
-            incident.setDateInWork(new Date());
-            incident.setTimeInWork(new Date());
+        if (tstatus.equals("4")) {
+            status = em.find(Statuses.class, 3);
+            incident.setDateStatus(new Date());
+            incident.setTimeStatus(new Date());
             if (incident.getRevisionCount() != null) {
                 revCount = incident.getRevisionCount() + 1;
             } else {
@@ -856,39 +363,49 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             addComment(textp, incident.getZayavitel(), incident);
         }
         incident.setStatus(status);
-        em.merge(incident);
         if (tstatus.equals("1") && it) {
-            addHistory(incident, manager, null);
+            incident.setSpecialist(manager);
+            incident.setManager(manager);
+        }
+        em.merge(incident);
+
+        //История
+        if (tstatus.equals("1") && it) {
+            addHistory(incident, manager, "Перенесен в архив");
         }
         if (tstatus.equals("1") && !it) {
             addHistory(incident, incident.getZayavitel(), null);
         }
-        if (tstatus.equals("6") || tstatus.equals("5")) {
+        if (tstatus.equals("2") || tstatus.equals("3")) {
             if (it) {
-                addHistory(incident, incident.getSpecialist(), null);
+                addHistory(incident, incident.getSpecialist(), "Перенесен в архив");
             } else {
                 addHistory(incident, incident.getZayavitel(), null);
             }
         }
-        if (tstatus.equals("3")) {
+        if (tstatus.equals("4")) {
             addHistory(incident, incident.getZayavitel(), "На доработку");
+        }
+
+        if (inArc) {
+            addIncidentInArc(incident);
         }
     }
 
     @Override
     public void inWork(Incidents incident) {
-        incident.setDateInWork(new Date());
-        incident.setTimeInWork(new Date());
-        incident.setStatus(getStatuses().get(4));//5
+        incident.setDateStatus(new Date());
+        incident.setTimeStatus(new Date());
+        incident.setStatus(gb.getStatuses().get(2));//3
         em.merge(incident);
         addHistory(incident, incident.getSpecialist(), null);
     }
 
     @Override
     public void doneIncident(Incidents incident, String decision) {
-        incident.setDateDone(new Date());
-        incident.setTimeDone(new Date());
-        incident.setStatus(getStatuses().get(2));//3
+        incident.setDateStatus(new Date());
+        incident.setTimeStatus(new Date());
+        incident.setStatus(gb.getStatuses().get(3));//4
         incident.setDecision(decision);
         incident.setNew1(1);
         em.merge(incident);
@@ -897,18 +414,28 @@ public class ManagementSystemBean implements ManagementSystemLocal {
 
     @Override
     public void acceptIncident(Incidents incident) {
-        incident.setStatus(getStatuses().get(7));//8
-        incident.setDateAccept(new Date());
-        incident.setTimeAccept(new Date());
+        incident.setStatus(gb.getStatuses().get(4));//5
+        incident.setDateStatus(new Date());
+        incident.setTimeStatus(new Date());
         incident.setNew1(1);
         em.merge(incident);
         addHistory(incident, incident.getZayavitel(), null);
+        if (isAuto()) {
+            Users auto = findUser("auto");
+            incident.setManager(auto);
+            agreeIncident(incident);
+        }
     }
 
     @Override
-    public void setNotNewIncident(Incidents incident) {
-        incident.setNew1(0);
-        em.merge(incident);
+    public void setNotNewIncident(Incidents incident, Arcincidents arcincident) {
+        if (incident == null) {
+            arcincident.setNew1(0);
+            em.merge(arcincident);
+        } else {
+            incident.setNew1(0);
+            em.merge(incident);
+        }
     }
 
     @Override
@@ -922,11 +449,10 @@ public class ManagementSystemBean implements ManagementSystemLocal {
 
     @Override
     public void agreeIncident(Incidents incident) {
-        incident.setStatus(getStatuses().get(3));//4
-        incident.setDateClose(new Date());
-        incident.setTimeClose(new Date());
+        incident.setStatus(gb.getStatuses().get(5));//6
         em.merge(incident);
-        addHistory(incident, incident.getManager(), null);
+        addHistory(incident, incident.getManager(), "Перенесен в архив");
+        addIncidentInArc(incident);
     }
 
     @Override
@@ -939,7 +465,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public boolean isChangePassword(Users user) {
         boolean result = false;
-        if (user.getChangePassword() == 1){
+        if (user.getChangePassword() == 1) {
             result = true;
         }
         return result;
@@ -951,4 +477,241 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         user.setChangePassword(0);
         em.merge(user);
     }
+
+    @Override
+    public void editHAndCInArc(Incidents incident, Arcincidents arcincident) {
+        Query q = null;
+        q = em.createNamedQuery("History.updateClosed");
+        q.setParameter("incident", incident);
+        q.setParameter("arcincident", arcincident);
+        q.executeUpdate();
+        q = em.createNamedQuery("Comments.updateClosed");
+        q.setParameter("incident", incident);
+        q.setParameter("arcincident", arcincident);
+        q.executeUpdate();
+    }
+
+    @Override
+    public void sendMail(Incidents incident, Arcincidents arcincident, String code, String prich) {
+        Properties props;
+        props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.host", "10.20.30.1");
+        props.put("mail.smtp.port", "25");
+
+        String toMail = null;
+        int recipCount = 0;
+        List<Users> recipList = null;
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("help@bank.ru", "Binbank55");
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("help@bank.ru"));
+            //Заголовок письма
+            message.setSubject("Обращение ID " + incident.getId() + " - " + incident.getTitle());
+            //Содержимое
+            switch (code) {
+                case "user_new":
+                    message.setText("Ваше обращение (ID " + incident.getId()
+                            + " - " + incident.getTitle() + ")"
+                            + " зарегистрировано (" + incident.getDateIncident()
+                            + " " + incident.getTimeIncident() + ")");
+                    toMail = incident.getZayavitel().getEmail();
+                    recipCount = 1;
+                    break;
+                case "manager_new":
+                    message.setText("Поступило новое обращение (ID " + incident.getId()
+                            + " - " + incident.getTitle() + " - " + incident.getZayavitel().getName() + ")"
+                            + " (" + incident.getDateIncident()
+                            + " " + incident.getTimeIncident() + ")");
+                    recipList = gb.whoIsManager();
+                    recipCount = 2;
+                    break;
+                case "user_appoint":
+                    message.setText("Ваше обращение (ID " + incident.getId()
+                            + " - " + incident.getTitle() + ")"
+                            + " назначено (" + incident.getDateStatus()
+                            + " " + incident.getTimeStatus() + "). "
+                            + "Специалист: " + incident.getSpecialist().getName());
+                    toMail = incident.getZayavitel().getEmail();
+                    recipCount = 1;
+                    break;
+                case "spec_appoint":
+                    message.setText("Вам назначено обращение (ID " + incident.getId()
+                            + " - " + incident.getTitle() + ")"
+                            + " (" + incident.getDateStatus()
+                            + " " + incident.getTimeStatus() + ")");
+                    toMail = incident.getSpecialist().getEmail();
+                    recipCount = 1;
+                    break;
+                case "done":
+                    message.setText("Ваше обращение (ID " + incident.getId()
+                            + " - " + incident.getTitle() + ")"
+                            + " выполнено (" + incident.getDateIncident()
+                            + " " + incident.getTimeIncident() + "). ");
+                    toMail = incident.getZayavitel().getEmail();
+                    recipCount = 1;
+                    break;
+                case "user_otkl":
+                    message.setText("Ваше обращение (ID " + arcincident.getId()
+                            + " - " + arcincident.getTitle() + ")"
+                            + " отклонено (" + arcincident.getDateClose()
+                            + " " + arcincident.getTimeClose() + ")"
+                            + " по причине: " + arcincident.getDecision());
+                    toMail = incident.getZayavitel().getEmail();
+                    recipCount = 1;
+                    break;
+                case "spec_otkl":
+                    message.setText("Обращение (ID " + incident.getId()
+                            + " - " + incident.getTitle() + ")"
+                            + " возвращено на доработку (" + incident.getDateStatus()
+                            + " " + incident.getTimeStatus() + ")"
+                            + " по причине: " + prich);
+                    toMail = incident.getSpecialist().getEmail();
+                    recipCount = 1;
+                    break;
+                case "close":
+                    message.setText("Обращение (ID " + incident.getId()
+                            + " - " + incident.getTitle() + ")"
+                            + " закрыто (" + incident.getDateStatus()
+                            + " " + incident.getTimeStatus() + ")");
+                    toMail = incident.getSpecialist().getEmail();
+                    recipCount = 1;
+                    break;
+            }
+            if (recipCount == 1) {
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toMail));
+                Transport.send(message);
+            }
+            if (recipCount > 1) {
+                for (Users recipManager : recipList) {
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipManager.getEmail()));
+                    Transport.send(message);
+                }
+            }
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //Auto ===================================================================================================
+    private boolean isAuto() {
+        boolean result = false;
+        Users auto = findUser("auto");
+        if (auto.getEmail().equals("on")) {
+            result = true;
+        }
+        return result;
+    }
+
+    private void autoAppoint(Incidents incident) {
+        Users specialistOnAppoint = null;
+        Users auto = findUser("auto");
+        specialistOnAppoint = getLowSpecialist();
+        addSpecialist(incident, specialistOnAppoint, auto);
+    }
+
+    @Override
+    public void autoOn(Users manager) {
+        Users auto = findUser("auto");
+        auto.setEmail("on");
+        em.merge(auto);
+        manager.setChangePassword(2);
+        em.merge(manager);
+        changeModer(auto);
+        List<Incidents> notManaged = gb.getNotManagedIncidents();
+        if (notManaged.size() > 0) {
+            Iterator iterator = notManaged.iterator();
+            while (iterator.hasNext()) {
+                Incidents nmIncident = (Incidents) iterator.next();
+                if (nmIncident.getStatus().getId() == 1) {
+                    autoAppoint(nmIncident);
+                }
+                if (nmIncident.getStatus().getId() == 5) {
+                    agreeIncident(nmIncident);
+                }
+            }
+        }
+    }
+
+    private Users getLowSpecialist() {
+        Users lowSpecialist = null;
+        List<Object[]> stata = gb.getSpecialistsStatsForLow();
+        if (stata.size() == 1) {
+            String user = (String) stata.get(0)[3];
+            lowSpecialist = findUser(user);
+        }
+        if (stata.size() > 1) {
+            String low = (String) stata.get(0)[3];
+            long lowCount = (Long) stata.get(0)[2];
+            for (Object[] stat : stata) {
+                if (lowCount > (Long) stat[2]) {
+                    low = (String) stat[3];
+                    lowCount = (Long) stat[2];
+                }
+            }
+            lowSpecialist = findUser(low);
+        }
+        return lowSpecialist;
+    }
+
+    @Override
+    public void comeBack(Users manager) {
+        if (isAuto()) {
+            Users auto = findUser("auto");
+            auto.setEmail("off");
+            em.merge(auto);
+        } else {
+            Query q = em.createNamedQuery("Users.findManager");
+            List<Users> users = q.getResultList();
+            Users currManager = users.get(0);
+            currManager.setChangePassword(0);
+            em.merge(currManager);
+            Groupuser groupuser = findGroupuser(currManager);
+            groupuser.setName("specialist");
+            em.merge(groupuser);
+        }
+        manager.setChangePassword(0);
+        em.merge(manager);
+        changeModer(manager);
+    }
+
+    private void changeModer(Users newManager) {
+        Query q = em.createNamedQuery("Incidents.updateManager");
+        q.setParameter("manager", newManager);
+        q.executeUpdate();
+    }
+
+    @Override
+    public void doManager(Users newManager, Users oldManager) {
+        Groupuser groupuser = findGroupuser(newManager);
+        groupuser.setName("manager");
+        em.merge(groupuser);
+        newManager.setChangePassword(3);
+        em.merge(newManager);
+        changeModer(newManager);
+        oldManager.setChangePassword(2);
+        em.merge(oldManager);
+    }
+
+    @Override
+    public void blockUser(Users user) {
+        user.setChangePassword(2);
+        em.merge(user);
+    }
+
+    @Override
+    public boolean isBlockedUser(Users user) {
+        boolean result = false;
+        if (user.getChangePassword() == 2) {
+            result = true;
+        }
+        return result;
+    }
+
 }

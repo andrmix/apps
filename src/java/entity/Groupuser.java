@@ -31,9 +31,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Groupuser.findAll", query = "SELECT g FROM Groupuser g"),
     @NamedQuery(name = "Groupuser.findById", query = "SELECT g FROM Groupuser g WHERE g.id = :id"),
-    @NamedQuery(name = "Groupuser.findByUser", query = "SELECT g FROM Groupuser g WHERE g.usersLogin = :user"),
-    @NamedQuery(name = "Groupuser.findByName", query = "SELECT g FROM Groupuser g WHERE g.name = :name")})
+    @NamedQuery(name = "Groupuser.findByName", query = "SELECT g FROM Groupuser g WHERE g.name = :name"),
+
+    @NamedQuery(name = "Groupuser.findByUser", query = "SELECT g FROM Groupuser g WHERE g.usersLogin = :user")})
 public class Groupuser implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -109,5 +111,5 @@ public class Groupuser implements Serializable {
     public String toString() {
         return "entity.Groupuser[ id=" + id + " ]";
     }
-    
+
 }

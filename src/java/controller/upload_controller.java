@@ -19,12 +19,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import session.GetterBeanLocal;
 import session.ManagementSystemLocal;
 
 public class upload_controller extends HttpServlet {
 
-    @EJB(name = "ManagementSystem")
+    @EJB
     private ManagementSystemLocal ms;
+    
+    @EJB
+    private GetterBeanLocal gb;
 
     private boolean isMultipart;
     private String filePath;
@@ -78,7 +82,7 @@ public class upload_controller extends HttpServlet {
             FileItem fi = (FileItem) i.next();
             if (fi.isFormField()) {
                 String name = fi.getFieldName();
-                String value = fi.getString();
+                String value = fi.getString("UTF-8");
                 
                 //данные
                 if (name.equals("title")) {
@@ -142,9 +146,9 @@ public class upload_controller extends HttpServlet {
                         ms.addIncident(title, texti, user, ti, false, Integer.parseInt(id), fName);
                     }
                     
-                    getServletContext().setAttribute("openIncidents", ms.getOpenIncidents(user, "none"));
-                    getServletContext().setAttribute("openIncidentsNew", ms.getOpenIncidentsNew(user));
-                    getServletContext().setAttribute("closedIncidents", ms.getClosedIncidents(user, "none"));
+                    getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "none"));
+                    getServletContext().setAttribute("openIncidentsNew", gb.getOpenIncidentsNew(user));
+                    getServletContext().setAttribute("closedIncidentsNew", gb.getClosedIncidentsNew(user));
                     request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
                 }
             }

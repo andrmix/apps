@@ -12,14 +12,14 @@
         <div id="header">
             <img class="galka" src='<c:url value="/img/galka_z_or.png"/>'><div class="resh">Решение</div>
         </div>
-            <form action="j_security_check" method="POST">
-    <div id="lb">
-        <ul id="loginBox">
-            <li><input placeholder="Введите логин" type="text" class="text" size="20" name="j_username" value="moder"></li>
-            <li><input placeholder="Введите пароль" type="password" class="text1" size="20" name="j_password" value="moder"></li>
-            <li><input type="submit" class="submit" value="Вход"></li>
-        </ul>
-    </div>
-</form>
+        <form action="j_security_check" method="POST">
+            <div id="lb">
+                <ul id="loginBox">
+                    <li><input placeholder="Введите логин" type="text" class="text" size="20" name="j_username" value="moder"></li>
+                    <li><input placeholder="Введите пароль" type="password" class="text1" size="20" name="j_password" value="moder"></li>
+                    <li><input type="submit" class="submit" value="Вход"></li>
+                </ul>
+            </div>
+        </form>
     </body>
 </html>

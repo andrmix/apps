@@ -155,3 +155,24 @@
     background: #FFFFFF;
     margin-right: 5px;
 }
+
+.filter_date{
+    margin-top: 10px;
+    font-family: '9369';
+    border: 1px solid #191970;
+    background: #Ffffff;
+    cursor: pointer;
+    width: 200px;
+    height: 30px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.radiob1{
+    color: white;
+    margin-top: 10px;
+}
+
+.radiob2{
+    color: white;
+}

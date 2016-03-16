@@ -14,7 +14,11 @@
     <body>
         <div id="header">
             <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-            <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Статистика</div></div>
+            <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                <div class="heada">${user.name}
+                    (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                </div><div class="headb">/ Статистика</div>
+            </div>
         </div>
         <div id="sidebar">
             <p><a href='<c:url value="/specialist"/>'>Активные обращения 
@@ -39,7 +43,7 @@
                         <tbody>
                             <c:forEach var="stat" items="${statList}">
                                 <tr>
-                                    <td rowspan="2" style="width: 30%" class="tab_title">Активные инциденты</td>
+                                    <td rowspan="2" style="width: 30%" class="tab_title">Активные обращения</td>
                                     <td class="tab_title" style="width: 30%">За сегодня</td>
                                     <td><c:choose>
                                             <c:when test="${stat[1] == null}">
@@ -62,7 +66,7 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td rowspan="3" class="tab_title">Завершенные инциденты</td>
+                                    <td rowspan="3" class="tab_title">Завершенные обращения</td>
                                     <td class="tab_title">За сегодня</td>
                                     <td><c:choose>
                                             <c:when test="${stat[3] == null}">
@@ -96,7 +100,7 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td rowspan="3" class="tab_title">Отклоненные инциденты</td>
+                                    <td rowspan="3" class="tab_title">Отклоненные обращения</td>
                                     <td class="tab_title">За сегодня</td>
                                     <td><c:choose>
                                             <c:when test="${stat[6] == null}">
@@ -135,7 +139,7 @@
                     <table class="table_statistic">
                         <thead>
                             <tr>
-                                <th colspan="12"  class="podzag">Завершенные за год</th>
+                                <th colspan="12" class="podzag">Завершенные за год</th>
                             </tr>
                             <tr>
                                 <th style="width: 17%">Январь</th>

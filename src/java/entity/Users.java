@@ -35,16 +35,21 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findByLogin", query = "SELECT u FROM Users u WHERE u.login = :login"),
     @NamedQuery(name = "Users.findByPass", query = "SELECT u FROM Users u WHERE u.pass = :pass"),
     @NamedQuery(name = "Users.findByName", query = "SELECT u FROM Users u WHERE u.name = :name"),
-    @NamedQuery(name = "Users.findByDepart", query = "SELECT u FROM Users u WHERE u.depart = :depart"),
-    @NamedQuery(name = "Users.findByDepartOrderName", query = "SELECT u FROM Users u WHERE u.depart = :depart ORDER BY u.name"),
-    @NamedQuery(name = "Users.findSearch", query = "SELECT u FROM Users u WHERE u.name like :user"),
-    @NamedQuery(name = "Users.findAllOrder", query = "SELECT u FROM Users u ORDER BY u.login"),
+    @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email"),
+    @NamedQuery(name = "Users.findByChangePassword", query = "SELECT u FROM Users u WHERE u.changePassword = :changePassword"),
+
     @NamedQuery(name = "Users.findAllOrderFio", query = "SELECT u FROM Users u ORDER BY u.name"),
+    @NamedQuery(name = "Users.findAllOrder", query = "SELECT u FROM Users u ORDER BY u.login"),
     @NamedQuery(name = "Users.findAllOrderEmail", query = "SELECT u FROM Users u ORDER BY u.email"),
     @NamedQuery(name = "Users.findAllOrderDepart", query = "SELECT u FROM Users u ORDER BY u.depart"),
-    @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email"),
-    @NamedQuery(name = "Users.findByChangePassword", query = "SELECT u FROM Users u WHERE u.changePassword = :changePassword")})
+    @NamedQuery(name = "Users.findByDepart", query = "SELECT u FROM Users u WHERE u.depart = :depart AND u.changePassword != 2 AND u.login != 'auto'"),
+    @NamedQuery(name = "Users.findByDepartWithoutM", query = "SELECT u FROM Users u WHERE u.depart = :depart AND u.changePassword != 2 AND u.login != :manager"),
+    @NamedQuery(name = "Users.findSearch", query = "SELECT u FROM Users u WHERE u.name like :user"),
+    @NamedQuery(name = "Users.findByDepartOrderName", query = "SELECT u FROM Users u WHERE u.depart = :depart ORDER BY u.name"),
+    @NamedQuery(name = "Users.findManager", query = "SELECT u FROM Users u WHERE u.changePassword = 3")
+})
 public class Users implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -74,6 +79,12 @@ public class Users implements Serializable {
     private Collection<Groupuser> groupuserCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin")
     private Collection<Comments> commentsCollection;
+    @OneToMany(mappedBy = "zayavitel")
+    private Collection<Arcincidents> arcincidentsCollection;
+    @OneToMany(mappedBy = "specialist")
+    private Collection<Arcincidents> arcincidentsCollection1;
+    @OneToMany(mappedBy = "manager")
+    private Collection<Arcincidents> arcincidentsCollection2;
     @OneToMany(mappedBy = "zayavitel")
     private Collection<Incidents> incidentsCollection;
     @OneToMany(mappedBy = "specialist")
@@ -159,6 +170,33 @@ public class Users implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Arcincidents> getArcincidentsCollection() {
+        return arcincidentsCollection;
+    }
+
+    public void setArcincidentsCollection(Collection<Arcincidents> arcincidentsCollection) {
+        this.arcincidentsCollection = arcincidentsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Arcincidents> getArcincidentsCollection1() {
+        return arcincidentsCollection1;
+    }
+
+    public void setArcincidentsCollection1(Collection<Arcincidents> arcincidentsCollection1) {
+        this.arcincidentsCollection1 = arcincidentsCollection1;
+    }
+
+    @XmlTransient
+    public Collection<Arcincidents> getArcincidentsCollection2() {
+        return arcincidentsCollection2;
+    }
+
+    public void setArcincidentsCollection2(Collection<Arcincidents> arcincidentsCollection2) {
+        this.arcincidentsCollection2 = arcincidentsCollection2;
+    }
+
+    @XmlTransient
     public Collection<Incidents> getIncidentsCollection() {
         return incidentsCollection;
     }
@@ -226,5 +264,5 @@ public class Users implements Serializable {
     public String toString() {
         return "entity.Users[ login=" + login + " ]";
     }
-    
+
 }

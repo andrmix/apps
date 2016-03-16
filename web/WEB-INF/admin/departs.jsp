@@ -16,7 +16,11 @@
         <form action='<c:url value="/admin/departs"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Отделы</div></div>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                    <div class="heada">${usera.name}
+                        (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                    </div><div class="headb">/ Отделы</div>
+                </div>
             </div>
             <div id="sidebar">
                 <p><a href='<c:url value="/admin"/>'>Сотрудники</a></p>
@@ -48,7 +52,7 @@
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <input type="submit" value="Показать инструменты" name="bToolsOn" class="plashka_color"/>
+                        <input type="submit" value="Инструменты" name="bToolsOn" class="plashka_color"/>
                     </c:otherwise>
                 </c:choose>
 

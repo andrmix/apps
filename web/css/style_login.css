@@ -59,6 +59,33 @@ body {
 #lb #loginBox .submit:hover {
     color: #FFA500;
 }
+#lb #loginBox .submitc1{
+    font-family: '9369';
+    cursor: pointer;
+    border: 0;
+    background: #3a3633;
+    width: 224.5px;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 0px 0px 0px 5px;
+    color: #C0C0C0;
+    margin-right: -2px;
+}
+#lb #loginBox .submitc2{
+    font-family: '9369';
+    cursor: pointer;
+    border: 0;
+    background: #3a3633;
+    width: 224.5px;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 0px 0px 5px 0px;
+    color: #C0C0C0;
+}
+
+#lb #loginBox .submitc1:hover, #lb #loginBox .submitc2:hover{
+    color: #FFA500;
+}
 
 #lb #loginBox .text {
     width: 100%;
@@ -83,5 +110,14 @@ body {
     padding: 8px 0 8px 0;
     height: 30px;
     font-size: 20px;	
+    text-align: center;
+}
+
+.err{
+    margin: auto;
+    margin-top: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: red;
     text-align: center;
 }
