@@ -134,6 +134,7 @@ public class specialist_controller extends HttpServlet {
         if ("/specialist/spec_incident_data".equals(request.getServletPath())) {
             request.setAttribute("done", 0);
             request.setAttribute("otmena", 0);
+            request.setAttribute("zamenaP", 0);
             request.setAttribute("commento", 0);
             request.setAttribute("ihistory", 0);
             request.setAttribute("iresh", 0);
@@ -237,6 +238,18 @@ public class specialist_controller extends HttpServlet {
                     request.setAttribute("iresh", 1);
                     List arcincidents = gb.getSimilarIncidents(incident);
                     request.setAttribute("rIncidents", arcincidents);
+                }
+                
+                //замена оборудования
+                if (answer.equals("Zamena")) {
+                    request.setAttribute("zamenaP", 1);
+                }
+                
+                //замена оборудования - готово
+                if (answer.equals("zDone")) {
+                    ms.addReq(specialist, request.getParameter("textz"), incident);
+                    response.sendRedirect(request.getContextPath() + "/specialist/spec_incident_data?id=" + incident.getId());
+                    return;
                 }
             }
 
@@ -345,8 +358,11 @@ public class specialist_controller extends HttpServlet {
         if (req.getParameter("bResh") != null) {
             return "bResh";
         }
-        if (req.getParameter("ddd") != null) {
-            return "ddd";
+        if (req.getParameter("Zamena") != null) {
+            return "Zamena";
+        }
+        if (req.getParameter("zDone") != null) {
+            return "zDone";
         }
         return "none";
     }

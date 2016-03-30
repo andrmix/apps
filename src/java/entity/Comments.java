@@ -46,7 +46,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Comments.deleteOpen", query = "DELETE FROM Comments c WHERE c.incident = :incident")
 })
 public class Comments implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -180,5 +179,5 @@ public class Comments implements Serializable {
     public String toString() {
         return "entity.Comments[ id=" + id + " ]";
     }
-
+    
 }

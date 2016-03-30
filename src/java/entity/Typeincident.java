@@ -35,9 +35,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Typeincident.findByName", query = "SELECT t FROM Typeincident t WHERE t.name = :name"),
 
     @NamedQuery(name = "Typeincident.findAllOrderName", query = "SELECT t FROM Typeincident t ORDER BY t.name"),
-    @NamedQuery(name = "Typeincident.findSearch", query = "SELECT t FROM Typeincident t WHERE t.name like :typeincident")})
+    @NamedQuery(name = "Typeincident.findSearch", query = "SELECT t FROM Typeincident t WHERE t.name like :typeincident")
+})
 public class Typeincident implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -124,5 +124,5 @@ public class Typeincident implements Serializable {
     public String toString() {
         return "entity.Typeincident[ id=" + id + " ]";
     }
-
+    
 }

@@ -35,9 +35,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Departs.findByName", query = "SELECT d FROM Departs d WHERE d.name = :name"),
 
     @NamedQuery(name = "Departs.findAllOrderName", query = "SELECT d FROM Departs d ORDER BY d.name"),
-    @NamedQuery(name = "Departs.findSearch", query = "SELECT d FROM Departs d WHERE d.name like :depart")})
+    @NamedQuery(name = "Departs.findSearch", query = "SELECT d FROM Departs d WHERE d.name like :depart")
+})
 public class Departs implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -113,5 +113,5 @@ public class Departs implements Serializable {
     public String toString() {
         return "entity.Departs[ id=" + id + " ]";
     }
-
+    
 }

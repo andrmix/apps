@@ -11,6 +11,7 @@ import entity.Departs;
 import entity.Groupuser;
 import entity.History;
 import entity.Incidents;
+import entity.Reqs;
 import entity.Statuses;
 import entity.Typeincident;
 import entity.Users;
@@ -247,6 +248,21 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         em.persist(history);
     }
 
+    @Override
+    public void addReq(Users specialist, String text, Incidents incident) {
+        Reqs req = new Reqs();
+        req.setDateReq(new Date());
+        req.setTimeReq(new Date());
+        req.setText(text);
+        req.setSpecialist(specialist);
+        Statuses status = em.find(Statuses.class, 1);
+        req.setStatus(status);
+        em.persist(req);
+        incident.setReq(req);
+        em.merge(incident);
+        addHistory(incident, specialist, "Создана заявка на замену оборудования");
+    }
+    
     /* delete удаление ===============================================================================================*/
     @Override
     public void deleteUser(Users user) {

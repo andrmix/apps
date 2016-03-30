@@ -46,7 +46,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "History.deleteOpen", query = "DELETE FROM History h WHERE h.incident = :incident")
 })
 public class History implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -188,5 +187,5 @@ public class History implements Serializable {
     public String toString() {
         return "entity.History[ id=" + id + " ]";
     }
-
+    
 }

@@ -89,4 +89,6 @@ public interface ManagementSystemLocal {
     public void blockUser(Users user);
     
     public boolean isBlockedUser(Users user);
+    
+    public void addReq(Users specialist, String text, Incidents incident);
 }

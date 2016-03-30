@@ -28,6 +28,10 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ *
+ * @author admin
+ */
 @Entity
 @Table(name = "incidents")
 @XmlRootElement
@@ -80,7 +84,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findNotManaged", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2")
 })
 public class Incidents implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -121,6 +124,9 @@ public class Incidents implements Serializable {
     private String attachment;
     @OneToMany(mappedBy = "incident")
     private Collection<Comments> commentsCollection;
+    @JoinColumn(name = "req", referencedColumnName = "id")
+    @ManyToOne
+    private Reqs req;
     @JoinColumn(name = "status", referencedColumnName = "id")
     @ManyToOne
     private Statuses status;
@@ -167,7 +173,7 @@ public class Incidents implements Serializable {
             return "";
         }
     }
-
+    
     public Date getDateIncidentD() {
         return dateIncident;
     }
@@ -183,7 +189,7 @@ public class Incidents implements Serializable {
             return "";
         }
     }
-
+    
     public Date getTimeIncidentD() {
         return timeIncident;
     }
@@ -273,6 +279,14 @@ public class Incidents implements Serializable {
         this.commentsCollection = commentsCollection;
     }
 
+    public Reqs getReq() {
+        return req;
+    }
+
+    public void setReq(Reqs req) {
+        this.req = req;
+    }
+
     public Statuses getStatus() {
         return status;
     }
@@ -346,5 +360,5 @@ public class Incidents implements Serializable {
     public String toString() {
         return "entity.Incidents[ id=" + id + " ]";
     }
-
+    
 }

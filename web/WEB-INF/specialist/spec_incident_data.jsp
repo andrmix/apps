@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/header.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/sidebar.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/incident_data.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/statusbar.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
     </head>
@@ -27,6 +28,89 @@
             <input type="hidden" name="id" value="${incident.id}"/>
             <div id="content">
                 <div class="incident_data">
+
+
+
+
+                    <div class="inc_data">
+                        <div class="shapka">
+                            <div class="id_inc">${incident.id}</div>
+                            <div class="name_inc">${incident.title}</div>
+                            <div class="data_inc">
+                                <div class="dat_inc">${incident.dateIncident} ${incident.timeIncident}</div>
+                                <div class="type_inc">${incident.typeIncident.name}</div>
+                            </div></div>
+                        <div id="podla">
+                            <div id="podl">
+                                <c:choose>
+                                    <c:when test="${incident.status.id == 2}">
+                                        <div id="hexagon_ns">Новый</div>
+                                        <div id="hexagon_sv">Назначен</div>
+                                        <div id="hexagon_s">В работе</div>
+                                        <div id="hexagon_s">Решено</div>
+                                        <div id="hexagon_p">Завершен</div>
+                                    </c:when>
+                                    <c:when test="${incident.status.id == 3}">
+                                        <div id="hexagon_ns">Новый</div>
+                                        <div id="hexagon_ss">Назначен</div>
+                                        <div id="hexagon_sv">В работе</div>
+                                        <div id="hexagon_s">Решено</div>
+                                        <div id="hexagon_p">Завершен</div>
+                                    </c:when>
+                                    <c:when test="${incident.status.id == 4}">
+                                        <div id="hexagon_ns">Новый</div>
+                                        <div id="hexagon_ss">Назначен</div>
+                                        <div id="hexagon_ss">В работе</div>
+                                        <div id="hexagon_sv">Решено</div>
+                                        <div id="hexagon_p">Завершен</div>
+                                    </c:when>
+                                    <c:when test="${incident.status.id == 5}">
+                                        <div id="hexagon_ns">Новый</div>
+                                        <div id="hexagon_ss">Назначен</div>
+                                        <div id="hexagon_ss">В работе</div>
+                                        <div id="hexagon_sv">Решено</div>
+                                        <div id="hexagon_p">Завершен</div>
+                                    </c:when>
+                                        
+                                    <c:otherwise>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div></div>
+
+                        <c:choose>
+                            <c:when test="${incident.attachment ne null}">
+                                <div class="text_inc">
+                                    <div class="man">${incident.zayavitel.name}</div>
+                                    ${incident.text}
+                                    <img class="scree" src='<c:url value="/screens/${incident.attachment}"/>' tabindex="0"></div>
+                                </c:when>
+                                <c:otherwise>
+                                <div class="text_inc">
+                                    <div class="man">${incident.zayavitel.name}</div>
+                                    ${incident.text}</div>
+                                </c:otherwise>
+                            </c:choose>
+
+                        <div class="liniya"></div>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <table class="table_incident_data">
                         <thead>
                             <tr>
@@ -136,6 +220,16 @@
                                 <input type="hidden" name="status" value="${incident.status.id}"/>
                             </div>
                         </c:when>
+                        <c:when test="${zamenaP == 1}">
+                            <div class="commentar">
+                                <table class="commgo">
+                                    <tr>
+                                        <td style="width: 70%"><textarea placeholder="Укажите причину" name="textz" class="commEdit"/></textarea></td>
+                                        <td style="width: 30%"><input type="submit" value="Готово" name="zDone" class="ibuttcomm"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </c:when>
                         <c:otherwise>
                             <c:choose>
                                 <c:when test="${done == 1}">
@@ -157,6 +251,9 @@
                                     </c:if>
                                     <c:if test="${incident.status.id == 3}">
                                         <input type="submit" value="Выполнить" name="Doit" class="ibutt"/>
+                                        <c:if test="${incident.req == null}">
+                                            <input type="submit" value="Замена оборудования" name="Zamena" class="ibutt"/>
+                                        </c:if>
                                         <c:if test="${incident.zayavitel.login ne incident.manager.login}">
                                             <input type="submit" value="Отклонить" name="Close" class="ibutt"/>
                                         </c:if>
@@ -164,6 +261,20 @@
                                 </c:otherwise>
                             </c:choose>
                         </c:otherwise>
+                    </c:choose>
+
+                    <c:choose>
+                        <c:when test="${incident.req ne null}">
+                            <div class="zamena">
+                                Заявка на замену оборудования No${incident.req.id}
+                                Статус: ${incident.req.status.name}
+                                Дата/время: ${incident.req.dateReq} ${incident.req.timeReq}
+                                Причина: ${incident.req.text}
+                                <c:if test="incident.req.status.id gt 9">
+                                    Решение: ${incident.req.decision}
+                                </c:if>
+                            </div>
+                        </c:when>
                     </c:choose>
 
                     <c:choose>

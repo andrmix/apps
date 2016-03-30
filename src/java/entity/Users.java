@@ -49,7 +49,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findManager", query = "SELECT u FROM Users u WHERE u.changePassword = 3")
 })
 public class Users implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -77,6 +76,8 @@ public class Users implements Serializable {
     private Integer changePassword;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin", orphanRemoval = true)
     private Collection<Groupuser> groupuserCollection;
+    @OneToMany(mappedBy = "specialist")
+    private Collection<Reqs> reqsCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin")
     private Collection<Comments> commentsCollection;
     @OneToMany(mappedBy = "zayavitel")
@@ -158,6 +159,15 @@ public class Users implements Serializable {
 
     public void setGroupuserCollection(Collection<Groupuser> groupuserCollection) {
         this.groupuserCollection = groupuserCollection;
+    }
+
+    @XmlTransient
+    public Collection<Reqs> getReqsCollection() {
+        return reqsCollection;
+    }
+
+    public void setReqsCollection(Collection<Reqs> reqsCollection) {
+        this.reqsCollection = reqsCollection;
     }
 
     @XmlTransient
@@ -264,5 +274,5 @@ public class Users implements Serializable {
     public String toString() {
         return "entity.Users[ login=" + login + " ]";
     }
-
+    
 }

@@ -1,0 +1,219 @@
+#hexagon_n {
+    float: left;
+    width: 150px;
+    height: 40px;
+    background: #FFA500;
+    position: relative;
+    text-align: center;
+    font-size: 20px;
+    line-height: 40px;
+}
+
+#hexagon_ns {
+    float: left;
+    width: 150px;
+    height: 40px;
+    background: #FFFFFF;
+    position: relative;
+    text-align: center;
+    font-size: 20px;
+    line-height: 40px;
+    color: #088A08;
+}
+
+#hexagon_ns:after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: 150px;
+    border-bottom: 20px solid transparent;
+    border-left: 10px solid #FFFFFF;
+    border-top: 20px solid transparent;
+}
+
+#hexagon_n:after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: 150px;
+    border-bottom: 20px solid transparent;
+    border-left: 10px solid #FFA500;
+    border-top: 20px solid transparent;
+}
+
+#hexagon_s {
+    float: left;
+    width: 150px;
+    height: 40px;
+    background: #FFFFFF;
+    position: relative;
+    margin-left: 12px;
+    text-align: center;
+    font-size: 20px;
+    color: #C0C0C0;
+    line-height: 40px;
+}
+
+#hexagon_ss {
+    float: left;
+    width: 150px;
+    height: 40px;
+    background: #FFFFFF;
+    position: relative;
+    margin-left: 12px;
+    text-align: center;
+    font-size: 20px;
+    line-height: 40px;
+    color: #088A08;
+}
+
+#hexagon_sv {
+    float: left;
+    width: 150px;
+    height: 40px;
+    background: #FFA500;
+    position: relative;
+    margin-left: 12px;
+    text-align: center;
+    font-size: 20px;
+    line-height: 40px;
+}
+
+#hexagon_s:before {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: -10px;
+    border-bottom: 20px solid #FFFFFF;
+    border-left: 10px solid transparent;
+    border-top: 20px solid #FFFFFF;
+}
+
+#hexagon_s:after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: 150px;
+    border-bottom: 20px solid transparent;
+    border-left: 10px solid #FFFFFF;
+    border-top: 20px solid transparent;
+}
+
+#hexagon_sv:before {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: -10px;
+    border-bottom: 20px solid #FFA500;
+    border-left: 10px solid transparent;
+    border-top: 20px solid #FFA500;
+}
+
+#hexagon_sv:after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: 150px;
+    border-bottom: 20px solid transparent;
+    border-left: 10px solid #FFA500;
+    border-top: 20px solid transparent;
+}
+
+#hexagon_ss:before {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: -10px;
+    border-bottom: 20px solid #FFFFFF;
+    border-left: 10px solid transparent;
+    border-top: 20px solid #FFFFFF;
+}
+
+#hexagon_ss:after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: 150px;
+    border-bottom: 20px solid transparent;
+    border-left: 10px solid #FFFFFF;
+    border-top: 20px solid transparent;
+}
+
+#hexagon_p {
+    float: left;
+    width: 150px;
+    height: 40px;
+    background: #FFFFFF;
+    position: relative;
+    margin-left: 12px;
+    text-align: center;
+    font-size: 20px;
+    line-height: 40px;
+    color: #C0C0C0;
+}
+
+#hexagon_pv {
+    float: left;
+    width: 150px;
+    height: 40px;
+    background: #FFA500;
+    position: relative;
+    margin-left: 12px;
+    text-align: center;
+    font-size: 20px;
+    line-height: 40px;
+}
+
+#hexagon_p:before {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: -10px;
+    border-bottom: 20px solid #FFFFFF;
+    border-left: 10px solid transparent;
+    border-top: 20px solid #FFFFFF;
+}
+
+#hexagon_pv:before {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: -10px;
+    border-bottom: 20px solid #FFA500;
+    border-left: 10px solid transparent;
+    border-top: 20px solid #FFA500;
+}
+
+#podl{
+    width: 798px;
+    height: 40px;
+    background: #FFA500;
+}
+
+#podla{
+    width: 800px;
+    height: 60px;
+    padding-top: 10px;
+    margin-top: 40px;
+ 
+}
