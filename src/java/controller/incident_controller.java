@@ -94,6 +94,7 @@ public class incident_controller extends HttpServlet {
             answer = checkAction(request);
             request.setAttribute("commento", 0);
             request.setAttribute("ihistory", 0);
+            request.setAttribute("commenta", 0);
 
             int idIncident = 0;
             idIncident = Integer.parseInt(request.getParameter("id"));
@@ -210,7 +211,7 @@ public class incident_controller extends HttpServlet {
             //добавить
             if (answer.equals("Add")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
-                ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, true, 0, null);
+                int idInca = ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, true, 0, null);
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
@@ -218,8 +219,8 @@ public class incident_controller extends HttpServlet {
             //редактировать
             if (answer.equals("Edit")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
-                ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, false, Integer.parseInt(request.getParameter("id")), null);
-                response.sendRedirect(request.getContextPath() + "/user");
+                int idInc = ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, false, Integer.parseInt(request.getParameter("id")), null);
+                response.sendRedirect(request.getContextPath() + "/user/user_incident?id=" + idInc);
                 return;
             }
 

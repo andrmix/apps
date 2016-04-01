@@ -19,22 +19,31 @@
             <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
                 <div class="heada">${user.name}
                     (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                    / ${user.depart.name} / ***Должность***
                 </div>
                 <div class="headb">/ Закрытые обращения</div>
             </div>
         </div>
         <div id="sidebar">
-            <p><a href='<c:url value="/user/new_incident"/>'>Новое обращение</a></p>
-            <p><a href='<c:url value="/user"/>'>Активные обращения
-                    <c:if test="${openIncidentsNew.size() gt 0}">
-                        <span class="count">${openIncidentsNew.size()}</span>
-                    </c:if>
-                </a></p>
-            <p><a href='<c:url value="/user/closed_incidents"/>'><span class="videl">Закрытые обращения
+            <div class="sidebar_el">
+                    <a href='<c:url value="/user/new_incident"/>'>
+                        <div class="u_icon"></div>
+                        Новое обращение
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a href='<c:url value="/user"/>'><div class="u_icon"></div>Активные обращения
+                            <c:if test="${openIncidentsNew.size() gt 0}">
+                                <span class="videlc">${openIncidentsNew.size()}</span>
+                            </c:if>
+                        </a></div>
+                <div class="sidebar_el">
+                    <a href='<c:url value="/user/closed_incidents"/>'><div class="u_iconv"></div><span class="videl">Закрытые обращения
                         <c:if test="${closedIncidentsNew.size() gt 0}">
-                            <span class="videlc">${closedIncidentsNew.size()}</span>
+                            <span class="count">${closedIncidentsNew.size()}</span>
                         </c:if>
-                    </span></a></p>
+                    </span></a>       
+                </div>
         </div>
         <form action='<c:url value="${action}"/>' method="POST">
             <div id="content">

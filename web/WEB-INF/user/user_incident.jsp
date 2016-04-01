@@ -14,10 +14,17 @@
     <body>
         <div id="header">
             <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-            <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'><div class="heada">${user.name} (<a href='<c:url value="/logout"/>'>Выйти</a>)</div><div class="headb">/ Обращения / Данные обращения</div></div>
+            <div class="head_block">
+                <img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                <div class="heada">${user.name}
+                    (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                    / ${user.depart.name} / ***Должность***
+                </div><div class="headb">/ Обращения / Данные обращения</div></div>
         </div>
         <div id="sidebar">
-            <p><a href='<c:url value="/user"/>'>< Назад</a></p>
+            <div class="sidebar_el">
+                <a href='<c:url value="/user"/>'><div class="u_icon"></div>Назад</a>       
+            </div>
         </div>
         <form action='<c:url value="/user/user_incident"/>' method="POST">
             <input type="hidden" name="id" value="${incident.id}"/>

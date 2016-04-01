@@ -10,10 +10,19 @@
     height: 100%;
 }
 
+.sidebar_el{
+    width: 297px;
+    height: 120px;
+    padding: 0 auto;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
 #sidebar a{
-    margin-left: 30px;
+    margin: auto;
     text-decoration: none;
     color: #C0C0C0;
+    
 }
 
 #sidebar a:hover{
@@ -71,5 +80,21 @@
     background: #3a3633;
     cursor: pointer;
     font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.u_icon{
+    width: 80px;
+    height: 80px;
+    background: #E6E6E6;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_iconv{
+    width: 80px;
+    height: 80px;
+    background: #FFA500;
+    margin: 0 auto;
     margin-bottom: 10px;
 }

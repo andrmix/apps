@@ -16,7 +16,7 @@ import javax.ejb.Local;
 @Local
 public interface ManagementSystemLocal {
 
-    public void addIncident(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id, String attachment);
+    public int addIncident(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id, String attachment);
 
     public void addTask(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id, Users specialist);
 

@@ -62,6 +62,15 @@
     background: #F0F8FF;
 }
 
+.dec_inc{
+    width: 760px;
+    font-size: 20px;
+    padding: 20px;
+    background: #A9F5A9;
+    margin-top: 10px;
+    position: relative;
+}
+
 .scree{
     margin-top: 10px;
     display: block;
@@ -70,25 +79,157 @@
 .man{
     width: 760px;
     color: #483D8B;
+    margin-bottom: 5px;
+}
+
+.man_otd{
+    font-size: 15px;
+    width: 760px;
+    color: #483D8B;
     padding-bottom: 10px; 
     border-bottom: 2px solid #FFFFFF;
     margin-bottom: 10px;
+}
+
+.man_comm{
+    width: 640px;
+    color: #483D8B;
+    margin-bottom: 5px;
+}
+
+.man_otd_comm{
+    font-size: 15px;
+    width: 640px;
+    color: #483D8B;
+    padding-bottom: 10px; 
+    border-bottom: 2px solid #FFFFFF;
+    margin-bottom: 10px;
+}
+
+.dat_comm{
+    font-size: 15px;
+    width: 150px;
+    color: #483D8B;
+    position: absolute;
+    top: 50px;
+    left: 530px;
+}
+
+.dat_dec{
+    font-size: 15px;
+    width: 150px;
+    color: #483D8B;
+    position: absolute;
+    top: 50px;
+    left: 650px;
 }
 
 .liniya{
     width: 800px;
     margin-top: 10px;
     margin-bottom: 10px;
-    height: 2px;
+    height: 1px;
     background: #483D8B;
 }
 
+.liniya_kor{
+    width: 680px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 1px;
+    background: #6A5ACD;
+}
 
+.ibutt{
+    font-family: '9369';
+    cursor: pointer;
+    background: #483D8B;
+    width: 170px;
+    height: 30px;
+    font-size: 15px;
+    color: #Ffffff;
+    border: 0;
+    margin-top: 10px;
+    margin-left: auto;
+}
 
+.ibutt:hover{
+    background: #6A5ACD;
+}
 
+.ibutt_comm{
+    font-family: '9369';
+    cursor: pointer;
+    background: #483D8B;
+    width: 170px;
+    height: 30px;
+    font-size: 15px;
+    color: #Ffffff;
+    border: 0;
+    margin-top: 10px;
+    margin-left: 120px;
+}
 
+.ibutt_comm:hover{
+    background: #6A5ACD;
+}
 
+.commEdit{
+    font-family: '9369';
+    border: 1px solid #483D8B;
+    background: #Ffffff;
+    padding: 5px;
+    height: 50px;
+    width: 790px;
+    font-size: 15px;
+    text-align: left;
+    resize: none;
+    margin-top: 10px;
+}
 
+.commEdit_comm{
+    font-family: '9369';
+    border: 1px solid #483D8B;
+    background: #Ffffff;
+    padding: 5px;
+    height: 50px;
+    width: 670px;
+    font-size: 15px;
+    text-align: left;
+    resize: none;
+    margin-top: 10px;
+    margin-left: 120px;
+}
+
+.comm_inc{
+    width: 640px;
+    font-size: 20px;
+    padding: 20px;
+    background: #F0F8FF;
+    position: relative;
+}
+
+.comm_inc_mod{
+    width: 640px;
+    margin-left: 40px;
+    display: inline-block;
+}
+
+.pan_chp{
+    width: 80px;
+    height: 300px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.pan_mod{
+    width: 80px;
+    height: 80px;
+    background: #F0F8FF;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border: 0;
+}
 
 
 
@@ -126,10 +267,6 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
-.commentar{
-    padding: 10px;
-}
-
 .plashka_on{
     font-family: '9369';
     cursor: pointer;
@@ -161,30 +298,6 @@
     color: #000000;
 }
 
-.comments{
-    margin: 0;
-    font-family: '9369';
-    font-size: 15px;
-    border-collapse: collapse;
-    text-align: left;
-    width: 100%;
-}
-
-.comments td {
-    border-style: solid;
-    border-width: 0 2px 2px 0;
-    border-color: white;
-    padding: 10px;
-}
-
-.comments tbody tr {
-    background: white;
-}
-
-.comments tbody tr:nth-child(odd) {
-    background: #F0F8FF;
-}
-
 .commgo{
     margin: 0;
     margin-top: 10px;
@@ -199,18 +312,7 @@
     padding: 0;
 }
 
-.commEdit{
-    font-family: '9369';
-    border: 1px solid #808080;
-    background: #Ffffff;
-    padding: 5px;
-    height: 50px;
-    width: 100%;
-    font-size: 15px;
-    text-align: left;
-    resize: none;
-    margin-left: 10px;
-}
+
 
 .ibuttcomm{
     font-family: '9369';
@@ -229,22 +331,7 @@
     background: #A9A9A9;
 }
 
-.ibutt{
-    font-family: '9369';
-    cursor: pointer;
-    background: #483D8B;
-    width: 170px;
-    height: 30px;
-    font-size: 15px;
-    color: #Ffffff;
-    border: 0;
-    border-radius: 0px 0px 5px 5px;
-    margin-left: auto;
-}
 
-.ibutt:hover{
-    background: #6A5ACD;
-}
 
 .sel_mal {
     font-family: '9369';

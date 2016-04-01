@@ -54,7 +54,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
 
     /* add добавление =================================================================================================*/
     @Override
-    public void addIncident(String title, String text, Users zayavitel,
+    public int addIncident(String title, String text, Users zayavitel,
             Typeincident ti, boolean addIncident, int id, String attachment) {
         Incidents incident;
         if (addIncident) {
@@ -74,6 +74,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setTypeIncident(ti);
         incident.setAttachment(attachment);
         incident.setNew1(1);
+        int ret = 0;
         if (addIncident) {
             em.persist(incident);
             addHistory(incident, zayavitel, null);
@@ -81,9 +82,12 @@ public class ManagementSystemBean implements ManagementSystemLocal {
                 autoAppoint(incident);
             }
         } else {
+            ret = incident.getId();
             em.merge(incident);
             addHistory(incident, zayavitel, "Исправление");
         }
+
+        return ret;
     }
 
     @Override
@@ -262,7 +266,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         em.merge(incident);
         addHistory(incident, specialist, "Создана заявка на замену оборудования");
     }
-    
+
     /* delete удаление ===============================================================================================*/
     @Override
     public void deleteUser(Users user) {
