@@ -33,7 +33,7 @@ import session.ManagementSystemLocal;
             "/sort_by_datec_m_closed", "/sort_by_name_m_act", "/sort_by_date_m_act",
             "/sort_by_status_m_act", "/sort_by_zay_m_act", "/sort_by_name_m_done",
             "/sort_by_dateo_m_done", "/sort_by_zay_m_done", "/sort_by_dated_m_done",
-            "/sort_by_status_m_done", "/manager/manager_tools"})
+            "/manager/manager_tools"})
 public class manager_controller extends HttpServlet {
 
     @EJB
@@ -95,7 +95,7 @@ public class manager_controller extends HttpServlet {
             if (answer.equals("Add")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                 Users specialist = ms.findUser(request.getParameter("specId"));
-                ms.addTask(request.getParameter("title"), request.getParameter("texti"), manager, ti, true, 0, specialist);
+                int idTask = ms.addTask(request.getParameter("title"), request.getParameter("texti"), manager, ti, true, 0, specialist);
                 response.sendRedirect(request.getContextPath() + "/manager");
                 return;
             }
@@ -104,8 +104,8 @@ public class manager_controller extends HttpServlet {
             if (answer.equals("Edit")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                 Users specialist = ms.findUser(request.getParameter("specId"));
-                ms.addTask(request.getParameter("title"), request.getParameter("texti"), manager, ti, false, Integer.parseInt(request.getParameter("id")), specialist);
-                response.sendRedirect(request.getContextPath() + "/manager");
+                int idTask = ms.addTask(request.getParameter("title"), request.getParameter("texti"), manager, ti, false, Integer.parseInt(request.getParameter("id")), specialist);
+                response.sendRedirect(request.getContextPath() + "/manager/incident_data?id=" + idTask);
                 return;
             }
 
@@ -197,11 +197,12 @@ public class manager_controller extends HttpServlet {
 
         //данные обращения =============================================================================================================
         if ("/manager/incident_data".equals(request.getServletPath())) {
-            getServletContext().setAttribute("commento", 0);
+            getServletContext().setAttribute("commento", 1);
             getServletContext().setAttribute("ihistory", 0);
             getServletContext().setAttribute("commenta", 0);
             getServletContext().setAttribute("appoint", 0);
             getServletContext().setAttribute("task", 0);
+            getServletContext().setAttribute("iresh", 0);
 
             String answer = null;
             answer = checkAction(request);
@@ -213,39 +214,38 @@ public class manager_controller extends HttpServlet {
                 Arcincidents arcincident = ms.findArcIncident(idIncident);
                 request.setAttribute("incident", arcincident);
 
+                List<Comments> comments = gb.getComments(null, arcincident);
+                request.setAttribute("comments", comments);
+
                 //комментарии
                 if (answer.equals("bComm")) {
                     request.setAttribute("commento", 1);
                     request.setAttribute("ihistory", 0);
-                    List<Comments> comments = gb.getComments(null, arcincident);
-                    request.setAttribute("comments", comments);
+                    request.setAttribute("iresh", 0);
                 }
 
                 //история
                 if (answer.equals("bHist")) {
                     request.setAttribute("ihistory", 1);
                     request.setAttribute("commento", 0);
+                    request.setAttribute("iresh", 0);
                     List<History> history = gb.getHistory(null, arcincident);
                     request.setAttribute("allhistory", history);
                 }
 
-                //удалить
-                if (answer.equals("Delete")) {
-                    ms.deleteIncidentFull(null, arcincident);
-                    response.sendRedirect(request.getContextPath() + "/manager");
-                    return;
-                }
-
-                //удалить
+                /*  //удалить
+                 if (answer.equals("Delete")) {
+                 ms.deleteIncidentFull(null, arcincident);
+                 response.sendRedirect(request.getContextPath() + "/manager");
+                 return;
+                 }*/
+                //mail
                 if (answer.equals("Send")) {
                     //ms.sendMail();
                 }
             } else {
                 if (incident.getNew1().equals(1)) {
                     if (incident.getStatus().getId().equals(1)) {
-                        ms.setNotNewIncident(incident, null);
-                    }
-                    if (incident.getStatus().getId().equals(5)) {
                         ms.setNotNewIncident(incident, null);
                     }
                     if (incident.getZayavitel().equals(incident.getManager())
@@ -257,6 +257,9 @@ public class manager_controller extends HttpServlet {
                         ms.setNotNewIncident(incident, null);
                     }
                 }
+
+                List<Comments> comments = gb.getComments(incident, null);
+                request.setAttribute("comments", comments);
 
                 if (ms.isTask(manager, incident)) {
                     getServletContext().setAttribute("task", 1);
@@ -285,10 +288,15 @@ public class manager_controller extends HttpServlet {
                 }
 
                 //согласовать
-                if (answer.equals("Agree")) {
-                    ms.agreeIncident(incident);
+                if (answer.equals("Accept")) {
+                    ms.acceptIncident(incident);
                     response.sendRedirect(request.getContextPath() + "/manager/on_agreement");
                     return;
+                }
+
+                //не подтверждать
+                if (answer.equals("NoAccept")) {
+                    request.setAttribute("commenta", 1);
                 }
 
                 //готово - отклонение/отмена
@@ -306,15 +314,16 @@ public class manager_controller extends HttpServlet {
                 if (answer.equals("bCommGo")) {
                     request.setAttribute("commento", 1);
                     request.setAttribute("ihistory", 0);
+                    request.setAttribute("iresh", 0);
                     ms.addComment(request.getParameter("textcomm"), manager, incident);
-                    List<Comments> comments = gb.getComments(incident, null);
-                    request.setAttribute("comments", comments);
+                    response.sendRedirect(request.getContextPath() + "/manager/incident_data?id=" + incident.getId());
+                    return;
                 }
 
                 //в работу
                 if (answer.equals("InWork")) {
                     ms.inWork(incident);
-                    response.sendRedirect(request.getContextPath() + "/manager");
+                    response.sendRedirect(request.getContextPath() + "/manager/incident_data?id=" + incident.getId());
                     return;
                 }
 
@@ -334,19 +343,28 @@ public class manager_controller extends HttpServlet {
                 if (answer.equals("bComm")) {
                     request.setAttribute("commento", 1);
                     request.setAttribute("ihistory", 0);
-                    List<Comments> comments = gb.getComments(incident, null);
-                    request.setAttribute("comments", comments);
+                    request.setAttribute("iresh", 0);
                 }
 
                 //история
                 if (answer.equals("bHist")) {
                     request.setAttribute("ihistory", 1);
                     request.setAttribute("commento", 0);
+                    request.setAttribute("iresh", 0);
                     List<History> history = gb.getHistory(incident, null);
                     request.setAttribute("allhistory", history);
                 }
+                
+                //база знаний
+                if (answer.equals("bResh")) {
+                    request.setAttribute("ihistory", 0);
+                    request.setAttribute("commento", 0);
+                    request.setAttribute("iresh", 1);
+                    List arcincidents = gb.getSimilarIncidents(incident);
+                    request.setAttribute("rIncidents", arcincidents);
+                }
 
-                //удалить
+                //mail
                 if (answer.equals("Send")) {
                     //ms.sendMail();
                 }
@@ -437,10 +455,6 @@ public class manager_controller extends HttpServlet {
             getServletContext().setAttribute("doneIncidentsManager", gb.getSpecialistDoneIncidents(manager, "dated"));
             request.getRequestDispatcher("/WEB-INF/manager/manager_done_incidents.jsp").forward(request, response);
         }
-        if ("/sort_by_status_m_done".equals(request.getServletPath())) {
-            getServletContext().setAttribute("doneIncidentsManager", gb.getSpecialistDoneIncidents(manager, "status"));
-            request.getRequestDispatcher("/WEB-INF/manager/manager_done_incidents.jsp").forward(request, response);
-        }
 
         //список обращений менеджера =============================================================================================================
         if ("/manager/manager_done_incidents".equals(request.getServletPath())) {
@@ -457,10 +471,10 @@ public class manager_controller extends HttpServlet {
             if (answer.equals("Back")) {
                 ms.comeBack(manager);
             }
-            
+
             if (answer.equals("Done")) {
-                Users user = ms.findUser(request.getParameter("specId")); 
-                if (user.getLogin().equals("auto")){
+                Users user = ms.findUser(request.getParameter("specId"));
+                if (user.getLogin().equals("auto")) {
                     ms.autoOn(manager);
                 } else {
                     ms.doManager(user, manager);
@@ -533,8 +547,11 @@ public class manager_controller extends HttpServlet {
         if (req.getParameter("Add") != null) {
             return "Add";
         }
-        if (req.getParameter("Agree") != null) {
-            return "Agree";
+        if (req.getParameter("Accept") != null) {
+            return "Accept";
+        }
+        if (req.getParameter("NoAccept") != null) {
+            return "NoAccept";
         }
         if (req.getParameter("bComm") != null) {
             return "bComm";
@@ -577,6 +594,9 @@ public class manager_controller extends HttpServlet {
         }
         if (req.getParameter("Back") != null) {
             return "Back";
+        }
+        if (req.getParameter("bResh") != null) {
+            return "bResh";
         }
         return "none";
     }

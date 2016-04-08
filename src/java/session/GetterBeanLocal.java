@@ -10,6 +10,7 @@ import entity.Comments;
 import entity.Departs;
 import entity.History;
 import entity.Incidents;
+import entity.Posts;
 import entity.Statuses;
 import entity.Typeincident;
 import entity.Users;
@@ -59,4 +60,7 @@ public interface GetterBeanLocal {
     public List<Incidents> getNotManagedIncidents();
     public List getSimilarIncidents(Incidents incident);
     public List<Users> whoIsManager();
+    public List<Posts> getAllPosts(String sort);
+    public List<Posts> getPostsSearch(String searchText);
+    public List<Posts> getPostsForEdit(Posts dpost);
 }

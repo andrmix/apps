@@ -15,14 +15,16 @@
         <form action='<c:url value="/admin/depart_data"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                     <div class="heada">${usera.name} 
                         (<a href='<c:url value="/logout"/>'>Выйти</a>)
                     </div><div class="headb">/ Отделы / Данные отдела</div>
                 </div>
             </div>
             <div id="sidebar">
-                <p><a href='<c:url value="/admin/departs"/>'>< Назад</a></p>
+                <div class="sidebar_el">
+                    <a class="a_nazad" href='<c:url value="/admin/departs"/>'><div class="u_icon_nazad"></div>Назад</a>
+                </div>
             </div>
             <input type="hidden" name="id" value="${depart.id}"/>
             <div id="content">
@@ -40,9 +42,8 @@
                             </tr>
                         </tbody>
                     </table>
-                    <input type="submit" value="Редактировать" name="Edit" class="ibutt"/>
-                    <input type="submit" value="Удалить" name="Delete" class="ibutt"/>
-                    <input type="submit" value="Отмена" name="Cancel" class="ibutt"/>
+                    <button type="submit" name="Edit" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/edit.png"/>'>Редактировать</button>
+                    <button type="submit" name="Delete" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/del.png"/>'>Удалить</button>
                 </div>
             </div>
         </form>

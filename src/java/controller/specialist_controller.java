@@ -99,10 +99,6 @@ public class specialist_controller extends HttpServlet {
             getServletContext().setAttribute("doneIncidents", gb.getSpecialistDoneIncidents(specialist, "dated"));
             request.getRequestDispatcher("/WEB-INF/specialist/spec_done_incidents.jsp").forward(request, response);
         }
-        if ("/specialist/sort_by_status_done".equals(request.getServletPath())) {
-            getServletContext().setAttribute("doneIncidents", gb.getSpecialistDoneIncidents(specialist, "status"));
-            request.getRequestDispatcher("/WEB-INF/specialist/spec_done_incidents.jsp").forward(request, response);
-        }
 
         if ("/specialist/sort_by_name_closed".equals(request.getServletPath())) {
             getServletContext().setAttribute("action", request.getServletPath());
@@ -135,6 +131,7 @@ public class specialist_controller extends HttpServlet {
             request.setAttribute("done", 0);
             request.setAttribute("otmena", 0);
             request.setAttribute("zamenaP", 0);
+            request.setAttribute("icomm", 1);
             request.setAttribute("ihistory", 0);
             request.setAttribute("iresh", 0);
             String answer = null;
@@ -154,14 +151,22 @@ public class specialist_controller extends HttpServlet {
                 if (answer.equals("bHist")) {
                     request.setAttribute("ihistory", 1);
                     request.setAttribute("iresh", 0);
+                    request.setAttribute("icomm", 0);
                     List<History> history = gb.getHistory(null, arcincident);
                     request.setAttribute("allhistory", history);
+                }
+
+                //comments
+                if (answer.equals("bComms")) {
+                    request.setAttribute("icomm", 1);
+                    request.setAttribute("ihistory", 0);
+                    request.setAttribute("iresh", 0);
                 }
             } else {
                 request.setAttribute("incident", incident);
                 List<Comments> comments = gb.getComments(incident, null);
                 request.setAttribute("comments", comments);
-                
+
                 if (incident.getNew1().equals(1) && (incident.getStatus().getId().equals(2) || incident.getStatus().getId().equals(3))) {
                     ms.setNotNewIncident(incident, null);
                 }
@@ -201,6 +206,7 @@ public class specialist_controller extends HttpServlet {
                 if (answer.equals("bCommGo")) {
                     request.setAttribute("ihistory", 0);
                     request.setAttribute("iresh", 0);
+                    request.setAttribute("icomm", 1);
                     ms.addComment(request.getParameter("textcomm"), specialist, incident);
                     response.sendRedirect(request.getContextPath() + "/specialist/spec_incident_data?id=" + incident.getId());
                     return;
@@ -210,6 +216,7 @@ public class specialist_controller extends HttpServlet {
                 if (answer.equals("bHist")) {
                     request.setAttribute("ihistory", 1);
                     request.setAttribute("iresh", 0);
+                    request.setAttribute("icomm", 0);
                     List<History> history = gb.getHistory(incident, null);
                     request.setAttribute("allhistory", history);
                 }
@@ -218,8 +225,16 @@ public class specialist_controller extends HttpServlet {
                 if (answer.equals("bResh")) {
                     request.setAttribute("ihistory", 0);
                     request.setAttribute("iresh", 1);
+                    request.setAttribute("icomm", 0);
                     List arcincidents = gb.getSimilarIncidents(incident);
                     request.setAttribute("rIncidents", arcincidents);
+                }
+
+                //comments
+                if (answer.equals("bComm")) {
+                    request.setAttribute("ihistory", 0);
+                    request.setAttribute("iresh", 0);
+                    request.setAttribute("icomm", 1);
                 }
 
                 //замена оборудования
@@ -229,7 +244,7 @@ public class specialist_controller extends HttpServlet {
 
                 //замена оборудования - готово
                 if (answer.equals("zDone")) {
-                    ms.addReq(specialist, request.getParameter("textz"), incident);
+                    //ms.addReq(specialist, request.getParameter("textz"), incident);
                     response.sendRedirect(request.getContextPath() + "/specialist/spec_incident_data?id=" + incident.getId());
                     return;
                 }

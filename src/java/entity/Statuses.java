@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Statuses.findAllOrder", query = "SELECT s FROM Statuses s ORDER BY s.id")
 })
 public class Statuses implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,8 +49,6 @@ public class Statuses implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "status")
-    private Collection<Reqs> reqsCollection;
     @OneToMany(mappedBy = "status")
     private Collection<Arcincidents> arcincidentsCollection;
     @OneToMany(mappedBy = "status")
@@ -83,15 +82,6 @@ public class Statuses implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @XmlTransient
-    public Collection<Reqs> getReqsCollection() {
-        return reqsCollection;
-    }
-
-    public void setReqsCollection(Collection<Reqs> reqsCollection) {
-        this.reqsCollection = reqsCollection;
     }
 
     @XmlTransient
@@ -145,5 +135,5 @@ public class Statuses implements Serializable {
     public String toString() {
         return "entity.Statuses[ id=" + id + " ]";
     }
-    
+
 }

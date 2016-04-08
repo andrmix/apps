@@ -8,13 +8,15 @@ package session;
 import entity.Arcincidents;
 import entity.Comments;
 import entity.Departs;
+import entity.Docs;
 import entity.Groupuser;
 import entity.History;
 import entity.Incidents;
-import entity.Reqs;
+import entity.Posts;
 import entity.Statuses;
 import entity.Typeincident;
 import entity.Users;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -64,8 +66,6 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         }
         incident.setDateIncident(new Date());
         incident.setTimeIncident(new Date());
-        incident.setDateStatus(new Date());
-        incident.setTimeStatus(new Date());
         Statuses status = em.find(Statuses.class, 1);
         incident.setStatus(status);
         incident.setTitle(title);
@@ -109,13 +109,15 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         arcincident.setRevisionCount(incident.getRevisionCount());
         arcincident.setNew1(incident.getNew1());
         arcincident.setAttachment(incident.getAttachment());
+        arcincident.setReq(incident.getReq());
+        arcincident.setActDone(incident.getActDone());
         em.persist(arcincident);
         editHAndCInArc(incident, arcincident);
         deleteIncident(incident);
     }
 
     @Override
-    public void addTask(String title, String text, Users manager,
+    public int addTask(String title, String text, Users manager,
             Typeincident ti, boolean addIncident, int id, Users specialist) {
         Incidents incident;
         if (addIncident) {
@@ -125,8 +127,6 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         }
         incident.setDateIncident(new Date());
         incident.setTimeIncident(new Date());
-        incident.setDateStatus(new Date());
-        incident.setTimeStatus(new Date());
         Statuses status = em.find(Statuses.class, 2);
         incident.setStatus(status);
         incident.setTitle(title);
@@ -137,19 +137,23 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setTypeIncident(ti);
         incident.setAttachment(null);
         incident.setNew1(1);
+        int ret = 0;
         if (addIncident) {
             em.persist(incident);
             addHistory(incident, manager, null);
         } else {
+            ret = incident.getId();
             em.merge(incident);
             addHistory(incident, manager, "Исправление");
         }
+        
+        return ret;
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void addUser(String login, String fio, String email,
-            Departs depart, String role, boolean addUser) {
+            Departs depart, String role, boolean addUser, Posts dpost) {
         try {
             Users user;
             if (addUser) {
@@ -158,6 +162,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
                 user = findUser(login);
             }
             user.setDepart(depart);
+            user.setDpost(dpost);
             user.setEmail(email);
             user.setLogin(login);
             user.setName(fio);
@@ -200,6 +205,22 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             em.persist(depart);
         } else {
             em.merge(depart);
+        }
+    }
+    
+    @Override
+    public void addPost(String name, boolean addPost, int id) {
+        Posts dpost;
+        if (addPost) {
+            dpost = new Posts();
+        } else {
+            dpost = findPost(id);
+        }
+        dpost.setName(name);
+        if (addPost) {
+            em.persist(dpost);
+        } else {
+            em.merge(dpost);
         }
     }
 
@@ -253,14 +274,18 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     }
 
     @Override
-    public void addReq(Users specialist, String text, Incidents incident) {
-        Reqs req = new Reqs();
-        req.setDateReq(new Date());
-        req.setTimeReq(new Date());
-        req.setText(text);
+    public void addReq(Users specialist, String cause, Incidents incident, Users komis1,
+            Users komis2, String zamenaIn, String zamenaOut, String text) {
+        Docs req = new Docs();
+        req.setDateDoc(new Date());
+        req.setTimeDoc(new Date());
+        req.setCause(cause);
+        req.setKomis1(komis1);
+        req.setKomis2(komis2);
+        req.setZamenaIn(zamenaIn);
+        req.setZamenaOut(zamenaOut);
         req.setSpecialist(specialist);
-        Statuses status = em.find(Statuses.class, 1);
-        req.setStatus(status);
+        req.setText(text);
         em.persist(req);
         incident.setReq(req);
         em.merge(incident);
@@ -277,6 +302,12 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public void deleteDepart(Departs depart) {
         Departs toBeRemoved = em.merge(depart);
+        em.remove(toBeRemoved);
+    }
+    
+    @Override
+    public void deletePost(Posts dpost) {
+        Posts toBeRemoved = em.merge(dpost);
         em.remove(toBeRemoved);
     }
 
@@ -343,6 +374,11 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     public Departs findDepart(Object id) {
         return em.find(Departs.class, id);
     }
+    
+    @Override
+    public Posts findPost(Object id) {
+        return em.find(Posts.class, id);
+    }
 
     @Override
     public Groupuser findGroupuser(Users user) {
@@ -352,7 +388,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         Groupuser groupuser = (Groupuser) resultList.get(0);
         return groupuser;
     }
-
+    
     /* actions действия ==============================================================================================*/
     @Override
     public void cancelIncident(Incidents incident, String textp, String tstatus, boolean it, Users manager) {
@@ -361,18 +397,16 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         Statuses status = null;
         if (tstatus.equals("1") || tstatus.equals("2") || tstatus.equals("3")) {
             if (it) {
-                status = em.find(Statuses.class, 8);
+                status = em.find(Statuses.class, 7);
                 incident.setNew1(1);
             } else {
-                status = em.find(Statuses.class, 7);
+                status = em.find(Statuses.class, 6);
             }
             inArc = true;
             incident.setDecision(textp);
         }
         if (tstatus.equals("4")) {
             status = em.find(Statuses.class, 3);
-            incident.setDateStatus(new Date());
-            incident.setTimeStatus(new Date());
             if (incident.getRevisionCount() != null) {
                 revCount = incident.getRevisionCount() + 1;
             } else {
@@ -414,8 +448,6 @@ public class ManagementSystemBean implements ManagementSystemLocal {
 
     @Override
     public void inWork(Incidents incident) {
-        incident.setDateStatus(new Date());
-        incident.setTimeStatus(new Date());
         incident.setStatus(gb.getStatuses().get(2));//3
         em.merge(incident);
         addHistory(incident, incident.getSpecialist(), null);
@@ -423,8 +455,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
 
     @Override
     public void doneIncident(Incidents incident, String decision) {
-        incident.setDateStatus(new Date());
-        incident.setTimeStatus(new Date());
+        incident.setDateDone(new Date());
+        incident.setTimeDone(new Date());
         incident.setStatus(gb.getStatuses().get(3));//4
         incident.setDecision(decision);
         incident.setNew1(1);
@@ -435,16 +467,9 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @Override
     public void acceptIncident(Incidents incident) {
         incident.setStatus(gb.getStatuses().get(4));//5
-        incident.setDateStatus(new Date());
-        incident.setTimeStatus(new Date());
-        incident.setNew1(1);
         em.merge(incident);
-        addHistory(incident, incident.getZayavitel(), null);
-        if (isAuto()) {
-            Users auto = findUser("auto");
-            incident.setManager(auto);
-            agreeIncident(incident);
-        }
+        addHistory(incident, incident.getManager(), "Перенесен в архив");
+        addIncidentInArc(incident);
     }
 
     @Override
@@ -467,13 +492,15 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         return result;
     }
 
+/*
+//del
     @Override
     public void agreeIncident(Incidents incident) {
         incident.setStatus(gb.getStatuses().get(5));//6
         em.merge(incident);
         addHistory(incident, incident.getManager(), "Перенесен в архив");
         addIncidentInArc(incident);
-    }
+    }*/
 
     @Override
     public void resetPassword(Users user) {
@@ -555,8 +582,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
                 case "user_appoint":
                     message.setText("Ваше обращение (ID " + incident.getId()
                             + " - " + incident.getTitle() + ")"
-                            + " назначено (" + incident.getDateStatus()
-                            + " " + incident.getTimeStatus() + "). "
+                            + " назначено (" + dateInStr(new Date())
+                            + " " + timeInStr(new Date()) + "). "
                             + "Специалист: " + incident.getSpecialist().getName());
                     toMail = incident.getZayavitel().getEmail();
                     recipCount = 1;
@@ -564,16 +591,16 @@ public class ManagementSystemBean implements ManagementSystemLocal {
                 case "spec_appoint":
                     message.setText("Вам назначено обращение (ID " + incident.getId()
                             + " - " + incident.getTitle() + ")"
-                            + " (" + incident.getDateStatus()
-                            + " " + incident.getTimeStatus() + ")");
+                            + " (" + dateInStr(new Date())
+                            + " " + timeInStr(new Date()) + ")");
                     toMail = incident.getSpecialist().getEmail();
                     recipCount = 1;
                     break;
                 case "done":
                     message.setText("Ваше обращение (ID " + incident.getId()
                             + " - " + incident.getTitle() + ")"
-                            + " выполнено (" + incident.getDateIncident()
-                            + " " + incident.getTimeIncident() + "). ");
+                            + " выполнено (" + incident.getDateDone()
+                            + " " + incident.getTimeDone() + "). ");
                     toMail = incident.getZayavitel().getEmail();
                     recipCount = 1;
                     break;
@@ -583,24 +610,24 @@ public class ManagementSystemBean implements ManagementSystemLocal {
                             + " отклонено (" + arcincident.getDateClose()
                             + " " + arcincident.getTimeClose() + ")"
                             + " по причине: " + arcincident.getDecision());
-                    toMail = incident.getZayavitel().getEmail();
+                    toMail = arcincident.getZayavitel().getEmail();
                     recipCount = 1;
                     break;
                 case "spec_otkl":
                     message.setText("Обращение (ID " + incident.getId()
                             + " - " + incident.getTitle() + ")"
-                            + " возвращено на доработку (" + incident.getDateStatus()
-                            + " " + incident.getTimeStatus() + ")"
+                            + " возвращено на доработку (" + dateInStr(new Date())
+                            + " " + timeInStr(new Date()) + ")"
                             + " по причине: " + prich);
                     toMail = incident.getSpecialist().getEmail();
                     recipCount = 1;
                     break;
                 case "close":
-                    message.setText("Обращение (ID " + incident.getId()
-                            + " - " + incident.getTitle() + ")"
-                            + " закрыто (" + incident.getDateStatus()
-                            + " " + incident.getTimeStatus() + ")");
-                    toMail = incident.getSpecialist().getEmail();
+                    message.setText("Обращение (ID " + arcincident.getId()
+                            + " - " + arcincident.getTitle() + ")"
+                            + " закрыто (" + arcincident.getDateClose()
+                            + " " + arcincident.getTimeClose() + ")");
+                    toMail = arcincident.getSpecialist().getEmail();
                     recipCount = 1;
                     break;
             }
@@ -651,9 +678,6 @@ public class ManagementSystemBean implements ManagementSystemLocal {
                 Incidents nmIncident = (Incidents) iterator.next();
                 if (nmIncident.getStatus().getId() == 1) {
                     autoAppoint(nmIncident);
-                }
-                if (nmIncident.getStatus().getId() == 5) {
-                    agreeIncident(nmIncident);
                 }
             }
         }
@@ -732,6 +756,22 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             result = true;
         }
         return result;
+    }
+    
+    public String dateInStr(Date sdate) {
+        try {
+            return new SimpleDateFormat("dd.MM.yyyy").format(sdate);
+        } catch (NullPointerException e) {
+            return "";
+        }
+    }
+    
+    public String timeInStr(Date stime) {
+        try {
+            return new SimpleDateFormat("HH:mm:ss").format(stime);
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
 }

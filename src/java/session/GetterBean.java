@@ -6,6 +6,7 @@ import entity.Departs;
 import entity.Groupuser;
 import entity.History;
 import entity.Incidents;
+import entity.Posts;
 import entity.Statuses;
 import entity.Typeincident;
 import entity.Users;
@@ -57,6 +58,9 @@ public class GetterBean implements GetterBeanLocal {
                 break;
             case "depart":
                 q = em.createNamedQuery("Users.findAllOrderDepart");
+                break;
+            case "post":
+                q = em.createNamedQuery("Users.findAllOrderPost");
                 break;
         }
         List resultList = q.getResultList();
@@ -130,8 +134,8 @@ public class GetterBean implements GetterBeanLocal {
                 break;
         }
         q.setParameter("user", user);
-        q.setParameter("status1", ((Statuses) statuses.get(0)).getId());//1-2-3-4-5
-        q.setParameter("status2", ((Statuses) statuses.get(4)).getId());
+        q.setParameter("status1", ((Statuses) statuses.get(0)).getId());//1-2-3-4
+        q.setParameter("status2", ((Statuses) statuses.get(3)).getId());
         List resultList = q.getResultList();
         return resultList;
     }
@@ -191,7 +195,7 @@ public class GetterBean implements GetterBeanLocal {
         List statuses = getStatuses();
         Query q = em.createNamedQuery("Incidents.findNotManaged");
         q.setParameter("status1", statuses.get(0));//1
-        q.setParameter("status2", statuses.get(4));//5
+        //q.setParameter("status2", statuses.get(4));//5
         List resultList = q.getResultList();
         return resultList;
     }
@@ -203,27 +207,23 @@ public class GetterBean implements GetterBeanLocal {
         Query q = null;
         switch (sort) {
             case "none":
-                q = em.createNamedQuery("Incidents.findBySpecialist2Status");
+                q = em.createNamedQuery("Incidents.findBySpecialistDone");
                 break;
             case "name":
-                q = em.createNamedQuery("Incidents.findBySpecialist2StatusOrderName");
+                q = em.createNamedQuery("Incidents.findBySpecialistDoneOrderName");
                 break;
             case "dateo":
-                q = em.createNamedQuery("Incidents.findBySpecialist2StatusOrderDate");
+                q = em.createNamedQuery("Incidents.findBySpecialistDoneOrderDate");
                 break;
             case "dated":
-                q = em.createNamedQuery("Incidents.findBySpecialist2StatusOrderDated");
+                q = em.createNamedQuery("Incidents.findBySpecialistDoneOrderDated");
                 break;
             case "zay":
-                q = em.createNamedQuery("Incidents.findBySpecialist2StatusOrderZay");
-                break;
-            case "status":
-                q = em.createNamedQuery("Incidents.findBySpecialist2StatusOrderStatus");
+                q = em.createNamedQuery("Incidents.findBySpecialistDoneOrderZay");
                 break;
         }
         q.setParameter("specialist", specialist);
-        q.setParameter("status1", statuses.get(3));//4
-        q.setParameter("status2", statuses.get(4));//5
+        q.setParameter("status", statuses.get(3));//4
         List resultList = q.getResultList();
         return resultList;
     }
@@ -254,8 +254,8 @@ public class GetterBean implements GetterBeanLocal {
                 break;
         }
         q.setParameter("user", user);
-        q.setParameter("status1", ((Statuses) statuses.get(5)).getId());//6 - 7 - 8
-        q.setParameter("status2", ((Statuses) statuses.get(7)).getId());
+        q.setParameter("status1", ((Statuses) statuses.get(4)).getId());//5 - 6 - 7
+        q.setParameter("status2", ((Statuses) statuses.get(6)).getId());
         List resultList = q.getResultList();
         return resultList;
     }
@@ -311,8 +311,8 @@ public class GetterBean implements GetterBeanLocal {
             }
         }
         q.setParameter("user", user);
-        q.setParameter("status1", ((Statuses) statuses.get(5)).getId());//6 - 7 - 8
-        q.setParameter("status2", ((Statuses) statuses.get(7)).getId());
+        q.setParameter("status1", ((Statuses) statuses.get(4)).getId());//5 - 6 - 7
+        q.setParameter("status2", ((Statuses) statuses.get(6)).getId());
         SimpleDateFormat format = new SimpleDateFormat();
         format.applyPattern("dd.MM.yyyy");
         try {
@@ -333,7 +333,7 @@ public class GetterBean implements GetterBeanLocal {
         Query q = null;
         q = em.createNamedQuery("Arcincidents.findByUser1StatusNew");
         q.setParameter("user", user);
-        q.setParameter("status", statuses.get(7));//8
+        q.setParameter("status", statuses.get(6));//7
         List resultList = q.getResultList();
         return resultList;
     }
@@ -365,9 +365,9 @@ public class GetterBean implements GetterBeanLocal {
                 q = em.createNamedQuery("Arcincidents.findClosedManagerOrderDateClose");
                 break;
         }
-        q.setParameter("status1", statuses.get(5));//6
-        q.setParameter("status2", statuses.get(7));//8
-        q.setParameter("status3", statuses.get(6));//7
+        q.setParameter("status1", statuses.get(4));//5
+        q.setParameter("status2", statuses.get(6));//7
+        q.setParameter("status3", statuses.get(5));//6
         List resultList = q.getResultList();
         return resultList;
     }
@@ -438,9 +438,9 @@ public class GetterBean implements GetterBeanLocal {
         }
         q.setParameter("datebeg", dBeg);
         q.setParameter("dateend", dEnd);
-        q.setParameter("status1", statuses.get(5));//6
-        q.setParameter("status2", statuses.get(7));//8
-        q.setParameter("status3", statuses.get(6));//7
+        q.setParameter("status1", statuses.get(4));//5
+        q.setParameter("status2", statuses.get(6));//7
+        q.setParameter("status3", statuses.get(5));//6
         List resultList = q.getResultList();
         return resultList;
     }
@@ -470,8 +470,8 @@ public class GetterBean implements GetterBeanLocal {
                 break;
         }
         q.setParameter("specialist", specialist);
-        q.setParameter("status1", statuses.get(5));//6
-        q.setParameter("status2", statuses.get(7));//8
+        q.setParameter("status1", statuses.get(4));//5
+        q.setParameter("status2", statuses.get(6));//7
         List resultList = q.getResultList();
         return resultList;
     }
@@ -537,8 +537,8 @@ public class GetterBean implements GetterBeanLocal {
         q.setParameter("datebeg", dBeg);
         q.setParameter("dateend", dEnd);
         q.setParameter("specialist", specialist);
-        q.setParameter("status1", statuses.get(5));//6
-        q.setParameter("status2", statuses.get(7));//8
+        q.setParameter("status1", statuses.get(4));//5
+        q.setParameter("status2", statuses.get(6));//7
         List resultList = q.getResultList();
         return resultList;
     }
@@ -679,8 +679,7 @@ public class GetterBean implements GetterBeanLocal {
                 break;
         }
         List statuses = getStatuses();
-        q.setParameter("status1", statuses.get(4));//5
-        q.setParameter("status2", statuses.get(3));//4
+        q.setParameter("status", statuses.get(3));//4
         q.setParameter("manager", manager);
         List resultList = q.getResultList();
         return resultList;
@@ -691,8 +690,7 @@ public class GetterBean implements GetterBeanLocal {
         Query q = null;
         q = em.createNamedQuery("Incidents.findAgreeNew");
         List statuses = getStatuses();
-        q.setParameter("status1", statuses.get(4));//5
-        q.setParameter("status2", statuses.get(3));//4
+        q.setParameter("status", statuses.get(3));//4
         q.setParameter("manager", manager);
         List resultList = q.getResultList();
         return resultList;
@@ -742,6 +740,46 @@ public class GetterBean implements GetterBeanLocal {
             }
         }
         resultList.add(departB);
+        return resultList;
+    }
+    
+    /* dposts ===========================================================================================================*/
+    @Override
+    public List<Posts> getAllPosts(String sort) {
+        Query q = null;
+        switch (sort) {
+            case "none":
+                q = em.createNamedQuery("Posts.findAll");
+                break;
+            case "name":
+                q = em.createNamedQuery("Posts.findAllOrderName");
+                break;
+        }
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Posts> getPostsSearch(String searchText) {
+        Query q = em.createNamedQuery("Posts.findSearch");
+        q.setParameter("post", "%" + searchText + "%");
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Posts> getPostsForEdit(Posts dpost) {
+        List resultList = em.createNamedQuery("Posts.findAll").getResultList();
+        Posts postA = null, postB = null;
+        Iterator iterator = resultList.iterator();
+        while (iterator.hasNext()) {
+            postA = (Posts) iterator.next();
+            if (dpost.equals(postA)) {
+                postB = postA;
+                iterator.remove();
+            }
+        }
+        resultList.add(postB);
         return resultList;
     }
 
@@ -820,7 +858,6 @@ public class GetterBean implements GetterBeanLocal {
     public List getSpecialistsStatistics() {
         Query q = em.createNativeQuery("SELECT u.name, "
                 + "tab_act_on_today.cnt AS cnt_act_on_today, "
-                + "tab_act_today.cnt AS cnt_act_today, "
                 + "tab_end_today.cnt AS cnt_end_today, "
                 + "tab_end_month.cnt AS cnt_end_month, "
                 + "tab_end_all.cnt AS cnt_end_all, "
@@ -829,22 +866,14 @@ public class GetterBean implements GetterBeanLocal {
                 + "LEFT OUTER JOIN ("
                 + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
                 + "FROM incidents AS i "
-                + "WHERE (i.status = 2 OR i.status = 3 OR i.status = 4 OR i.status = 5) "
+                + "WHERE (i.status = 2 OR i.status = 3 OR i.status = 4) "
                 + "AND i.specialist IS NOT NULL "
                 + "GROUP BY i.specialist"
                 + ") AS tab_act_on_today ON u.login = tab_act_on_today.spec "
                 + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 2 OR i.status = 3 OR i.status = 4 OR i.status = 5) "
-                + "AND i.specialist IS NOT NULL "
-                + "AND i.dateStatus = CURDATE() "
-                + "GROUP BY i.specialist"
-                + ") AS tab_act_today ON u.login = tab_act_today.spec "
-                + "LEFT OUTER JOIN ("
                 + "SELECT a.specialist AS spec, COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
-                + "WHERE (a.status = 6) "
+                + "WHERE (a.status = 5) "
                 + "AND a.specialist IS NOT NULL "
                 + "AND a.dateClose = CURDATE() "
                 + "GROUP BY a.specialist"
@@ -852,7 +881,7 @@ public class GetterBean implements GetterBeanLocal {
                 + "LEFT OUTER JOIN ("
                 + "SELECT a.specialist AS spec, COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
-                + "WHERE (a.status = 6) "
+                + "WHERE (a.status = 5) "
                 + "AND a.specialist IS NOT NULL "
                 + "AND (a.dateClose <= CURDATE() AND a.dateClose >= DATE(ADDDATE(NOW(), INTERVAL -(DAY(CURDATE()-1)) DAY))) "
                 + "GROUP BY a.specialist"
@@ -860,7 +889,7 @@ public class GetterBean implements GetterBeanLocal {
                 + "LEFT OUTER JOIN ("
                 + "SELECT a.specialist AS spec, COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
-                + "WHERE (a.status = 6) "
+                + "WHERE (a.status = 5) "
                 + "AND a.specialist IS NOT NULL "
                 + "GROUP BY a.specialist"
                 + ") AS tab_end_all ON u.login = tab_end_all.spec "
@@ -881,14 +910,14 @@ public class GetterBean implements GetterBeanLocal {
                 + "LEFT OUTER JOIN ("
                 + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
                 + "FROM incidents AS i "
-                + "WHERE (i.status = 2 OR i.status = 3 OR i.status = 4 OR i.status = 5) "
+                + "WHERE (i.status = 2 OR i.status = 3 OR i.status = 4) "
                 + "AND i.specialist IS NOT NULL "
                 + "GROUP BY i.specialist"
                 + ") AS tab_act_on_today ON u.login = tab_act_on_today.spec "
                 + "LEFT OUTER JOIN ("
                 + "SELECT a.specialist AS spec, COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
-                + "WHERE (a.status = 6) "
+                + "WHERE (a.status = 5) "
                 + "AND a.specialist IS NOT NULL "
                 + "AND (a.dateClose <= CURDATE() AND a.dateClose >= DATE(ADDDATE(NOW(), INTERVAL -(DAY(CURDATE()-1)) DAY))) "
                 + "GROUP BY a.specialist"
@@ -903,7 +932,6 @@ public class GetterBean implements GetterBeanLocal {
     @Override
     public List getOneSpecialistsStatistics(String specialist) {
         Query q = em.createNativeQuery("SELECT u.name,"
-                + "tab_act_today.cnt AS cnt_act_today,"
                 + "tab_act_on_today.cnt AS cnt_act_on_today,"
                 + "tab_end_today.cnt AS cnt_end_today,"
                 + "tab_end_month.cnt AS cnt_end_month,"
@@ -916,22 +944,14 @@ public class GetterBean implements GetterBeanLocal {
                 + "LEFT OUTER JOIN ("
                 + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
                 + "FROM incidents AS i "
-                + "WHERE (i.status = 2 OR i.status = 3 OR i.status = 4 OR i.status = 5) "
+                + "WHERE (i.status = 2 OR i.status = 3 OR i.status = 4) "
                 + "AND i.specialist IS NOT NULL "
                 + "GROUP BY i.specialist"
                 + ") AS tab_act_on_today ON u.login = tab_act_on_today.spec "
                 + "LEFT OUTER JOIN ("
-                + "SELECT i.specialist AS spec, COUNT(i.specialist) AS cnt "
-                + "FROM incidents AS i "
-                + "WHERE (i.status = 2 OR i.status = 3 OR i.status = 4 OR i.status = 5) "
-                + "AND i.specialist IS NOT NULL "
-                + "AND i.dateStatus = CURDATE() "
-                + "GROUP BY i.specialist"
-                + ") AS tab_act_today ON u.login = tab_act_today.spec "
-                + "LEFT OUTER JOIN ("
                 + "SELECT a.specialist AS spec, COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
-                + "WHERE (a.status = 6) "
+                + "WHERE (a.status = 5) "
                 + "AND a.specialist IS NOT NULL "
                 + "AND a.dateClose = CURDATE() "
                 + "GROUP BY a.specialist"
@@ -939,7 +959,7 @@ public class GetterBean implements GetterBeanLocal {
                 + "LEFT OUTER JOIN ("
                 + "SELECT a.specialist AS spec, COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
-                + "WHERE (a.status = 6) "
+                + "WHERE (a.status = 5) "
                 + "AND a.specialist IS NOT NULL "
                 + "AND (a.dateClose <= CURDATE() AND a.dateClose >= DATE(ADDDATE(NOW(), INTERVAL -(DAY(CURDATE()-1)) DAY))) "
                 + "GROUP BY a.specialist"
@@ -947,14 +967,14 @@ public class GetterBean implements GetterBeanLocal {
                 + "LEFT OUTER JOIN ("
                 + "SELECT a.specialist AS spec, COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
-                + "WHERE (a.status = 6) "
+                + "WHERE (a.status = 5) "
                 + "AND a.specialist IS NOT NULL "
                 + "GROUP BY a.specialist"
                 + ") AS tab_end_all ON u.login = tab_end_all.spec "
                 + "LEFT OUTER JOIN ("
                 + "SELECT a.specialist AS spec, COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
-                + "WHERE (a.status = 8) "
+                + "WHERE (a.status = 7) "
                 + "AND a.specialist IS NOT NULL "
                 + "AND a.dateClose = CURDATE() "
                 + "GROUP BY a.specialist"
@@ -962,7 +982,7 @@ public class GetterBean implements GetterBeanLocal {
                 + "LEFT OUTER JOIN ("
                 + "SELECT a.specialist AS spec, COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
-                + "WHERE (a.status = 8) "
+                + "WHERE (a.status = 7) "
                 + "AND a.specialist IS NOT NULL "
                 + "AND (a.dateClose <= CURDATE() AND a.dateClose >= DATE(ADDDATE(NOW(), INTERVAL -(DAY(CURDATE()-1)) DAY))) "
                 + "GROUP BY a.specialist"
@@ -970,7 +990,7 @@ public class GetterBean implements GetterBeanLocal {
                 + "LEFT OUTER JOIN ("
                 + "SELECT a.specialist AS spec, COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
-                + "WHERE (a.status = 8) "
+                + "WHERE (a.status = 7) "
                 + "AND a.specialist IS NOT NULL "
                 + "GROUP BY a.specialist"
                 + ") AS tab_cancel_all ON u.login = tab_cancel_all.spec "
@@ -987,7 +1007,7 @@ public class GetterBean implements GetterBeanLocal {
         Query q = em.createNativeQuery("SELECT COUNT(a.specialist) AS cnt "
                 + "FROM arcincidents AS a "
                 + "WHERE a.specialist IS NOT NULL AND a.specialist = ? "
-                + "AND a.status = 6 AND year(a.dateClose) = ? "
+                + "AND a.status = 5 AND year(a.dateClose) = ? "
                 + "AND month(a.dateClose) = ? "
                 + "GROUP BY a.specialist;");
         q.setParameter(1, specialist);

@@ -42,6 +42,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findAllOrder", query = "SELECT u FROM Users u ORDER BY u.login"),
     @NamedQuery(name = "Users.findAllOrderEmail", query = "SELECT u FROM Users u ORDER BY u.email"),
     @NamedQuery(name = "Users.findAllOrderDepart", query = "SELECT u FROM Users u ORDER BY u.depart"),
+    @NamedQuery(name = "Users.findAllOrderPost", query = "SELECT u FROM Users u ORDER BY u.dpost"),
     @NamedQuery(name = "Users.findByDepart", query = "SELECT u FROM Users u WHERE u.depart = :depart AND u.changePassword != 2 AND u.login != 'auto'"),
     @NamedQuery(name = "Users.findByDepartWithoutM", query = "SELECT u FROM Users u WHERE u.depart = :depart AND u.changePassword != 2 AND u.login != :manager"),
     @NamedQuery(name = "Users.findSearch", query = "SELECT u FROM Users u WHERE u.name like :user"),
@@ -49,6 +50,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findManager", query = "SELECT u FROM Users u WHERE u.changePassword = 3")
 })
 public class Users implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -76,10 +78,14 @@ public class Users implements Serializable {
     private Integer changePassword;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin", orphanRemoval = true)
     private Collection<Groupuser> groupuserCollection;
-    @OneToMany(mappedBy = "specialist")
-    private Collection<Reqs> reqsCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin")
     private Collection<Comments> commentsCollection;
+    @OneToMany(mappedBy = "specialist")
+    private Collection<Docs> docsCollection;
+    @OneToMany(mappedBy = "komis1")
+    private Collection<Docs> docsCollection1;
+    @OneToMany(mappedBy = "komis2")
+    private Collection<Docs> docsCollection2;
     @OneToMany(mappedBy = "zayavitel")
     private Collection<Arcincidents> arcincidentsCollection;
     @OneToMany(mappedBy = "specialist")
@@ -97,6 +103,9 @@ public class Users implements Serializable {
     @JoinColumn(name = "depart", referencedColumnName = "id")
     @ManyToOne
     private Departs depart;
+    @JoinColumn(name = "dpost", referencedColumnName = "id")
+    @ManyToOne
+    private Posts dpost;
 
     public Users() {
     }
@@ -162,21 +171,39 @@ public class Users implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Reqs> getReqsCollection() {
-        return reqsCollection;
-    }
-
-    public void setReqsCollection(Collection<Reqs> reqsCollection) {
-        this.reqsCollection = reqsCollection;
-    }
-
-    @XmlTransient
     public Collection<Comments> getCommentsCollection() {
         return commentsCollection;
     }
 
     public void setCommentsCollection(Collection<Comments> commentsCollection) {
         this.commentsCollection = commentsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Docs> getDocsCollection() {
+        return docsCollection;
+    }
+
+    public void setDocsCollection(Collection<Docs> docsCollection) {
+        this.docsCollection = docsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Docs> getDocsCollection1() {
+        return docsCollection1;
+    }
+
+    public void setDocsCollection1(Collection<Docs> docsCollection1) {
+        this.docsCollection1 = docsCollection1;
+    }
+
+    @XmlTransient
+    public Collection<Docs> getDocsCollection2() {
+        return docsCollection2;
+    }
+
+    public void setDocsCollection2(Collection<Docs> docsCollection2) {
+        this.docsCollection2 = docsCollection2;
     }
 
     @XmlTransient
@@ -250,6 +277,14 @@ public class Users implements Serializable {
         this.depart = depart;
     }
 
+    public Posts getDpost() {
+        return dpost;
+    }
+
+    public void setDpost(Posts dpost) {
+        this.dpost = dpost;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -274,5 +309,5 @@ public class Users implements Serializable {
     public String toString() {
         return "entity.Users[ login=" + login + " ]";
     }
-    
+
 }

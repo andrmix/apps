@@ -17,22 +17,39 @@
         <form action='<c:url value="${action}"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                     <div class="heada">${user.name}
                         (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                        / ${user.depart.name} / ${user.dpost.name}
                     </div><div class="headb">/ Закрытые обращения</div>
                 </div>
             </div>
             <div id="sidebar">
-                <p><a href='<c:url value="/specialist"/>'>Активные обращения 
-                        <c:if test="${openIncidentsNew.size() gt 0}">
-                            <span class="count">${openIncidentsNew.size()}</span>
-                        </c:if>
-                    </a></p>
-                <p><a href='<c:url value="/specialist/spec_done_incidents"/>'>Выполненные обращения</a></p>
-                <p><a href='<c:url value="/specialist/spec_closed_incidents"/>'><span class="videl">Закрытые обращения
-                        </span></a></p>
-                <p><a href='<c:url value="/specialist/statistic"/>'>Статистика</a></p>
+                <div class="sidebar_el">
+                    <a class="a_act_inc" href='<c:url value="/specialist"/>'><div class="u_icon_act_inc"></div>Активные обращения
+                            <c:if test="${openIncidentsNew.size() gt 0}">
+                                <span class="videlc">${openIncidentsNew.size()}</span>
+                            </c:if>
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_clo_inc" href='<c:url value="/specialist/spec_done_incidents"/>'>
+                        <div class="u_icon_clo_inc"></div>
+                        Выполненные обращения
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_clos_inc" href='<c:url value="/specialist/spec_closed_incidents"/>'>
+                        <div class="u_icon_clos_inc_v"></div>
+                        <span class="videl">Закрытые обращения</span>
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_stat" href='<c:url value="/specialist/statistic"/>'>
+                        <div class="u_icon_stat"></div>
+                        Статистика
+                    </a>
+                </div>  
             </div>
             <div id="content">
                 <c:choose>

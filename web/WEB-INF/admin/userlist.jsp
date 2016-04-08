@@ -16,16 +16,37 @@
         <form action='<c:url value="/admin"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                     <div class="heada">${usera.name}
                         (<a href='<c:url value="/logout"/>'>Выйти</a>)
                     </div><div class="headb">/ Сотрудники</div>
                 </div>
             </div>
             <div id="sidebar">
-                <p><a href='<c:url value="/admin"/>'><span class="videl">Сотрудники</span></a></p>
-                <p><a href='<c:url value="/admin/departs"/>'>Отделы</a></p>
-                <p><a href='<c:url value="/admin/typesincident"/>'>Типы инцидентов</a></p>
+                <div class="sidebar_el">
+                    <a class="a_users" href='<c:url value="/admin"/>'>
+                        <div class="u_icon_users_v"></div>
+                        <span class="videl">Сотрудники</span>
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_departs" href='<c:url value="/admin/departs"/>'>
+                        <div class="u_icon_departs"></div>
+                        Отделы
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_dposts" href='<c:url value="/admin/dposts"/>'>
+                        <div class="u_icon_dposts"></div>
+                        Должности
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_typs" href='<c:url value="/admin/typesincident"/>'>
+                        <div class="u_icon_typs"></div>
+                        Типы инцидентов
+                    </a>
+                </div>
             </div>
             <div id="content">
                 <c:choose>
@@ -80,6 +101,7 @@
                             <th><a href='<c:url value="/sort_by_login"/>'>Логин</a></th>
                             <th><a href='<c:url value="/sort_by_email"/>'>E-mail</a></th>
                             <th><a href='<c:url value="/sort_by_depart"/>'>Отдел</a></th>
+                            <th><a href='<c:url value="/sort_by_post"/>'>Должность</a></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -92,6 +114,7 @@
                             <td>${user.login}</td>
                             <td>${user.email}</td>
                             <td>${user.depart.name}</td>
+                            <td>${user.dpost.name}</td>
                         </tr>
                     </c:forEach>
                     </tbody>

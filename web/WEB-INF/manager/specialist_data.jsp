@@ -14,14 +14,17 @@
     <body>
         <div id="header">
             <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-            <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+            <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                 <div class="heada">${user.name}
                     (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                    / ${user.depart.name} / ${user.dpost.name}
                 </div><div class="headb">/ Статистика</div>
             </div>
         </div>
         <div id="sidebar">
-            <p><a href='<c:url value="/manager/specialists"/>'>< Назад</a></p>
+            <div class="sidebar_el">
+                <a class="a_nazad" href='<c:url value="/manager/specialists"/>'><div class="u_icon_nazad"></div>Назад</a>       
+            </div>
         </div>
         <form action='<c:url value="/manager/specialist_data"/>' method="POST">
             <div id="content">
@@ -35,8 +38,8 @@
                         <tbody>
                             <c:forEach var="stat" items="${statList}">
                                 <tr>
-                                    <td rowspan="2" style="width: 30%" class="tab_title">Активные обращения</td>
-                                    <td class="tab_title" style="width: 30%">За сегодня</td>
+                                    <td style="width: 30%" class="tab_title">Активные обращения</td>
+                                    <td class="tab_title">Всего</td>
                                     <td><c:choose>
                                             <c:when test="${stat[1] == null}">
                                                 0
@@ -47,7 +50,8 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td class="tab_title">Всего</td>
+                                    <td rowspan="3" class="tab_title">Завершенные обращения</td>
+                                    <td class="tab_title">За сегодня</td>
                                     <td><c:choose>
                                             <c:when test="${stat[2] == null}">
                                                 0
@@ -58,8 +62,7 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td rowspan="3" class="tab_title">Завершенные обращения</td>
-                                    <td class="tab_title">За сегодня</td>
+                                    <td class="tab_title">За месяц</td>
                                     <td><c:choose>
                                             <c:when test="${stat[3] == null}">
                                                 0
@@ -70,7 +73,7 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td class="tab_title">За месяц</td>
+                                    <td class="tab_title">Всего</td>
                                     <td><c:choose>
                                             <c:when test="${stat[4] == null}">
                                                 0
@@ -81,7 +84,8 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td class="tab_title">Всего</td>
+                                    <td rowspan="3" class="tab_title">Отклоненные обращения</td>
+                                    <td class="tab_title">За сегодня</td>
                                     <td><c:choose>
                                             <c:when test="${stat[5] == null}">
                                                 0
@@ -92,8 +96,7 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td rowspan="3" class="tab_title">Отклоненные обращения</td>
-                                    <td class="tab_title">За сегодня</td>
+                                    <td class="tab_title">За месяц</td>
                                     <td><c:choose>
                                             <c:when test="${stat[6] == null}">
                                                 0
@@ -104,24 +107,13 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td class="tab_title">За месяц</td>
+                                    <td class="tab_title">Всего</td>
                                     <td><c:choose>
                                             <c:when test="${stat[7] == null}">
                                                 0
                                             </c:when>
                                             <c:otherwise>
                                                 ${stat[7]}
-                                            </c:otherwise>
-                                        </c:choose></td>
-                                </tr>
-                                <tr>
-                                    <td class="tab_title">Всего</td>
-                                    <td><c:choose>
-                                            <c:when test="${stat[8] == null}">
-                                                0
-                                            </c:when>
-                                            <c:otherwise>
-                                                ${stat[8]}
                                             </c:otherwise>
                                         </c:choose></td>
                                 </tr>

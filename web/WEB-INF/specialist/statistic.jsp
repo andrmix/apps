@@ -14,22 +14,40 @@
     <body>
         <div id="header">
             <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-            <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+            <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                 <div class="heada">${user.name}
                     (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                    / ${user.depart.name} / ${user.dpost.name}
                 </div><div class="headb">/ Статистика</div>
             </div>
         </div>
         <div id="sidebar">
-            <p><a href='<c:url value="/specialist"/>'>Активные обращения 
-                    <c:if test="${openIncidentsNew.size() gt 0}">
-                        <span class="count">${openIncidentsNew.size()}</span>
-                    </c:if>
-                </a></p>
-            <p><a href='<c:url value="/specialist/spec_done_incidents"/>'>Выполненные обращения</a></p>
-            <p><a href='<c:url value="/specialist/spec_closed_incidents"/>'>Закрытые обращения</a></p>
-            <p><a href='<c:url value="/specialist/statistic"/>'><span class="videl">Статистика</span></a></p>
-        </div>
+                <div class="sidebar_el">
+                    <a class="a_act_inc" href='<c:url value="/specialist"/>'><div class="u_icon_act_inc"></div>Активные обращения
+                            <c:if test="${openIncidentsNew.size() gt 0}">
+                                <span class="videlc">${openIncidentsNew.size()}</span>
+                            </c:if>
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_clo_inc" href='<c:url value="/specialist/spec_done_incidents"/>'>
+                        <div class="u_icon_clo_inc"></div>
+                        Выполненные обращения
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_clos_inc" href='<c:url value="/specialist/spec_closed_incidents"/>'>
+                        <div class="u_icon_clos_inc"></div>
+                        Закрытые обращения
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_stat" href='<c:url value="/specialist/statistic"/>'>
+                        <div class="u_icon_stat_v"></div>
+                        <span class="videl">Статистика</span>
+                    </a>
+                </div>  
+            </div>
         <form action='<c:url value="/specialist/statistic"/>' method="POST">
             <input type="hidden" name="id" value="${incident.id}"/>
             <div id="content">
@@ -43,9 +61,9 @@
                         <tbody>
                             <c:forEach var="stat" items="${statList}">
                                 <tr>
-                                    <td rowspan="2" style="width: 30%" class="tab_title">Активные обращения</td>
-                                    <td class="tab_title" style="width: 30%">За сегодня</td>
-                                    <td><c:choose>
+                                    <td class="tab_title">Активные обращения</td>
+                                    <td class="tab_title">Всего</td>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[1] == null}">
                                                 0
                                             </c:when>
@@ -55,8 +73,9 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td class="tab_title">Всего</td>
-                                    <td><c:choose>
+                                    <td rowspan="3" class="tab_title">Завершенные обращения</td>
+                                    <td class="tab_title">За сегодня</td>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[2] == null}">
                                                 0
                                             </c:when>
@@ -66,9 +85,8 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td rowspan="3" class="tab_title">Завершенные обращения</td>
-                                    <td class="tab_title">За сегодня</td>
-                                    <td><c:choose>
+                                    <td class="tab_title">За месяц</td>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[3] == null}">
                                                 0
                                             </c:when>
@@ -78,8 +96,8 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td class="tab_title">За месяц</td>
-                                    <td><c:choose>
+                                    <td class="tab_title">Всего</td>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[4] == null}">
                                                 0
                                             </c:when>
@@ -89,8 +107,9 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td class="tab_title">Всего</td>
-                                    <td><c:choose>
+                                    <td rowspan="3" class="tab_title">Отклоненные обращения</td>
+                                    <td class="tab_title">За сегодня</td>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[5] == null}">
                                                 0
                                             </c:when>
@@ -100,9 +119,8 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td rowspan="3" class="tab_title">Отклоненные обращения</td>
-                                    <td class="tab_title">За сегодня</td>
-                                    <td><c:choose>
+                                    <td class="tab_title">За месяц</td>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[6] == null}">
                                                 0
                                             </c:when>
@@ -112,24 +130,13 @@
                                         </c:choose></td>
                                 </tr>
                                 <tr>
-                                    <td class="tab_title">За месяц</td>
-                                    <td><c:choose>
+                                    <td class="tab_title">Всего</td>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[7] == null}">
                                                 0
                                             </c:when>
                                             <c:otherwise>
                                                 ${stat[7]}
-                                            </c:otherwise>
-                                        </c:choose></td>
-                                </tr>
-                                <tr>
-                                    <td class="tab_title">Всего</td>
-                                    <td><c:choose>
-                                            <c:when test="${stat[8] == null}">
-                                                0
-                                            </c:when>
-                                            <c:otherwise>
-                                                ${stat[8]}
                                             </c:otherwise>
                                         </c:choose></td>
                                 </tr>

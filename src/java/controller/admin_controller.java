@@ -7,6 +7,7 @@ package controller;
 
 import entity.Departs;
 import entity.Groupuser;
+import entity.Posts;
 import entity.Typeincident;
 import entity.Users;
 import java.io.IOException;
@@ -24,10 +25,11 @@ import session.ManagementSystemLocal;
         urlPatterns = {"/admin",
             "/admin/new_user", "/admin/user_data",
             "/admin/new_depart", "/admin/departs",
-            "/admin/depart_data", "/admin/new_typeincident",
+            "/admin/depart_data", "/admin/new_post", "/admin/dposts",
+            "/admin/post_data", "/admin/new_typeincident",
             "/admin/typesincident", "/admin/typeincident_data",
             "/sort_by_fio", "/sort_by_login", "/sort_by_email",
-            "/sort_by_depart", "/sort_by_name_depart",
+            "/sort_by_depart", "/sort_by_post", "/sort_by_name_depart", "/sort_by_name_post",
             "/sort_by_name_typeincident"})
 public class admin_controller extends HttpServlet {
 
@@ -59,6 +61,10 @@ public class admin_controller extends HttpServlet {
         }
         if ("/sort_by_depart".equals(request.getServletPath())) {
             getServletContext().setAttribute("userList", gb.getAllUsers("depart"));
+            request.getRequestDispatcher("/WEB-INF/admin/userlist.jsp").forward(request, response);
+        }
+        if ("/sort_by_post".equals(request.getServletPath())) {
+            getServletContext().setAttribute("userList", gb.getAllUsers("post"));
             request.getRequestDispatcher("/WEB-INF/admin/userlist.jsp").forward(request, response);
         }
 
@@ -115,8 +121,9 @@ public class admin_controller extends HttpServlet {
             //добавить
             if (answer.equals("Add")) {
                 Departs depart = ms.findDepart(Integer.parseInt(request.getParameter("departId")));
+                Posts dpost = ms.findPost(Integer.parseInt(request.getParameter("postId")));
                 ms.addUser(request.getParameter("login"), request.getParameter("fio"),
-                        request.getParameter("email"), depart, request.getParameter("role"), true);
+                        request.getParameter("email"), depart, request.getParameter("role"), true, dpost);
                 response.sendRedirect(request.getContextPath() + "/admin");
                 return;
             }
@@ -130,14 +137,17 @@ public class admin_controller extends HttpServlet {
             //редактировать
             if (answer.equals("Edit")) {
                 Departs depart = ms.findDepart(Integer.parseInt(request.getParameter("departId")));
+                Posts dpost = ms.findPost(Integer.parseInt(request.getParameter("postId")));
                 ms.addUser(request.getParameter("login"), request.getParameter("fio"),
-                        request.getParameter("email"), depart, request.getParameter("role"), false);
+                        request.getParameter("email"), depart, request.getParameter("role"), false, dpost);
                 response.sendRedirect(request.getContextPath() + "/admin");
                 return;
             }
 
             List<Departs> departs = gb.getAllDeparts("none");
             request.setAttribute("departs", departs);
+            List<Posts> posts = gb.getAllPosts("none");
+            request.setAttribute("posts", posts);
             request.getRequestDispatcher("/WEB-INF/admin/new_user.jsp").forward(request, response);
         }
 
@@ -164,7 +174,9 @@ public class admin_controller extends HttpServlet {
             //редактировать
             if (answer.equals("Edit")) {
                 List<Departs> departs = gb.getDepartsForEdit(user.getDepart());
+                List<Posts> posts = gb.getPostsForEdit(user.getDpost());
                 request.setAttribute("departs", departs);
+                request.setAttribute("posts", posts);
                 Groupuser groupuser = ms.findGroupuser(user);
                 request.setAttribute("login", user.getLogin());
                 request.setAttribute("fio", user.getName());
@@ -290,6 +302,100 @@ public class admin_controller extends HttpServlet {
             }
             
             request.getRequestDispatcher("/WEB-INF/admin/depart_data.jsp").forward(request, response);
+        }
+        
+        //posts =============================================================================================================
+        //сортировка
+        if ("/sort_by_name_post".equals(request.getServletPath())) {
+            getServletContext().setAttribute("postList", gb.getAllPosts("name"));
+            request.getRequestDispatcher("/WEB-INF/admin/posts.jsp").forward(request, response);
+        }
+
+        //новый отдел =============================================================================================================
+        if ("/admin/new_post".equals(request.getServletPath())) {
+            String answer = null;
+            answer = checkAction(request);
+            
+            //отмена
+            if (answer.equals("Cancel")) {
+                response.sendRedirect(request.getContextPath() + "/admin/dposts");
+                return;
+            }
+            
+            //добавить
+            if (answer.equals("Add")) {
+                ms.addPost(request.getParameter("namePost"), true, 0);
+                response.sendRedirect(request.getContextPath() + "/admin/dposts");
+                return;
+            }
+            
+            //редактировать
+            if (answer.equals("Edit")) {
+                ms.addPost(request.getParameter("namePost"), false, Integer.parseInt(request.getParameter("id")));
+                response.sendRedirect(request.getContextPath() + "/admin/dposts");
+                return;
+            }
+            
+            getServletContext().setAttribute("id", null);
+            getServletContext().setAttribute("namePost", null);
+            getServletContext().setAttribute("editPost", 0);
+            request.getRequestDispatcher("/WEB-INF/admin/new_post.jsp").forward(request, response);
+        }
+
+        //список отделов =============================================================================================================
+        if ("/admin/dposts".equals(request.getServletPath())) {
+            String answer = null;
+            answer = checkAction(request);
+            getServletContext().setAttribute("postList", gb.getAllPosts("none"));
+            
+            //поиск
+            if (answer.equals("Searchb")) {
+                String searchText = request.getParameter("Search");
+                getServletContext().setAttribute("postList", gb.getPostsSearch(searchText));
+            }
+            
+            //открыть панель
+            if (answer.equals("bToolsOn")) {
+                getServletContext().setAttribute("tools", 1);
+            }
+            
+            //закрыть панель
+            if (answer.equals("bToolsOff")) {
+                getServletContext().setAttribute("tools", 0);
+            }
+            
+            request.getRequestDispatcher("/WEB-INF/admin/posts.jsp").forward(request, response);
+        }
+
+        //данные отдела =============================================================================================================
+        if ("/admin/post_data".equals(request.getServletPath())) {
+            String answer = null;
+            answer = checkAction(request);
+            Posts dpost = ms.findPost(Integer.parseInt(request.getParameter("id")));
+            getServletContext().setAttribute("dpost", dpost);
+            
+            //отмена
+            if (answer.equals("Cancel")) {
+                response.sendRedirect(request.getContextPath() + "/admin/dposts");
+                return;
+            }
+
+            //удалить
+            if (answer.equals("Delete")) {
+                ms.deletePost(dpost);
+                response.sendRedirect(request.getContextPath() + "/admin/dposts");
+                return;
+            }
+            
+            //редактировать
+            if (answer.equals("Edit")) {
+                getServletContext().setAttribute("id", dpost.getId());
+                getServletContext().setAttribute("namePost", dpost.getName());
+                getServletContext().setAttribute("editPost", 1);
+                request.getRequestDispatcher("/WEB-INF/admin/new_post.jsp").forward(request, response);
+            }
+            
+            request.getRequestDispatcher("/WEB-INF/admin/post_data.jsp").forward(request, response);
         }
 
         //typesincident =============================================================================================================

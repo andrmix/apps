@@ -18,15 +18,249 @@
     text-align: center;
 }
 
+.sidebar_el_m{
+    width: 297px;
+    padding: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
 #sidebar a{
     margin: auto;
     text-decoration: none;
     color: #C0C0C0;
-    
 }
 
 #sidebar a:hover{
     color: #FFFFFF;
+}
+
+.a_new_inc:hover .u_icon_new_inc{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/new_inc_w_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.a_act_inc:hover .u_icon_act_inc{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/act_inc_w_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.a_clo_inc:hover .u_icon_clo_inc{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/clo_inc_w_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.a_clos_inc:hover .u_icon_clos_inc{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/clos_inc_w_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.a_nazad:hover .u_icon_nazad{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/nazad_w_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.a_new_task:hover .u_icon_new_task{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/new_inc_w.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.a_unnal:hover .u_icon_unnal{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/unnal_inc_w.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.a_allo:hover .u_icon_allo{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/allo_inc_w.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.a_vyp:hover .u_icon_vyp{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/vyp_task_w.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.a_act_inc_m:hover .u_icon_act_inc_m{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/act_inc_w.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.a_vyp_inc_m:hover .u_icon_vyp_inc_m{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/vyp_task_w.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.a_arc:hover .u_icon_arc{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/arc_w.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.a_spec:hover .u_icon_spec{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/spec_w.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.a_tools:hover .u_icon_tools{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/tools_w.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.a_stat:hover .u_icon_stat{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/stat_w.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.a_users:hover .u_icon_users{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/users_w.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.a_departs:hover .u_icon_departs{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/departs_w.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.a_dposts:hover .u_icon_dposts{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/dposts_w.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.a_typs:hover .u_icon_typs{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/typs_w.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
 }
 
 .videl{
@@ -91,10 +325,421 @@
     margin-bottom: 10px;
 }
 
-.u_iconv{
+.u_icon_new_inc{
     width: 80px;
     height: 80px;
-    background: #FFA500;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/new_inc_g_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.u_icon_act_inc{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/act_inc_g_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.u_icon_act_inc_v{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-image: url('img/act_inc_o_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+}
+
+.u_icon_clo_inc{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/clo_inc_g_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_clo_inc_v{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/clo_inc_o_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_nazad{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/nazad_g_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_new_task{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/new_inc_g.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.u_icon_unnal{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/unnal_inc_g.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.u_icon_unnal_v{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/unnal_inc_o.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.u_icon_allo{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/allo_inc_g.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.u_icon_allo_v{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/allo_inc_o.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.u_icon_vyp{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/vyp_task_g.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.u_icon_vyp_v{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/vyp_task_o.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.u_icon_arc{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/arc_g.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.u_icon_arc_v{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/arc_o.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.u_icon_spec{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/spec_g.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.u_icon_spec_v{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/spec_o.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.u_icon_tools{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/tools_g.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.u_icon_tools_v{
+    width: 120px;
+    height: 40px;
+    background-image: url('img/tools_o.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    line-height: 40px;
+}
+
+.u_icon_act_inc_m{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/act_inc_g.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.u_icon_act_inc_m_v{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/act_inc_o.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.u_icon_vyp_inc_m{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/vyp_task_g.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.u_icon_vyp_inc_m_v{
+    width: 120px;
+    height: 37px;
+    background-image: url('img/vyp_task_o.png');
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-size: auto;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 50px;
+    padding-top: 3px;
+}
+
+.u_icon_clos_inc{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/clos_inc_g_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_clos_inc_v{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/clos_inc_o_b.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_stat{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/stat_g.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_stat_v{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/stat_o.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_users{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/users_g.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_users_v{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/users_o.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_departs{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/departs_g.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_departs_v{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/departs_o.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_dposts{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/dposts_g.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_dposts_v{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/dposts_o.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_typs{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/typs_g.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.u_icon_typs_v{
+    width: 80px;
+    height: 80px;
+    background-image: url('img/typs_o.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: auto;
     margin: 0 auto;
     margin-bottom: 10px;
 }

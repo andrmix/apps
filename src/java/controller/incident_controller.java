@@ -92,7 +92,7 @@ public class incident_controller extends HttpServlet {
         if ("/user/user_incident".equals(userPath)) {
             String answer = null;
             answer = checkAction(request);
-            request.setAttribute("commento", 0);
+            request.setAttribute("commento", 1);
             request.setAttribute("ihistory", 0);
             request.setAttribute("commenta", 0);
 
@@ -102,7 +102,10 @@ public class incident_controller extends HttpServlet {
             if (incident == null) {
                 Arcincidents arcincident = ms.findArcIncident(idIncident);
 
-                if (arcincident.getNew1().equals(1) && arcincident.getStatus().getId().equals(8)) {
+                List<Comments> comments = gb.getComments(null, arcincident);
+                request.setAttribute("comments", comments);
+
+                if (arcincident.getNew1().equals(1) && arcincident.getStatus().getId().equals(7)) {
                     ms.setNotNewIncident(null, arcincident);
                 }
 
@@ -110,8 +113,6 @@ public class incident_controller extends HttpServlet {
                 if (answer.equals("bComm")) {
                     request.setAttribute("commento", 1);
                     request.setAttribute("ihistory", 0);
-                    List<Comments> comments = gb.getComments(null, arcincident);
-                    request.setAttribute("comments", comments);
                 }
 
                 //история
@@ -124,6 +125,9 @@ public class incident_controller extends HttpServlet {
 
                 request.setAttribute("incident", arcincident);
             } else {
+
+                List<Comments> comments = gb.getComments(incident, null);
+                request.setAttribute("comments", comments);
 
                 if (incident.getNew1().equals(1) && incident.getStatus().getId().equals(4)) {
                     ms.setNotNewIncident(incident, null);
@@ -162,16 +166,14 @@ public class incident_controller extends HttpServlet {
                     request.setAttribute("commento", 1);
                     request.setAttribute("ihistory", 0);
                     ms.addComment(request.getParameter("textcomm"), user, incident);
-                    List<Comments> comments = gb.getComments(incident, null);
-                    request.setAttribute("comments", comments);
+                    response.sendRedirect(request.getContextPath() + "/user/user_incident?id=" + incident.getId());
+                    return;
                 }
 
                 //комментарии
                 if (answer.equals("bComm")) {
                     request.setAttribute("commento", 1);
                     request.setAttribute("ihistory", 0);
-                    List<Comments> comments = gb.getComments(incident, null);
-                    request.setAttribute("comments", comments);
                 }
 
                 //история

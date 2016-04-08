@@ -16,16 +16,16 @@
         <form action='<c:url value="/user/new_incident_file"/>' method="post" enctype="multipart/form-data">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                     <div class="heada">${user.name} 
                         (<a href='<c:url value="/logout"/>'>Выйти</a>)
-                        / ${user.depart.name} / ***Должность***
+                        / ${user.depart.name} / ${user.dpost.name}
                     </div><div class="headb">/ Обращения / Новое обращение</div>
                 </div>
             </div>
             <div id="sidebar">
                 <div class="sidebar_el">
-                    <a href='<c:url value="/user"/>'><div class="u_icon"></div>Назад</a>       
+                    <a class="a_nazad" href='<c:url value="/user"/>'><div class="u_icon_nazad"></div>Назад</a>      
                 </div>
             </div>
             <div id="content">
@@ -54,13 +54,13 @@
                         <li>
                             <c:choose>
                                 <c:when test="${editincidenta == 1}">
-                                    <input type="submit" value="Изменить" name="Edit" class="ibutt" onclick="return UserIncidentAtt(this.form)"/>
+                                    <button type="submit" name="Edit" class="ibutt" onclick="return UserIncidentAtt(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Изменить</button>
                                 </c:when>
                                 <c:otherwise>
-                                    <input type="submit" value="Добавить" name="Add" class="ibutt" onclick="return UserIncidentAtt(this.form)"/>
+                                    <button type="submit" name="Add" class="ibutt" onclick="return UserIncidentAtt(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Добавить</button>
                                 </c:otherwise>
                             </c:choose>
-                            <input type="submit" value="Отмена" name="Cancel" class="ibutt"/>
+                            <button type="submit" name="Cancel" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отмена</button>
                         </li>
                     </ul>
                 </div>

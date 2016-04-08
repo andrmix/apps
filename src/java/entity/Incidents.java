@@ -43,8 +43,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findByTitle", query = "SELECT i FROM Incidents i WHERE i.title = :title"),
     @NamedQuery(name = "Incidents.findByText", query = "SELECT i FROM Incidents i WHERE i.text = :text"),
     @NamedQuery(name = "Incidents.findByDecision", query = "SELECT i FROM Incidents i WHERE i.decision = :decision"),
-    @NamedQuery(name = "Incidents.findByDateStatus", query = "SELECT i FROM Incidents i WHERE i.dateStatus = :dateStatus"),
-    @NamedQuery(name = "Incidents.findByTimeStatus", query = "SELECT i FROM Incidents i WHERE i.timeStatus = :timeStatus"),
+    @NamedQuery(name = "Incidents.findByDateDone", query = "SELECT i FROM Incidents i WHERE i.dateDone = :dateDone"),
+    @NamedQuery(name = "Incidents.findByTimeDone", query = "SELECT i FROM Incidents i WHERE i.timeDone = :timeDone"),
     @NamedQuery(name = "Incidents.findByRevisionCount", query = "SELECT i FROM Incidents i WHERE i.revisionCount = :revisionCount"),
     @NamedQuery(name = "Incidents.findByNew1", query = "SELECT i FROM Incidents i WHERE i.new1 = :new1"),
     @NamedQuery(name = "Incidents.findByAttachment", query = "SELECT i FROM Incidents i WHERE i.attachment = :attachment"),
@@ -56,11 +56,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findOpenByUserOrderSpec", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status.id >= :status1 AND i.status.id <= :status2 ORDER BY i.specialist"),
     @NamedQuery(name = "Incidents.findByUser1StatusNew", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status = :status AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findUnallocatedNew", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.new1 = 1"),
-    @NamedQuery(name = "Incidents.findAgreeNew", query = "SELECT i FROM Incidents i WHERE (i.status = :status1 OR (i.status = :status2 AND i.zayavitel = :manager)) AND i.new1 = 1"),
+    @NamedQuery(name = "Incidents.findAgreeNew", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findBySpecialist2StatusNew", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findUnallocated", query = "SELECT i FROM Incidents i WHERE i.status = :status"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.title"),
-    @NamedQuery(name = "Incidents.findUnallocatedOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.dateStatus"),
+    @NamedQuery(name = "Incidents.findUnallocatedOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.dateDone"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.zayavitel"),
     @NamedQuery(name = "Incidents.findAllocated", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager)"),
     @NamedQuery(name = "Incidents.findAllocatedOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.title"),
@@ -68,22 +68,27 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findAllocatedOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.status"),
     @NamedQuery(name = "Incidents.findAllocatedOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.zayavitel"),
     @NamedQuery(name = "Incidents.findAllocatedOrderSpec", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.specialist"),
-    @NamedQuery(name = "Incidents.findAgree", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR (i.status = :status2 AND i.zayavitel = :manager)"),
-    @NamedQuery(name = "Incidents.findAgreeOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR (i.status = :status2 AND i.zayavitel = :manager) ORDER BY i.title"),
-    @NamedQuery(name = "Incidents.findAgreeOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR (i.status = :status2 AND i.zayavitel = :manager) ORDER BY i.dateIncident"),
-    @NamedQuery(name = "Incidents.findAgreeOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR (i.status = :status2 AND i.zayavitel = :manager) ORDER BY i.status"),
-    @NamedQuery(name = "Incidents.findAgreeOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR (i.status = :status2 AND i.zayavitel = :manager) ORDER BY i.zayavitel"),
-    @NamedQuery(name = "Incidents.findAgreeOrderSpec", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR (i.status = :status2 AND i.zayavitel = :manager) ORDER BY i.specialist"),
+    @NamedQuery(name = "Incidents.findAgree", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager"),
+    @NamedQuery(name = "Incidents.findAgreeOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.title"),
+    @NamedQuery(name = "Incidents.findAgreeOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.dateIncident"),
+    @NamedQuery(name = "Incidents.findAgreeOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.status"),
+    @NamedQuery(name = "Incidents.findAgreeOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.zayavitel"),
+    @NamedQuery(name = "Incidents.findAgreeOrderSpec", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.specialist"),
     @NamedQuery(name = "Incidents.findBySpecialist2Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2)"),
     @NamedQuery(name = "Incidents.findBySpecialist2StatusOrderName", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) ORDER BY i.title"),
     @NamedQuery(name = "Incidents.findBySpecialist2StatusOrderDate", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) ORDER BY i.dateIncident"),
     @NamedQuery(name = "Incidents.findBySpecialist2StatusOrderStatus", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) ORDER BY i.status"),
     @NamedQuery(name = "Incidents.findBySpecialist2StatusOrderZay", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) ORDER BY i.zayavitel"),
-    @NamedQuery(name = "Incidents.findBySpecialist2StatusOrderDated", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) ORDER BY i.dateStatus"),
+    @NamedQuery(name = "Incidents.findBySpecialistDone", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status"),
+    @NamedQuery(name = "Incidents.findBySpecialistDoneOrderName", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status ORDER BY i.title"),
+    @NamedQuery(name = "Incidents.findBySpecialistDoneOrderDate", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status ORDER BY i.dateIncident"),
+    @NamedQuery(name = "Incidents.findBySpecialistDoneOrderZay", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status ORDER BY i.zayavitel"),
+    @NamedQuery(name = "Incidents.findBySpecialistDoneOrderDated", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status ORDER BY i.dateDone"),
     @NamedQuery(name = "Incidents.updateManager", query = "UPDATE Incidents i SET i.manager = :manager WHERE i.manager IS NOT NULL"),
-    @NamedQuery(name = "Incidents.findNotManaged", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2")
+    @NamedQuery(name = "Incidents.findNotManaged", query = "SELECT i FROM Incidents i WHERE i.status = :status1")
 })
 public class Incidents implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -109,12 +114,12 @@ public class Incidents implements Serializable {
     @Size(max = 255)
     @Column(name = "decision")
     private String decision;
-    @Column(name = "dateStatus")
+    @Column(name = "dateDone")
     @Temporal(TemporalType.DATE)
-    private Date dateStatus;
-    @Column(name = "timeStatus")
+    private Date dateDone;
+    @Column(name = "timeDone")
     @Temporal(TemporalType.TIME)
-    private Date timeStatus;
+    private Date timeDone;
     @Column(name = "revisionCount")
     private Integer revisionCount;
     @Column(name = "new")
@@ -126,7 +131,10 @@ public class Incidents implements Serializable {
     private Collection<Comments> commentsCollection;
     @JoinColumn(name = "req", referencedColumnName = "id")
     @ManyToOne
-    private Reqs req;
+    private Docs req;
+    @JoinColumn(name = "actDone", referencedColumnName = "id")
+    @ManyToOne
+    private Docs actDone;
     @JoinColumn(name = "status", referencedColumnName = "id")
     @ManyToOne
     private Statuses status;
@@ -222,28 +230,28 @@ public class Incidents implements Serializable {
         this.decision = decision;
     }
 
-    public String getDateStatus() {
+    public String getDateDone() {
         try {
-            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateStatus);
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateDone);
         } catch (NullPointerException e) {
             return "";
         }
     }
 
-    public void setDateStatus(Date dateStatus) {
-        this.dateStatus = dateStatus;
+    public void setDateDone(Date dateDone) {
+        this.dateDone = dateDone;
     }
 
-    public String getTimeStatus() {
+    public String getTimeDone() {
         try {
-            return new SimpleDateFormat("HH:mm:ss").format(this.timeStatus);
+            return new SimpleDateFormat("HH:mm:ss").format(this.timeDone);
         } catch (NullPointerException e) {
             return "";
         }
     }
 
-    public void setTimeStatus(Date timeStatus) {
-        this.timeStatus = timeStatus;
+    public void setTimeDone(Date timeDone) {
+        this.timeDone = timeDone;
     }
 
     public Integer getRevisionCount() {
@@ -279,12 +287,20 @@ public class Incidents implements Serializable {
         this.commentsCollection = commentsCollection;
     }
 
-    public Reqs getReq() {
+    public Docs getReq() {
         return req;
     }
 
-    public void setReq(Reqs req) {
+    public void setReq(Docs req) {
         this.req = req;
+    }
+
+    public Docs getActDone() {
+        return actDone;
+    }
+
+    public void setActDone(Docs actDone) {
+        this.actDone = actDone;
     }
 
     public Statuses getStatus() {
@@ -360,5 +376,5 @@ public class Incidents implements Serializable {
     public String toString() {
         return "entity.Incidents[ id=" + id + " ]";
     }
-    
+
 }

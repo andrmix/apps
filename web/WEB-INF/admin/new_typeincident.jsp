@@ -16,14 +16,16 @@
         <form action='<c:url value="/admin/new_typeincident"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                     <div class="heada">${usera.name} 
                         (<a href='<c:url value="/logout"/>'>Выйти</a>)
                     </div><div class="headb">/ Типы инцидентов / Новый тип инцидентов</div>
                 </div>
             </div>
             <div id="sidebar">
-                <p><a href='<c:url value="/admin/typesincident"/>'>< Назад</a></p>
+                <div class="sidebar_el">
+                    <a class="a_nazad" href='<c:url value="/admin/typesincident"/>'><div class="u_icon_nazad"></div>Назад</a>
+                </div>
             </div>
             <div id="content">
                 <input type="hidden" name="id" value="${typeIncident.id}"/>
@@ -33,13 +35,13 @@
                         <li>
                             <c:choose>
                                 <c:when test="${editTypeIncident == 1}">
-                                    <input type="submit" value="Изменить" name="Edit" class="ibutt" onclick="return AdminTI(this.form)"/>
+                                    <button type="submit" name="Edit" class="ibutt" onclick="return AdminTI(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Изменить</button>
                                 </c:when>
                                 <c:otherwise>
-                                    <input type="submit" value="Добавить" name="Add" class="ibutt" onclick="return AdminTI(this.form)"/>
+                                    <button type="submit" name="Add" class="ibutt" onclick="return AdminTI(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Добавить</button>
                                 </c:otherwise>
                             </c:choose>
-                            <input type="submit" value="Отмена" name="Cancel" class="ibutt"/>
+                            <button type="submit" name="Cancel" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отмена</button>
                         </li>
                     </ul>
                 </div>

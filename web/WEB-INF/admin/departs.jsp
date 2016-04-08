@@ -16,16 +16,37 @@
         <form action='<c:url value="/admin/departs"/>' method="POST">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                     <div class="heada">${usera.name}
                         (<a href='<c:url value="/logout"/>'>Выйти</a>)
                     </div><div class="headb">/ Отделы</div>
                 </div>
             </div>
             <div id="sidebar">
-                <p><a href='<c:url value="/admin"/>'>Сотрудники</a></p>
-                <p><a href='<c:url value="/admin/departs"/>'><span class="videl">Отделы</span></a></p>
-                <p><a href='<c:url value="/admin/typesincident"/>'>Типы инцидентов</a></p>
+                <div class="sidebar_el">
+                    <a class="a_users" href='<c:url value="/admin"/>'>
+                        <div class="u_icon_users"></div>
+                        Сотрудники
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_departs" href='<c:url value="/admin/departs"/>'>
+                        <div class="u_icon_departs_v"></div>
+                        <span class="videl">Отделы</span>
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_dposts" href='<c:url value="/admin/dposts"/>'>
+                        <div class="u_icon_dposts"></div>
+                        Должности
+                    </a>
+                </div>
+                <div class="sidebar_el">
+                    <a class="a_typs" href='<c:url value="/admin/typesincident"/>'>
+                        <div class="u_icon_typs"></div>
+                        Типы инцидентов
+                    </a>
+                </div>
             </div>
             <div id="content">
                 <c:choose>

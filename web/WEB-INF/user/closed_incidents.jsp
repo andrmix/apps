@@ -16,34 +16,36 @@
     <body>
         <div id="header">
             <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-            <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+            <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                 <div class="heada">${user.name}
                     (<a href='<c:url value="/logout"/>'>Выйти</a>)
-                    / ${user.depart.name} / ***Должность***
+                    / ${user.depart.name} / ${user.dpost.name}
                 </div>
                 <div class="headb">/ Закрытые обращения</div>
             </div>
         </div>
         <div id="sidebar">
             <div class="sidebar_el">
-                    <a href='<c:url value="/user/new_incident"/>'>
-                        <div class="u_icon"></div>
-                        Новое обращение
-                    </a>
-                </div>
-                <div class="sidebar_el">
-                    <a href='<c:url value="/user"/>'><div class="u_icon"></div>Активные обращения
-                            <c:if test="${openIncidentsNew.size() gt 0}">
-                                <span class="videlc">${openIncidentsNew.size()}</span>
-                            </c:if>
-                        </a></div>
-                <div class="sidebar_el">
-                    <a href='<c:url value="/user/closed_incidents"/>'><div class="u_iconv"></div><span class="videl">Закрытые обращения
+                <a class="a_new_inc" href='<c:url value="/user/new_incident"/>'>
+                    <div class="u_icon_new_inc"></div>
+                    Новое обращение
+                </a>
+            </div>
+            <div class="sidebar_el">
+                <a class="a_act_inc" href='<c:url value="/user"/>'><div class="u_icon_act_inc"></div>Активные обращения
+                    <c:if test="${openIncidentsNew.size() gt 0}">
+                        <span class="videlc">${openIncidentsNew.size()}</span>
+                    </c:if>
+                </a>
+            </div>
+            <div class="sidebar_el">
+                <a class="a_clo_inc" href='<c:url value="/user/closed_incidents"/>'><div class="u_icon_clo_inc_v"></div><span class="videl">Закрытые обращения
                         <c:if test="${closedIncidentsNew.size() gt 0}">
                             <span class="count">${closedIncidentsNew.size()}</span>
                         </c:if>
-                    </span></a>       
-                </div>
+                    </span>
+                </a>       
+            </div>
         </div>
         <form action='<c:url value="${action}"/>' method="POST">
             <div id="content">
@@ -118,7 +120,7 @@
                     </c:if>
                     <c:forEach var="incident" items="${closedIncidents}">
                         <c:choose>
-                            <c:when test="${incident.new1 == 1 && incident.status.id == 8}">
+                            <c:when test="${incident.new1 == 1 && incident.status.id == 7}">
                                 <tr class="vyd">
                                 </c:when>
                                 <c:otherwise>

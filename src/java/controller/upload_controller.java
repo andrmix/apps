@@ -26,7 +26,7 @@ public class upload_controller extends HttpServlet {
 
     @EJB
     private ManagementSystemLocal ms;
-    
+
     @EJB
     private GetterBeanLocal gb;
 
@@ -83,7 +83,7 @@ public class upload_controller extends HttpServlet {
             if (fi.isFormField()) {
                 String name = fi.getFieldName();
                 String value = fi.getString("UTF-8");
-                
+
                 //данные
                 if (name.equals("title")) {
                     title = value;
@@ -100,9 +100,10 @@ public class upload_controller extends HttpServlet {
 
                 //отмена
                 if (name.equals("Cancel")) {
-                    request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
+                    response.sendRedirect(request.getContextPath() + "/user");
+                    return;
                 }
-                
+
                 //добавить или редактировать
                 if (name.equals("Add") || name.equals("Edit")) {
                     String path = null;
@@ -135,17 +136,17 @@ public class upload_controller extends HttpServlet {
                     }
                     Users user = ms.findUser(request.getUserPrincipal().getName());
                     Typeincident ti = ms.findTypeIncident(Integer.parseInt(typId));
-                    
+
                     //добавить
                     if (name.equals("Add")) {
                         ms.addIncident(title, texti, user, ti, true, 0, fName);
                     }
-                    
+
                     //редактировать
                     if (name.equals("Edit")) {
                         ms.addIncident(title, texti, user, ti, false, Integer.parseInt(id), fName);
                     }
-                    
+
                     getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "none"));
                     getServletContext().setAttribute("openIncidentsNew", gb.getOpenIncidentsNew(user));
                     getServletContext().setAttribute("closedIncidentsNew", gb.getClosedIncidentsNew(user));

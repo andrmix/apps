@@ -15,9 +15,10 @@
         <form action='<c:url value="/manager/manager_tools"/>' method="GET">
             <div id="header">
                 <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-                <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+                <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                     <div class="heada">${user.name} 
                         (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                        / ${user.depart.name} / ${user.dpost.name}
                     </div><div class="headb">/ Настройки</div>
                 </div>
             </div>
@@ -27,21 +28,45 @@
                     <c:when test="${ismoder == 1}">
                         <input type="submit" value="[ - ] Руководитель" name="rolemoder" class="ibuttav"/>
                         <div id="pan_moder">
-                            <p><a href='<c:url value="/manager/new_task"/>'>Новое задание</a></p>
-                            <p><a href='<c:url value="/manager"/>'>Нераспределенные обращения
-                                    <c:if test="${unallocatedIncidentsNew.size() gt 0}">
-                                        <span class="count">${unallocatedIncidentsNew.size()}</span>
-                                    </c:if>
-                                </a></p>
-                            <p><a href='<c:url value="/manager/allocated"/>'>Распределенные обращения</a></p>
-                            <p><a href='<c:url value="/manager/on_agreement"/>'>На согласование
-                                    <c:if test="${agreeIncidentsNew.size() gt 0}">
-                                        <span class="count">${agreeIncidentsNew.size()}</span>
-                                    </c:if>
-                                </a></p>
-                            <p><a href='<c:url value="/manager/closed"/>'>Архив обращений</a></p>
-                            <p><a href='<c:url value="/manager/specialists"/>'>Специалисты</a></p>
-                            <p><a href='<c:url value="/manager/manager_tools"/>'><span class="videl">Настройки</span></a></p>
+                            <div class="sidebar_el_m">
+                                <a class="a_new_task" href='<c:url value="/manager/new_task"/>'><div class="u_icon_new_task">Новое задание</div></a>
+                            </div>
+                            <div class="sidebar_el_m">
+                                <a class="a_unnal" href='<c:url value="/manager"/>'><div class="u_icon_unnal">Нераспределенные обращения
+                                        <c:if test="${unallocatedIncidentsNew.size() gt 0}">
+                                            <span class="videlc">${unallocatedIncidentsNew.size()}</span>
+                                        </c:if>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="sidebar_el_m">
+                                <a class="a_allo" href='<c:url value="/manager/allocated"/>'>
+                                    <div class="u_icon_allo">Распределенные обращения</div>
+                                </a>
+                            </div> 
+                            <div class="sidebar_el_m">
+                                <a class="a_vyp" href='<c:url value="/manager/on_agreement"/>'><div class="u_icon_vyp">Выполненные задания
+                                        <c:if test="${agreeIncidentsNew.size() gt 0}">
+                                            <span class="count">${agreeIncidentsNew.size()}</span>
+                                        </c:if>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="sidebar_el_m">
+                                <a class="a_arc" href='<c:url value="/manager/closed"/>'>
+                                    <div class="u_icon_arc">Архив обращений</div>
+                                </a>
+                            </div>
+                            <div class="sidebar_el_m">
+                                <a class="a_spec" href='<c:url value="/manager/specialists"/>'>
+                                    <div class="u_icon_spec">Специалисты</div>
+                                </a>
+                            </div> 
+                            <div class="sidebar_el_m">
+                                <a class="a_tools" href='<c:url value="/manager/manager_tools"/>'>
+                                    <div class="u_icon_tools_v"><span class="videl">Настройки</span></div>
+                                </a>
+                            </div> 
                         </div>
                     </c:when>
                     <c:otherwise>
@@ -53,12 +78,20 @@
                     <c:when test="${isspec == 1}">
                         <input type="submit" value="[ - ] Специалист" name="rolespec" class="ibuttav"/>
                         <div id="pan_moder">
-                            <p><a href='<c:url value="/manager/manager_incidents"/>'>Активные обращения 
-                                    <c:if test="${openIncidentsManagerNew.size() gt 0}">
-                                        <span class="count">${openIncidentsManagerNew.size()}</span>
-                                    </c:if>
-                                </a></p>
-                            <p><a href='<c:url value="/manager/manager_done_incidents"/>'>Выполненные обращения</a></p>
+                            <div class="sidebar_el_m">
+                                <a class="a_act_inc_m" href='<c:url value="/manager/manager_incidents"/>'>
+                                    <div class="u_icon_act_inc_m">Активные обращения 
+                                        <c:if test="${openIncidentsManagerNew.size() gt 0}">
+                                            <span class="count">${openIncidentsManagerNew.size()}</span>
+                                        </c:if>
+                                    </div> 
+                                </a>
+                            </div> 
+                            <div class="sidebar_el_m">
+                                <a class="a_vyp_inc_m" href='<c:url value="/manager/manager_done_incidents"/>'>
+                                    <div class="u_icon_vyp_inc_m">Выполненные обращения</div>
+                                </a>
+                            </div>
                         </div>
                     </c:when>
                     <c:otherwise>
@@ -69,7 +102,13 @@
             <div id="content">
                 <c:choose>
                     <c:when test="${user.changePassword == 2}">
-                        <input type="submit" value="Вернуться" name="Back" class="ibutt"/>
+                        <div class="addEdit">
+                            <ul>
+                                <li>
+                                    <button type="submit" name="Back" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/in_work.png"/>'>Вернуться</button>
+                                </li>
+                            </ul>
+                        </div>
                     </c:when>
                     <c:otherwise>
                         <div class="addEdit">
@@ -85,7 +124,7 @@
                                     </select>
                                 </li>
                                 <li>
-                                    <input type="submit" value="Назначить" name="Done" class="ibutt"/>
+                                    <button type="submit" name="Done" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Назначить</button>
                                 </li>
                             </ul>
                         </div>

@@ -9,6 +9,7 @@ import entity.Arcincidents;
 import entity.Departs;
 import entity.Groupuser;
 import entity.Incidents;
+import entity.Posts;
 import entity.Typeincident;
 import entity.Users;
 import javax.ejb.Local;
@@ -18,7 +19,7 @@ public interface ManagementSystemLocal {
 
     public int addIncident(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id, String attachment);
 
-    public void addTask(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id, Users specialist);
+    public int addTask(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id, Users specialist);
 
     public void cancelIncident(Incidents incident, String textp, String tstatus, boolean it, Users manager);
 
@@ -30,7 +31,7 @@ public interface ManagementSystemLocal {
 
     public Departs findDepart(Object id);
 
-    public void addUser(String login, String fio, String email, Departs depart, String role, boolean addUser);
+    public void addUser(String login, String fio, String email, Departs depart, String role, boolean addUser, Posts dpost);
 
     public void deleteUser(Users user);
 
@@ -57,8 +58,6 @@ public interface ManagementSystemLocal {
     public void setNotNewIncident(Incidents incident, Arcincidents arcincident);
 
     public boolean isTask(Users manager, Incidents incident);
-
-    public void agreeIncident(Incidents incident);
 
     public void addHistory(Incidents incident, Users actioner, String text);
 
@@ -90,5 +89,11 @@ public interface ManagementSystemLocal {
     
     public boolean isBlockedUser(Users user);
     
-    public void addReq(Users specialist, String text, Incidents incident);
+    public void addReq(Users specialist, String cause, Incidents incident, Users komis1, Users komis2, String zamenaIn, String zamenaOut, String text);
+    
+    public Posts findPost(Object id);
+    
+    public void addPost(String name, boolean addPost, int id);
+    
+    public void deletePost(Posts dpost);
 }

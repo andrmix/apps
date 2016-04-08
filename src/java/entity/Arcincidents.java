@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Arcincidents.findByRevisionCount", query = "SELECT a FROM Arcincidents a WHERE a.revisionCount = :revisionCount"),
     @NamedQuery(name = "Arcincidents.findByNew1", query = "SELECT a FROM Arcincidents a WHERE a.new1 = :new1"),
     @NamedQuery(name = "Arcincidents.findByAttachment", query = "SELECT a FROM Arcincidents a WHERE a.attachment = :attachment"),
-        
+    
     @NamedQuery(name = "Arcincidents.findClosedByUser", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2"),
     @NamedQuery(name = "Arcincidents.findClosedByUserOrderName", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 ORDER BY a.title"),
     @NamedQuery(name = "Arcincidents.findClosedByUserOrderDate", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 ORDER BY a.dateIncident"),
@@ -148,7 +148,10 @@ public class Arcincidents implements Serializable {
     private Collection<Comments> commentsCollection;
     @JoinColumn(name = "req", referencedColumnName = "id")
     @ManyToOne
-    private Reqs req;
+    private Docs req;
+    @JoinColumn(name = "actDone", referencedColumnName = "id")
+    @ManyToOne
+    private Docs actDone;
     @JoinColumn(name = "status", referencedColumnName = "id")
     @ManyToOne
     private Statuses status;
@@ -293,12 +296,20 @@ public class Arcincidents implements Serializable {
         this.commentsCollection = commentsCollection;
     }
 
-    public Reqs getReq() {
+    public Docs getReq() {
         return req;
     }
 
-    public void setReq(Reqs req) {
+    public void setReq(Docs req) {
         this.req = req;
+    }
+
+    public Docs getActDone() {
+        return actDone;
+    }
+
+    public void setActDone(Docs actDone) {
+        this.actDone = actDone;
     }
 
     public Statuses getStatus() {

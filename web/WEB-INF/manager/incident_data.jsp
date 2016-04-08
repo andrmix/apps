@@ -8,21 +8,26 @@
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/header.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/sidebar.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/incident_data.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/statusbar.css"/>'>        
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src='<c:url value="/js/checkOnNull.js"/>'></script>
         <title>Решение</title>
     </head>
     <body>
         <div id="header">
             <img class="galka" src='<c:url value="/img/galka_white.png"/>'><h1>Решение</h1>
-            <div class="head_block"><img class="user_pic" src='<c:url value="/img/user32.png"/>'>
+            <div class="head_block"><img class="user_pic" src='<c:url value="/css/img/user.png"/>'>
                 <div class="heada">${user.name}
                     (<a href='<c:url value="/logout"/>'>Выйти</a>)
+                    / ${user.depart.name} / ${user.dpost.name}
                 </div>
                 <div class="headb">/ Обращения / Данные обращения</div>
             </div>
         </div>
         <div id="sidebar">
-            <p><a href='<c:url value="/manager"/>'>< Назад</a></p>
+            <div class="sidebar_el">
+                <a class="a_nazad" href='<c:url value="/manager"/>'><div class="u_icon_nazad"></div>Назад</a>       
+            </div>
         </div>
         <form action='<c:url value="/manager/incident_data"/>' method="POST">
             <input type="hidden" name="id" value="${incident.id}"/>
@@ -30,215 +35,270 @@
             <c:set var="una" scope="application" value="${un}"/>
             <div id="content">
                 <div class="incident_data">
-                    <table class="table_incident_data">
-                        <thead>
-                            <tr>
-                                <th colspan="2">${incident.title}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>ИД обращения</td>
-                                <td>${incident.id}</td>
-                            </tr>
-                            <tr>
-                                <td>Дата и время создания</td>
-                                <td>${incident.dateIncident} ${incident.timeIncident}</td>
-                            </tr>
-                            <tr>
-                                <td>Тип обращения</td>
-                                <td>${incident.typeIncident.name}</td>
-                            </tr>
-                            <tr>
-                                <td>Текст обращения</td>
-                                <td>${incident.text}</td>
-                            </tr>
-                            <tr>
-                                <td>Статус</td>
-                                <td>${incident.status.name}</td>
-                            </tr>
 
-                            <tr>
-                                <td>Заявитель</td>
-                                <td>${incident.zayavitel.name}</td>
-                            </tr>
-                            <tr>
-                                <td>Исполнитель</td>
-                                <td>${incident.specialist.name}</td>
-                            </tr>
-                            <c:if test="${incident.status.id == 4 || incident.status.id == 5}">
-                                <tr>
-                                    <td>Решение</td>
-                                    <td>${incident.decision}</td>
-                                </tr>
-                                <tr>
-                                    <td>Дата и время выполнения</td>
-                                    <td>${incident.dateStatus} ${incident.timeStatus}</td>
-                                </tr>
-                                <tr>
-                                    <td>Количество доработок</td>
-                                    <c:choose>
-                                        <c:when test="${incident.revisionCount ne null}">
-                                            <td>${incident.revisionCount}</td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <td>0</td>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </tr>
-                            </c:if>
-                            <c:if test="${incident.status.id == 6}">
-                                <tr>
-                                    <td>Решение</td>
-                                    <td>${incident.decision}</td>
-                                </tr>
-                                <tr>
-                                    <td>Дата и время закрытия</td>
-                                    <td>${incident.dateClose} ${incident.timeClose}</td>
-                                </tr>
-                                <tr>
-                                    <td>Количество доработок</td>
-                                    <c:choose>
-                                        <c:when test="${incident.revisionCount ne null}">
-                                            <td>${incident.revisionCount}</td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <td>0</td>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </tr>
-                            </c:if>
-                            <c:if test="${incident.status.id == 7 || incident.status.id == 8}">
-                                <tr>
-                                    <td>Причина отклонения/отмены</td>
-                                    <td>${incident.decision}</td>
-                                </tr>
-                                <tr>
-                                    <td>Дата и время отклонения/отмены</td>
-                                    <td>${incident.dateClose} ${incident.timeClose}</td>
-                                </tr>
-                            </c:if>
-                            <tr>
-                                <td>Вложение</td>
+                    <div class="inc_data">
+                        <div class="shapka">
+                            <div class="id_inc">${incident.id}</div>
+                            <div class="name_inc">${incident.title}</div>
+                            <div class="data_inc">
+                                <div class="dat_inc">${incident.dateIncident} ${incident.timeIncident}</div>
+                                <div class="type_inc">${incident.typeIncident.name}</div>
+                            </div>
+                        </div>
+
+                        <div id="podla">
+                            <div id="podl">
                                 <c:choose>
-                                    <c:when test="${incident.attachment ne null}">
-                                        <td><img src='<c:url value="/screens/${incident.attachment}"/>' tabindex="0"></td>
-                                        </c:when>
-                                        <c:otherwise>
-                                        <td>Нет</td>
+                                    <c:when test="${incident.status.id == 1}">
+                                        <div id="hexagon_n">Новый</div>
+                                        <div id="hexagon_s">Назначен</div>
+                                        <div id="hexagon_s">В работе</div>
+                                        <div id="hexagon_s">Решено</div>
+                                        <div id="hexagon_p">Завершен</div>
+                                    </c:when>
+                                    <c:when test="${incident.status.id == 2}">
+                                        <div id="hexagon_ns">Новый</div>
+                                        <div id="hexagon_sv">Назначен</div>
+                                        <div id="hexagon_s">В работе</div>
+                                        <div id="hexagon_s">Решено</div>
+                                        <div id="hexagon_p">Завершен</div>
+                                    </c:when>
+                                    <c:when test="${incident.status.id == 3}">
+                                        <div id="hexagon_ns">Новый</div>
+                                        <div id="hexagon_ss">Назначен</div>
+                                        <div id="hexagon_sv">В работе</div>
+                                        <div id="hexagon_s">Решено</div>
+                                        <div id="hexagon_p">Завершен</div>
+                                    </c:when>
+                                    <c:when test="${incident.status.id == 4}">
+                                        <div id="hexagon_ns">Новый</div>
+                                        <div id="hexagon_ss">Назначен</div>
+                                        <div id="hexagon_ss">В работе</div>
+                                        <div id="hexagon_sv">Решено</div>
+                                        <div id="hexagon_p">Завершен</div>
+                                    </c:when>
+                                    <c:when test="${incident.status.id == 5}">
+                                        <div id="hexagon_ns">Новый</div>
+                                        <div id="hexagon_ss">Назначен</div>
+                                        <div id="hexagon_ss">В работе</div>
+                                        <div id="hexagon_ss">Решено</div>
+                                        <div id="hexagon_pv">Завершен</div>
+                                    </c:when>
+                                    <c:when test="${incident.status.id == 6}">
+                                        <div id="hexagon_ns">Новый</div>
+                                        <div id="hexagon_so">Отменен</div>
+                                        <div id="hexagon_s">В работе</div>
+                                        <div id="hexagon_s">Решено</div>
+                                        <div id="hexagon_p">Завершен</div>
+                                    </c:when>
+                                    <c:when test="${incident.status.id == 7}">
+                                        <div id="hexagon_ns">Новый</div>
+                                        <div id="hexagon_ss">Назначен</div>
+                                        <div id="hexagon_so">Отклонен</div>
+                                        <div id="hexagon_s">Решено</div>
+                                        <div id="hexagon_p">Завершен</div>
+                                    </c:when>
+                                    <c:otherwise>
                                     </c:otherwise>
                                 </c:choose>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <c:choose>
-                        <c:when test="${commenta == 1}">
-                            <div class="commentar">
-                                <table class="commgo">
-                                    <tr>
-                                        <td style="width: 70%"><textarea placeholder="Укажите причину" name="textc" class="commEdit"/></textarea></td>
-                                        <td style="width: 30%"><input type="submit" value="Готово" name="pDone" class="ibuttcomm"/></td>
-                                    </tr>
-                                </table>
                             </div>
-                        </c:when>
-                        <c:otherwise>
+                        </div>
+
+                        <c:choose>
+                            <c:when test="${incident.attachment ne null}">
+                                <div class="text_inc">
+                                    <div class="man">${incident.zayavitel.name}</div>
+                                    <div class="man_otd">${incident.zayavitel.depart.name} / ${incident.zayavitel.dpost.name}</div>
+                                    ${incident.text}
+                                    <img class="scree" src='<c:url value="/screens/${incident.attachment}"/>' tabindex="0">
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="text_inc">
+                                    <div class="man">${incident.zayavitel.name}</div>
+                                    <div class="man_otd">${incident.zayavitel.depart.name} / ${incident.zayavitel.dpost.name}</div>
+                                    ${incident.text}
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <c:if test="${incident.status.id > 1}">
+                            <div class="nazn">${incident.specialist.name} (${incident.specialist.dpost.name})</div>
+                        </c:if>
+
+                        <c:choose>
+                            <c:when test="${incident.status.id == 4}">       
+                                <div class="dec_inc">
+                                    <div class="man">${incident.specialist.name}</div>
+                                    <div class="man_otd">${incident.specialist.depart.name} / ${incident.specialist.dpost.name}</div>
+                                    <div class="dat_dec">${incident.dateDone} ${incident.timeDone}</div>
+                                    ${incident.decision}
+                                </div>
+                            </c:when>
+
+                            <c:when test="${incident.status.id == 5}"> 
+                                <div class="dec_inc">
+                                    <div class="man">${incident.specialist.name}</div>
+                                    <div class="man_otd">${incident.specialist.depart.name} / ${incident.specialist.dpost.name}</div>
+                                    <div class="dat_dec">${incident.dateClose} ${incident.timeClose}</div>
+                                    ${incident.decision}
+                                </div>
+                            </c:when>
+
+                            <c:when test="${incident.status.id == 6}"> 
+                                <div class="dec_inc_otkl">
+                                    <div class="man">${incident.zayavitel.name}</div>
+                                    <div class="man_otd">${incident.zayavitel.depart.name} / ${incident.zayavitel.dpost.name}</div>
+                                    <div class="dat_dec">${incident.dateClose} ${incident.timeClose}</div>
+                                    ${incident.decision}
+                                </div>
+                            </c:when>
+
+                            <c:when test="${incident.status.id == 7}"> 
+                                <div class="dec_inc_otkl">
+                                    <div class="man">${incident.specialist.name}</div>
+                                    <div class="man_otd">${incident.specialist.depart.name} / ${incident.specialist.dpost.name}</div>
+                                    <div class="dat_dec">${incident.dateClose} ${incident.timeClose}</div>
+                                    ${incident.decision}
+                                </div>
+                            </c:when>
+                        </c:choose>
+
+                        <c:choose>
+                            <c:when test="${commenta == 1}">
+                                <div class="commentar">
+                                    <textarea placeholder="Укажите причину" name="textc" class="commEdit"/></textarea>
+                                    <button type="submit" name="pDone" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Готово</button>
+                                    <input type="hidden" name="status" value="${incident.status.id}"/>
+                                </div>
+                            </c:when>
+                            <c:when test="${appoint == 1}">
+                                <select name="specId" class="sel_mal">
+                                    <c:forEach var="specialist" items="${specialists}">
+                                        <option value="${specialist.login}" selected><c:out value="${specialist.name}"/></option>
+                                    </c:forEach>
+                                </select>
+                                <button type="submit" name="Done" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Назначить</button>
+                            </c:when>
+                            <c:when test="${done == 1}">
+                                <div class="commentar">
+                                    <textarea placeholder="Решение" name="decision" class="commEdit"/></textarea>
+                                    <button type="submit" name="gDone" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Готово</button>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <c:if test="${incident.status.id == 1}">
+                                    <button type="submit" name="Appoint" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/appoint.png"/>'>Назначить</button>
+                                    <button type="submit" name="Close" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отклонить</button>
+                                </c:if>
+                                <c:if test="${incident.status.id == 2 || incident.status.id == 3}">
+                                    <button type="submit" name="Appoint" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/appoint.png"/>'>Переназначить</button>
+                                </c:if>
+                                <c:if test="${incident.status.id == 2 && incident.specialist.login == incident.manager.login}">
+                                    <button type="submit" name="InWork" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/in_work.png"/>'>В работу</button>
+                                    <button type="submit" name="Close" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отклонить</button>
+                                </c:if>
+                                <c:if test="${incident.status.id == 3 && incident.specialist.login == incident.manager.login}">
+                                    <button type="submit" name="Doit" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Выполнить</button>
+                                    <button type="submit" name="Close" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отклонить</button>
+                                </c:if>
+                                <c:if test="${task == 1 && (incident.status.id == 2 || incident.status.id == 3)}">
+                                    <button type="submit" name="Close" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отменить</button>
+                                </c:if>
+                                <c:if test="${task == 1 && incident.status.id == 4}">
+                                    <button type="submit" name="Accept" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/accept.png"/>'>Подтвердить</button>
+                                    <button type="submit" name="NoAccept" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/accept_no.png"/>'>Вернуть на доработку</button>
+                                </c:if>
+                                <input type="submit" value="to mail" name="Send" class="ibutt"/>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <div class="liniya"></div>
+
+                        <c:if test="${incident.status.id gt 2}">
                             <c:choose>
-                                <c:when test="${appoint == 1}">
-                                    <select name="specId" class="sel_mal">
-                                        <c:forEach var="specialist" items="${specialists}">
-                                            <option value="${specialist.login}" selected><c:out value="${specialist.name}"/></option>
+                                <c:when test="${commento == 1}">
+                                    <div class="pan_chp">
+                                        <input type="submit" value="" name="bComm" class="pan_mod_cv"/>
+                                        <input type="submit" value="" name="bHist" class="pan_mod_h"/>
+                                        <c:if test="${incident.status.id == 3}">
+                                            <input type="submit" value="" name="bResh" class="pan_mod_b"/>
+                                        </c:if>
+                                    </div>
+                                    <div class="comm_inc_mod">
+                                        <c:forEach var="comment" items="${comments}">
+                                            <div class="comm_inc">
+                                                <div class="man_comm">${comment.usersLogin.name}</div>
+                                                <div class="man_otd_comm">${comment.usersLogin.depart.name} / ${comment.usersLogin.dpost.name}</div>
+                                                <div class="dat_comm">${comment.dateComment} ${comment.timeComment}</div>
+                                                ${comment.text}
+                                            </div>
+                                            <div class="liniya_kor"></div>
                                         </c:forEach>
-                                    </select>
-                                    <input type="submit" value="Назначить" name="Done" class="ibutt"/>
+
+                                        <c:if test="${incident.status.id == 3}">
+                                            <textarea placeholder="Комментировать..." name="textcomm" class="commEdit_comm"/></textarea>
+                                            <button type="submit" name="bCommGo" class="ibutt" onclick="return Comment(this.form)"/><img class="img_butt" src='<c:url value="/css/img/comm_2.png"/>'>Отправить</button>
+                                        </c:if>    
+                                    </div>
                                 </c:when>
-                                <c:when test="${done == 1}">
-                                    <div class="commentar">
+
+                                <c:when test="${ihistory == 1}">
+                                    <div class="pan_chp">
+                                        <input type="submit" value="" name="bComm" class="pan_mod_c"/>
+                                        <input type="submit" value="" name="bHist" class="pan_mod_hv"/>
+                                        <c:if test="${incident.status.id == 3}">
+                                            <input type="submit" value="" name="bResh" class="pan_mod_b"/>
+                                        </c:if>
+                                    </div>
+                                    <div class="comm_inc_mod">
                                         <table class="commgo">
-                                            <tr>
-                                                <td style="width: 70%"><textarea placeholder="Решение" name="decision" class="commEdit"/></textarea></td>
-                                                <td style="width: 30%"><input type="submit" value="Готово" name="gDone" class="ibuttcomm"/></td>
-                                            </tr>
+                                            <tbody>
+                                                <c:forEach var="hist" items="${allhistory}">
+                                                    <tr>
+                                                        <td style="width: 20%">${hist.status.name}</td>
+                                                        <td style="width: 20%">${hist.dateAction} ${hist.timeAction}</td>
+                                                        <td style="width: 30%">${hist.actioner.name}</td>
+                                                        <td style="width: 30%">${hist.text}</td>
+                                                    </tr>
+                                                </c:forEach>
                                         </table>
                                     </div>
                                 </c:when>
+
+                                <c:when test="${iresh == 1}">
+                                    <div class="pan_chp">
+                                        <input type="submit" value="" name="bComm" class="pan_mod_c"/>
+                                        <input type="submit" value="" name="bHist" class="pan_mod_h"/>
+                                        <input type="submit" value="" name="bResh" class="pan_mod_bv"/>
+                                    </div>
+                                    <div class="comm_inc_mod">
+                                        <c:choose>
+                                            <c:when test="${rIncidents.size() > 0}">
+                                                <table class="comments">
+                                                    <tbody>
+                                                        <c:forEach var="inc" items="${rIncidents}">
+                                                            <tr>
+                                                                <td style="width: 3%">${inc[0]}</td>
+                                                                <td style="width: 15%">${inc[1]} ${inc[2]}</td>
+                                                                <td style="width: 12%">${inc[3]}</td>
+                                                                <td style="width: 35%">${inc[4]}</td>
+                                                                <td style="width: 35%">${inc[5]}</td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                </table>
+                                            </c:when>
+                                            <c:otherwise>
+                                                Похожих обращений нет
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </c:when>
                                 <c:otherwise>
-                                    <c:if test="${incident.status.id == 1}">
-                                        <input type="submit" value="Назначить" name="Appoint" class="ibutt"/>
-                                        <input type="submit" value="Отклонить" name="Close" class="ibutt"/>
-                                    </c:if>
-                                    <c:if test="${incident.status.id == 2 || incident.status.id == 3}">
-                                        <input type="submit" value="Переназначить" name="Appoint" class="ibutt"/>
-                                    </c:if>
-                                    <c:if test="${incident.status.id == 2 && incident.specialist.login == incident.manager.login}">
-                                        <input type="submit" value="В работу" name="InWork" class="ibutt"/>
-                                        <input type="submit" value="Отклонить" name="Close" class="ibutt"/>
-                                    </c:if>
-                                    <c:if test="${incident.status.id == 3 && incident.specialist.login == incident.manager.login}">
-                                        <input type="submit" value="Выполнить" name="Doit" class="ibutt"/>
-                                        <input type="submit" value="Отклонить" name="Close" class="ibutt"/>
-                                    </c:if>
-                                    <c:if test="${task == 1 && (incident.status.id == 2 || incident.status.id == 3)}">
-                                        <input type="submit" value="Отменить" name="Close" class="ibutt"/>
-                                    </c:if>
-                                    <c:if test="${(task == 1 && incident.status.id == 4) || incident.status.id == 5}">
-                                        <input type="submit" value="Согласовать" name="Agree" class="ibutt"/>
-                                    </c:if>
-                                    <c:if test="${incident.status.id == 8 || incident.status.id == 6}">
-                                        <input type="submit" value="Удалить" name="Delete" class="ibutt"/>
-                                    </c:if>
-                                        <input type="submit" value="to mail" name="Send" class="ibutt"/>
                                 </c:otherwise>
                             </c:choose>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <c:choose>
-                        <c:when test="${commento == 1}">
-                            <br>
-                            <input type="submit" value="Комментарии" name="bComm" class="plashka_on"/>
-                            <input type="submit" value="История" name="bHist" class="plashka_off"/>
-                            <table class="comments">
-                                <tbody>
-                                    <c:forEach var="comment" items="${comments}">
-                                        <tr>
-                                            <td style="width: 20%">${comment.usersLogin.name}</td>
-                                            <td style="width: 10%">${comment.dateComment} - ${comment.timeComment}</td>
-                                            <td style="width: 70%">${comment.text}</td>
-                                        </tr>
-                                    </c:forEach>
-                            </table>
-                            <c:if test="${incident.status.id == 3}">
-                                <table class="commgo">
-                                    <tr>
-                                        <td style="width: 70%"><textarea placeholder="Комментировать..." name="textcomm" class="commEdit"/></textarea></td>
-                                        <td style="width: 30%"><input type="submit" value="Отправить" name="bCommGo" class="ibuttcomm"/></td>
-                                    </tr>
-                                </table>
-                            </c:if>
-                        </c:when>
-                        <c:when test="${ihistory == 1}">
-                            <br>
-                            <input type="submit" value="Комментарии" name="bComm" class="plashka_off"/>
-                            <input type="submit" value="История" name="bHist" class="plashka_on"/>
-                            <table class="comments">
-                                <tbody>
-                                    <c:forEach var="hist" items="${allhistory}">
-                                        <tr>
-                                            <td style="width: 20%">${hist.status.name}</td>
-                                            <td style="width: 20%">${hist.dateAction} ${hist.timeAction}</td>
-                                            <td style="width: 30%">${hist.actioner.name}</td>
-                                            <td style="width: 30%">${hist.text}</td>
-                                        </tr>
-                                    </c:forEach>
-                            </table>
-                        </c:when>
-                        <c:otherwise>
-                            <br>
-                            <input type="submit" value="Комментарии" name="bComm" class="plashka_off"/>
-                            <input type="submit" value="История" name="bHist" class="plashka_off"/>
-                        </c:otherwise>
-                    </c:choose>
+                        </c:if>
+                    </div>
                 </div>
             </div>
         </form>

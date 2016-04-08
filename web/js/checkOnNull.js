@@ -26,6 +26,22 @@ function AdminDepart(data) {
     }
 }
 
+function Comment(data) {
+    if (data.textcomm.value == 0)
+    {
+        alert('Введите сообщение');
+        return false;
+    }
+}
+
+function AdminPost(data) {
+    if (data.namePost.value == 0)
+    {
+        alert('Заполните поле "Название"');
+        return false;
+    }
+}
+
 function AdminTI(data) {
     if (data.nameTypeIncident.value == 0)
     {

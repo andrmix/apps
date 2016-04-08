@@ -71,6 +71,18 @@
     color: #088A08;
 }
 
+#hexagon_so {
+    float: left;
+    width: 150px;
+    height: 40px;
+    background: red;
+    position: relative;
+    margin-left: 12px;
+    text-align: center;
+    font-size: 20px;
+    line-height: 40px;
+}
+
 #hexagon_sv {
     float: left;
     width: 150px;
@@ -152,6 +164,30 @@
     left: 150px;
     border-bottom: 20px solid transparent;
     border-left: 10px solid #FFFFFF;
+    border-top: 20px solid transparent;
+}
+
+#hexagon_so:before {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: -10px;
+    border-bottom: 20px solid red;
+    border-left: 10px solid transparent;
+    border-top: 20px solid red;
+}
+
+#hexagon_so:after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: 150px;
+    border-bottom: 20px solid transparent;
+    border-left: 10px solid red;
     border-top: 20px solid transparent;
 }
 

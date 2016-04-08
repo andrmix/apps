@@ -79,16 +79,21 @@
     text-align: center;
 }
 
+.tab_title {
+    background: #FFA500;
+    text-align: left;
+    width: 30%;
+}
+
+.tab_pole {
+    background: #F0F8FF;
+}
+
 .table_statistic td {
     border-style: solid;
     border-width: 0 2px 2px 0;
     border-color: white;
     padding: 10px;
-}
-
-.tab_title {
-    background: #FFA500;
-    text-align: left;
 }
 
 .table_statistic thead {
