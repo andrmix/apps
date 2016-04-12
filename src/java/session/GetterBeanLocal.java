@@ -63,4 +63,5 @@ public interface GetterBeanLocal {
     public List<Posts> getAllPosts(String sort);
     public List<Posts> getPostsSearch(String searchText);
     public List<Posts> getPostsForEdit(Posts dpost);
+    public List<Users> getUsersForEdit(Users user);
 }

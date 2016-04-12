@@ -29,6 +29,7 @@
             </div>
         </div>
         <form action='<c:url value="/specialist/spec_incident_data"/>' method="POST">
+            
             <input type="hidden" name="id" value="${incident.id}"/>
             <div id="content">
                 <div class="incident_data">
@@ -105,7 +106,17 @@
                             </c:otherwise>
                         </c:choose>
 
-                            
+                        <c:if test="${zamenaP == 0}">
+                            <c:if test="${incident.req ne null}">
+                                <div class="nazn"><div class="ztext">Заявка на замену оборудования [ id ${incident.req.id} ]</div>
+                                    <div class="zButtons_tab">
+                                        <button type="submit" name="zEdit" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/edit.png"/>'>Редактировать</button>
+                                        <button type="submit" name="zOpen" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/cancel.png"/>'>Открыть</button>
+                                        <button type="submit" name="zDel" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/del.png"/>'>Удалить</button>
+                                    </div>
+                                </div>
+                            </c:if>
+                        </c:if>
 
                         <c:choose>
                             <c:when test="${incident.status.id == 4}">       
@@ -146,9 +157,43 @@
                             </c:when>
                             <c:when test="${zamenaP == 1}"> 
                                 <div class="zamena_act">
-                                    
-                                    
-                                    
+                                    <div class="man">Заявка на замену оборудования</div>
+                                    <div class="man_otd"></div>
+                                    Член комиссии 1:
+                                    <select name="komisId1" class="sel_komis">
+                                        <c:forEach var="komis" items="${komises1}">
+                                            <option value="${komis.login}" selected><c:out value="${komis.name}"/></option>
+                                        </c:forEach>
+                                    </select>
+                                    <br>
+                                    Член комиссии 2:
+                                    <select name="komisId2" class="sel_komis">
+                                        <c:forEach var="komis" items="${komises2}">
+                                            <option value="${komis.login}" selected><c:out value="${komis.name}"/></option>
+                                        </c:forEach>
+                                    </select>
+                                    <br>
+                                    Причина замены:
+                                    <br>
+                                    <textarea placeholder="Причина замены" name="prich" class="editAddArea"/>${incident.req.cause}</textarea>
+                                    <br>
+                                    Оборудование:
+                                    <br>
+                                    <textarea placeholder="Оборудование" name="hw_off" class="editAddArea"/>${incident.req.zamenaOut}</textarea>
+                                    <br>
+                                    Оборудование на замену:
+                                    <br>
+                                    <textarea placeholder="Оборудование на замену" name="hw_on" class="editAddArea"/>${incident.req.zamenaIn}</textarea>
+                                    <br>
+                                    <c:choose>
+                                        <c:when test="${zEd == 0}">
+                                            <button type="submit" name="zDone" class="ibutt" onclick="return SpecZamena(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Генерация</button>
+                                        </c:when>
+                                        <c:when test="${zEd == 1}">
+                                            <button type="submit" name="zEditDone" class="ibutt" onclick="return SpecZamena(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Генерация</button>
+                                        </c:when>
+                                    </c:choose>
+                                    <button type="submit" name="CancelZ" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отмена</button>
                                 </div>
                             </c:when>
                             <c:when test="${done == 1}">

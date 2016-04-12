@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -42,8 +43,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Docs.findByCause", query = "SELECT d FROM Docs d WHERE d.cause = :cause"),
     @NamedQuery(name = "Docs.findByZamenaOut", query = "SELECT d FROM Docs d WHERE d.zamenaOut = :zamenaOut"),
     @NamedQuery(name = "Docs.findByZamenaIn", query = "SELECT d FROM Docs d WHERE d.zamenaIn = :zamenaIn"),
-    @NamedQuery(name = "Docs.findByText", query = "SELECT d FROM Docs d WHERE d.text = :text")})
+    @NamedQuery(name = "Docs.findByText", query = "SELECT d FROM Docs d WHERE d.text = :text"),
+
+    @NamedQuery(name = "Docs.deleteOpen", query = "DELETE FROM Docs d WHERE d.id = :id")
+})
 public class Docs implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -117,16 +122,24 @@ public class Docs implements Serializable {
         this.id = id;
     }
 
-    public Date getDateDoc() {
-        return dateDoc;
+    public String getDateDoc() {
+        try {
+            return new SimpleDateFormat("dd.MM.yyyy").format(this.dateDoc);
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public void setDateDoc(Date dateDoc) {
         this.dateDoc = dateDoc;
     }
 
-    public Date getTimeDoc() {
-        return timeDoc;
+    public String getTimeDoc() {
+        try {
+            return new SimpleDateFormat("HH:mm:ss").format(this.timeDoc);
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public void setTimeDoc(Date timeDoc) {
@@ -249,5 +262,5 @@ public class Docs implements Serializable {
     public String toString() {
         return "entity.Docs[ id=" + id + " ]";
     }
-    
+
 }

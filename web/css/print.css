@@ -1,0 +1,14 @@
+#navbar-iframe {
+    display: none;
+    height: 0px;
+    visibility: hidden;
+}
+
+.noprint {
+    display: none;
+}
+
+body {
+    background:#FFF;
+    color:#000;
+}

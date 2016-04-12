@@ -90,6 +90,26 @@ function UserIncident(data) {
     }
 }
 
+function SpecZamena(data) {
+    if (data.prich.value == 0)
+    {
+        alert('Заполните поле "Причина замены"');
+        return false;
+    }
+    
+    if (data.hw_off.value == 0)
+    {
+        alert('Заполните поле "Оборудование"');
+        return false;
+    }
+    
+    if (data.hw_on.value == 0)
+    {
+        alert('Выберите "Оборудование на замену"');
+        return false;
+    }
+}
+
 function UserIncidentAtt(data) {
     if (data.title.value == 0)
     {

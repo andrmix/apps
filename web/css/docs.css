@@ -1,0 +1,91 @@
+.zagol{
+    width: 842px;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 20px;
+}
+
+.gor_data{
+    width: 842px;
+    margin-bottom: 30px;
+}
+
+.gorod{
+    display: inline-block;
+    text-align: left;
+    width: 421px;
+}
+
+.data{
+    display: inline-block;
+    text-align: right;
+    width: 421px;
+}
+
+.table_komis{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    width: 842px;    
+}
+
+.table_komisa{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    width: 842px;    
+}
+
+.kfio{
+    padding-top: 10px;
+    text-align: left;
+}
+
+.kdep{
+    padding-top: 10px;
+    text-align: right;
+}
+
+.kpost{
+    padding-top: 10px;
+    text-align: center;
+}
+
+.podp{
+    text-align: center;
+    padding-top: -10px;
+    font-size: 10px;
+}
+
+.zliniya{
+    width: 842px;
+    margin-top: 10px;
+    margin-bottom: 40px;
+    height: 1px;
+    background: #483D8B;
+}
+
+.abutt{
+    font-family: '9369';
+    cursor: pointer;
+    background: #483D8B;
+    width: 165px;
+    height: 40px;
+    font-size: 15px;
+    color: #Ffffff;
+    border: 0;
+    margin-top: 10px;
+    line-height: 40px;
+    position: relative;
+    text-align: left;
+    padding-left: 45px;
+    display: inline-block;
+}
+
+a{
+    text-decoration: none;
+}
+
+.abutt:hover{
+    background: #6A5ACD;
+}

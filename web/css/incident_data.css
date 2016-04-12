@@ -331,7 +331,7 @@
     top: 10px;
 }
 
-.sel_mal {
+.sel_mal{
     font-family: '9369';
     border: 1px solid #3a3633;
     background: #Ffffff;
@@ -345,12 +345,58 @@
 }
 
 .zamena_act{
-    
+    width: 760px;
+    font-size: 20px;
+    padding: 20px;
+    background: #A9F5A9;
+    margin-top: 10px;
+    position: relative;
 }
 
+.sel_komis{
+    width: 250px;
+    height: 30px;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
 
+.ztext{
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 65px;
+}
 
+.zButtons_tab{
+    display: inline-block;
+    float: right;
+}
 
+.ibuttz{
+    font-family: '9369';
+    cursor: pointer;
+    background: #483D8B;
+    width: 140px;
+    height: 30px;
+    font-size: 13px;
+    color: #Ffffff;
+    border: 0;
+    line-height: 30px;
+    position: relative;
+    text-align: left;
+    padding-left: 35px;
+}
+
+.ibuttz:hover{
+    background: #6A5ACD;
+}
+
+.img_buttz{
+    position: absolute;
+    height: 15px;
+    left: 13px;
+    top: 8px;
+}
 
 .table_incident_data{
     margin: 0;

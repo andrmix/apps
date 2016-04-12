@@ -110,6 +110,22 @@ public class GetterBean implements GetterBeanLocal {
         return users;
     }
     
+    @Override
+    public List<Users> getUsersForEdit(Users user) {
+        List resultList = em.createNamedQuery("Users.findAll").getResultList();
+        Users tiA = null, tiB = null;
+        Iterator iterator = resultList.iterator();
+        while (iterator.hasNext()) {
+            tiA = (Users) iterator.next();
+            if (user.equals(tiA)) {
+                tiB = tiA;
+                iterator.remove();
+            }
+        }
+        resultList.add(tiB);
+        return resultList;
+    }
+    
     /* incidents ===========================================================================================================*/
     /* open ===========================================================================================================*/
     @Override

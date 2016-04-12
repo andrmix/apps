@@ -146,7 +146,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             em.merge(incident);
             addHistory(incident, manager, "Исправление");
         }
-        
+
         return ret;
     }
 
@@ -207,7 +207,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             em.merge(depart);
         }
     }
-    
+
     @Override
     public void addPost(String name, boolean addPost, int id) {
         Posts dpost;
@@ -275,8 +275,13 @@ public class ManagementSystemBean implements ManagementSystemLocal {
 
     @Override
     public void addReq(Users specialist, String cause, Incidents incident, Users komis1,
-            Users komis2, String zamenaIn, String zamenaOut, String text) {
-        Docs req = new Docs();
+            Users komis2, String zamenaIn, String zamenaOut, String text, boolean zEdit, Docs reqa) {
+        Docs req;
+        if (zEdit) {
+            req = reqa;
+        } else {
+            req = new Docs();
+        }
         req.setDateDoc(new Date());
         req.setTimeDoc(new Date());
         req.setCause(cause);
@@ -286,10 +291,14 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         req.setZamenaOut(zamenaOut);
         req.setSpecialist(specialist);
         req.setText(text);
-        em.persist(req);
-        incident.setReq(req);
-        em.merge(incident);
-        addHistory(incident, specialist, "Создана заявка на замену оборудования");
+        if (zEdit) {
+            em.merge(req);
+        } else {
+            em.persist(req);
+            incident.setReq(req);
+            em.merge(incident);
+            addHistory(incident, specialist, "Создана заявка на замену оборудования");
+        }
     }
 
     /* delete удаление ===============================================================================================*/
@@ -304,7 +313,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         Departs toBeRemoved = em.merge(depart);
         em.remove(toBeRemoved);
     }
-    
+
     @Override
     public void deletePost(Posts dpost) {
         Posts toBeRemoved = em.merge(dpost);
@@ -321,6 +330,14 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     public void deleteIncident(Incidents incident) {
         Incidents toBeRemoved = em.merge(incident);
         em.remove(toBeRemoved);
+    }
+
+    @Override
+    public void deleteDoc(Incidents incident) {
+        Query q = null;
+        q = em.createNamedQuery("Docs.deleteOpen");
+        q.setParameter("id", incident.getReq().getId());
+        q.executeUpdate();
     }
 
     @Override
@@ -374,10 +391,15 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     public Departs findDepart(Object id) {
         return em.find(Departs.class, id);
     }
-    
+
     @Override
     public Posts findPost(Object id) {
         return em.find(Posts.class, id);
+    }
+
+    @Override
+    public Docs findDoc(Object id) {
+        return em.find(Docs.class, id);
     }
 
     @Override
@@ -388,7 +410,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         Groupuser groupuser = (Groupuser) resultList.get(0);
         return groupuser;
     }
-    
+
     /* actions действия ==============================================================================================*/
     @Override
     public void cancelIncident(Incidents incident, String textp, String tstatus, boolean it, Users manager) {
@@ -491,16 +513,6 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         }
         return result;
     }
-
-/*
-//del
-    @Override
-    public void agreeIncident(Incidents incident) {
-        incident.setStatus(gb.getStatuses().get(5));//6
-        em.merge(incident);
-        addHistory(incident, incident.getManager(), "Перенесен в архив");
-        addIncidentInArc(incident);
-    }*/
 
     @Override
     public void resetPassword(Users user) {
@@ -757,7 +769,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         }
         return result;
     }
-    
+
     public String dateInStr(Date sdate) {
         try {
             return new SimpleDateFormat("dd.MM.yyyy").format(sdate);
@@ -765,7 +777,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             return "";
         }
     }
-    
+
     public String timeInStr(Date stime) {
         try {
             return new SimpleDateFormat("HH:mm:ss").format(stime);

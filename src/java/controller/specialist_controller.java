@@ -7,6 +7,7 @@ package controller;
 
 import entity.Arcincidents;
 import entity.Comments;
+import entity.Docs;
 import entity.History;
 import entity.Incidents;
 import entity.Users;
@@ -20,7 +21,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import session.GetterBeanLocal;
 import session.ManagementSystemLocal;
 
@@ -34,7 +34,7 @@ import session.ManagementSystemLocal;
             "/specialist/sort_by_zay_done", "/specialist/sort_by_dated_done",
             "/specialist/sort_by_name_closed", "/specialist/sort_by_dateo_closed",
             "/specialist/sort_by_status_closed", "/specialist/sort_by_zay_closed",
-            "/specialist/sort_by_datec_closed"})
+            "/specialist/sort_by_datec_closed", "/specialist/spec_act_zamena"})
 public class specialist_controller extends HttpServlet {
 
     @EJB
@@ -240,17 +240,76 @@ public class specialist_controller extends HttpServlet {
                 //замена оборудования
                 if (answer.equals("Zamena")) {
                     request.setAttribute("zamenaP", 1);
+                    List<Users> komises1 = gb.getAllUsers("none");
+                    List<Users> komises2 = gb.getAllUsers("none");
+                    request.setAttribute("komises1", komises1);
+                    request.setAttribute("komises2", komises2);
+                    request.setAttribute("zEd", 0);
                 }
 
                 //замена оборудования - готово
                 if (answer.equals("zDone")) {
-                    //ms.addReq(specialist, request.getParameter("textz"), incident);
+                    Users komis1 = ms.findUser(request.getParameter("komisId1"));
+                    Users komis2 = ms.findUser(request.getParameter("komisId2"));
+                    ms.addReq(specialist, request.getParameter("prich"), incident, komis1, komis2, request.getParameter("hw_on"), request.getParameter("hw_off"), " ", false, null);
+                    response.sendRedirect(request.getContextPath() + "/specialist/spec_act_zamena?id="
+                            + incident.getReq().getId() + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
+                    return;
+                }
+
+                if (answer.equals("zEdit")) {
+                    request.setAttribute("zamenaP", 1);
+                    List<Users> komises1 = gb.getUsersForEdit(incident.getReq().getKomis1());
+                    List<Users> komises2 = gb.getUsersForEdit(incident.getReq().getKomis2());
+                    request.setAttribute("komises1", komises1);
+                    request.setAttribute("komises2", komises2);
+                    request.setAttribute("zEd", 1);
+                }
+
+                if (answer.equals("zEditDone")) {
+                    Users komis1 = ms.findUser(request.getParameter("komisId1"));
+                    Users komis2 = ms.findUser(request.getParameter("komisId2"));
+                    ms.addReq(specialist, request.getParameter("prich"), incident, komis1, komis2, request.getParameter("hw_on"), request.getParameter("hw_off"), " ", true, incident.getReq());
+                    response.sendRedirect(request.getContextPath() + "/specialist/spec_act_zamena?id="
+                            + incident.getReq().getId() + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
+                    return;
+                }
+
+                if (answer.equals("zOpen")) {
+                    response.sendRedirect(request.getContextPath() + "/specialist/spec_act_zamena?id="
+                            + incident.getReq().getId() + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
+                    return;
+                }
+                
+                if (answer.equals("zDel")) {
+                    ms.deleteDoc(incident);
                     response.sendRedirect(request.getContextPath() + "/specialist/spec_incident_data?id=" + incident.getId());
                     return;
                 }
             }
 
             request.getRequestDispatcher("/WEB-INF/specialist/spec_incident_data.jsp").forward(request, response);
+        }
+
+        //заявка на замену оборудования ==================================================================================================
+        if ("/specialist/spec_act_zamena".equals(request.getServletPath())) {
+            String answer = null;
+            answer = checkAction(request);
+
+            int idReq = 0;
+            idReq = Integer.parseInt(request.getParameter("id"));
+
+            int idIncident = 0;
+            idIncident = Integer.parseInt(request.getParameter("incId"));
+
+            Incidents incident = ms.findIncident(idIncident);
+
+            Docs req = ms.findDoc(idReq);
+
+            getServletContext().setAttribute("inc_id", request.getParameter("incId"));
+            getServletContext().setAttribute("inc_date", request.getParameter("incDate"));
+            getServletContext().setAttribute("req", req);
+            request.getRequestDispatcher("/WEB-INF/specialist/spec_act_zamena.jsp").forward(request, response);
         }
 
         //выполненные обращения ==================================================================================================
@@ -360,6 +419,18 @@ public class specialist_controller extends HttpServlet {
         }
         if (req.getParameter("zDone") != null) {
             return "zDone";
+        }
+        if (req.getParameter("zEdit") != null) {
+            return "zEdit";
+        }
+        if (req.getParameter("zEditDone") != null) {
+            return "zEditDone";
+        }
+        if (req.getParameter("zOpen") != null) {
+            return "zOpen";
+        }
+        if (req.getParameter("zDel") != null) {
+            return "zDel";
         }
         return "none";
     }

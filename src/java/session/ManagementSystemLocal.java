@@ -7,6 +7,7 @@ package session;
 
 import entity.Arcincidents;
 import entity.Departs;
+import entity.Docs;
 import entity.Groupuser;
 import entity.Incidents;
 import entity.Posts;
@@ -89,11 +90,15 @@ public interface ManagementSystemLocal {
     
     public boolean isBlockedUser(Users user);
     
-    public void addReq(Users specialist, String cause, Incidents incident, Users komis1, Users komis2, String zamenaIn, String zamenaOut, String text);
+    public void addReq(Users specialist, String cause, Incidents incident, Users komis1, Users komis2, String zamenaIn, String zamenaOut, String text, boolean zEdit, Docs reqa);
     
     public Posts findPost(Object id);
     
     public void addPost(String name, boolean addPost, int id);
     
     public void deletePost(Posts dpost);
+    
+    public Docs findDoc(Object id);
+    
+    public void deleteDoc(Incidents incident);
 }
