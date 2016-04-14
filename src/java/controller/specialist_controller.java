@@ -34,7 +34,8 @@ import session.ManagementSystemLocal;
             "/specialist/sort_by_zay_done", "/specialist/sort_by_dated_done",
             "/specialist/sort_by_name_closed", "/specialist/sort_by_dateo_closed",
             "/specialist/sort_by_status_closed", "/specialist/sort_by_zay_closed",
-            "/specialist/sort_by_datec_closed", "/specialist/spec_act_zamena"})
+            "/specialist/sort_by_datec_closed", "/specialist/spec_act_zamena",
+            "/specialist/spec_act_done"})
 public class specialist_controller extends HttpServlet {
 
     @EJB
@@ -146,6 +147,10 @@ public class specialist_controller extends HttpServlet {
                 request.setAttribute("incident", arcincident);
                 List<Comments> comments = gb.getComments(null, arcincident);
                 request.setAttribute("comments", comments);
+                List<Docs> reqs = gb.getReqs(null, arcincident);
+                request.setAttribute("reqs", reqs);
+                List<Docs> acts = gb.getActDone(null, arcincident);
+                request.setAttribute("acts", acts);
 
                 //история
                 if (answer.equals("bHist")) {
@@ -162,10 +167,26 @@ public class specialist_controller extends HttpServlet {
                     request.setAttribute("ihistory", 0);
                     request.setAttribute("iresh", 0);
                 }
+
+                if (answer.equals("zOpen")) {
+                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("zId")));
+                    response.sendRedirect(request.getContextPath() + "/specialist/spec_act_zamena?id="
+                            + zReq.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
+                    return;
+                }
+
+                if (answer.equals("aOpen")) {
+                    Docs aAct = ms.findDoc(Integer.parseInt(request.getParameter("aId")));
+                    response.sendRedirect(request.getContextPath() + "/specialist/spec_act_done?id="
+                            + aAct.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
+                    return;
+                }
             } else {
                 request.setAttribute("incident", incident);
                 List<Comments> comments = gb.getComments(incident, null);
                 request.setAttribute("comments", comments);
+                List<Docs> reqs = gb.getReqs(incident, null);
+                request.setAttribute("reqs", reqs);
 
                 if (incident.getNew1().equals(1) && (incident.getStatus().getId().equals(2) || incident.getStatus().getId().equals(3))) {
                     ms.setNotNewIncident(incident, null);
@@ -251,38 +272,48 @@ public class specialist_controller extends HttpServlet {
                 if (answer.equals("zDone")) {
                     Users komis1 = ms.findUser(request.getParameter("komisId1"));
                     Users komis2 = ms.findUser(request.getParameter("komisId2"));
-                    ms.addReq(specialist, request.getParameter("prich"), incident, komis1, komis2, request.getParameter("hw_on"), request.getParameter("hw_off"), " ", false, null);
+                    int idReq = ms.addReq(specialist, request.getParameter("prich"), incident, komis1, komis2, request.getParameter("hw_on"), request.getParameter("hw_off"), false, null);
+                    List<Docs> reqas = gb.getReqs(incident, null);
+                    Docs eReq = null;
+                    for (Docs requ : reqas) {
+                        eReq = requ;
+                    }
                     response.sendRedirect(request.getContextPath() + "/specialist/spec_act_zamena?id="
-                            + incident.getReq().getId() + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
+                            + eReq.getId() + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
                     return;
                 }
 
                 if (answer.equals("zEdit")) {
                     request.setAttribute("zamenaP", 1);
-                    List<Users> komises1 = gb.getUsersForEdit(incident.getReq().getKomis1());
-                    List<Users> komises2 = gb.getUsersForEdit(incident.getReq().getKomis2());
+                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("zId")));
+                    List<Users> komises1 = gb.getUsersForEdit(zReq.getKomis1());
+                    List<Users> komises2 = gb.getUsersForEdit(zReq.getKomis2());
                     request.setAttribute("komises1", komises1);
                     request.setAttribute("komises2", komises2);
+                    request.setAttribute("req", zReq);
                     request.setAttribute("zEd", 1);
                 }
 
                 if (answer.equals("zEditDone")) {
                     Users komis1 = ms.findUser(request.getParameter("komisId1"));
                     Users komis2 = ms.findUser(request.getParameter("komisId2"));
-                    ms.addReq(specialist, request.getParameter("prich"), incident, komis1, komis2, request.getParameter("hw_on"), request.getParameter("hw_off"), " ", true, incident.getReq());
+                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("rId")));
+                    int idReq = ms.addReq(specialist, request.getParameter("prich"), incident, komis1, komis2, request.getParameter("hw_on"), request.getParameter("hw_off"), true, zReq);
                     response.sendRedirect(request.getContextPath() + "/specialist/spec_act_zamena?id="
-                            + incident.getReq().getId() + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
+                            + idReq + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
                     return;
                 }
 
                 if (answer.equals("zOpen")) {
+                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("zId")));
                     response.sendRedirect(request.getContextPath() + "/specialist/spec_act_zamena?id="
-                            + incident.getReq().getId() + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
+                            + zReq.getId() + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
                     return;
                 }
-                
+
                 if (answer.equals("zDel")) {
-                    ms.deleteDoc(incident);
+                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("zId")));
+                    ms.deleteDoc(zReq);
                     response.sendRedirect(request.getContextPath() + "/specialist/spec_incident_data?id=" + incident.getId());
                     return;
                 }
@@ -298,18 +329,28 @@ public class specialist_controller extends HttpServlet {
 
             int idReq = 0;
             idReq = Integer.parseInt(request.getParameter("id"));
-
-            int idIncident = 0;
-            idIncident = Integer.parseInt(request.getParameter("incId"));
-
-            Incidents incident = ms.findIncident(idIncident);
-
             Docs req = ms.findDoc(idReq);
 
             getServletContext().setAttribute("inc_id", request.getParameter("incId"));
             getServletContext().setAttribute("inc_date", request.getParameter("incDate"));
             getServletContext().setAttribute("req", req);
             request.getRequestDispatcher("/WEB-INF/specialist/spec_act_zamena.jsp").forward(request, response);
+        }
+
+        //акт выполненных работ ==================================================================================================
+        if ("/specialist/spec_act_done".equals(request.getServletPath())) {
+            String answer = null;
+            answer = checkAction(request);
+
+            int idAct = 0;
+            idAct = Integer.parseInt(request.getParameter("id"));
+
+            Docs act = ms.findDoc(idAct);
+
+            getServletContext().setAttribute("inc_id", request.getParameter("incId"));
+            getServletContext().setAttribute("inc_date", request.getParameter("incDate"));
+            getServletContext().setAttribute("act", act);
+            request.getRequestDispatcher("/WEB-INF/specialist/spec_act_done.jsp").forward(request, response);
         }
 
         //выполненные обращения ==================================================================================================
@@ -428,6 +469,9 @@ public class specialist_controller extends HttpServlet {
         }
         if (req.getParameter("zOpen") != null) {
             return "zOpen";
+        }
+        if (req.getParameter("aOpen") != null) {
+            return "aOpen";
         }
         if (req.getParameter("zDel") != null) {
             return "zDel";

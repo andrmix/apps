@@ -2,6 +2,7 @@ package controller;
 
 import entity.Arcincidents;
 import entity.Comments;
+import entity.Docs;
 import entity.History;
 import entity.Incidents;
 import entity.Typeincident;
@@ -33,7 +34,7 @@ import session.ManagementSystemLocal;
             "/sort_by_datec_m_closed", "/sort_by_name_m_act", "/sort_by_date_m_act",
             "/sort_by_status_m_act", "/sort_by_zay_m_act", "/sort_by_name_m_done",
             "/sort_by_dateo_m_done", "/sort_by_zay_m_done", "/sort_by_dated_m_done",
-            "/manager/manager_tools"})
+            "/manager/manager_tools", "/manager/spec_act_zamena", "/manager/spec_act_done"})
 public class manager_controller extends HttpServlet {
 
     @EJB
@@ -203,6 +204,7 @@ public class manager_controller extends HttpServlet {
             getServletContext().setAttribute("appoint", 0);
             getServletContext().setAttribute("task", 0);
             getServletContext().setAttribute("iresh", 0);
+            getServletContext().setAttribute("zamenaP", 0);
 
             String answer = null;
             answer = checkAction(request);
@@ -213,9 +215,12 @@ public class manager_controller extends HttpServlet {
             if (incident == null) {
                 Arcincidents arcincident = ms.findArcIncident(idIncident);
                 request.setAttribute("incident", arcincident);
-
                 List<Comments> comments = gb.getComments(null, arcincident);
                 request.setAttribute("comments", comments);
+                List<Docs> reqs = gb.getReqs(null, arcincident);
+                request.setAttribute("reqs", reqs);
+                List<Docs> acts = gb.getActDone(null, arcincident);
+                request.setAttribute("acts", acts);
 
                 //комментарии
                 if (answer.equals("bComm")) {
@@ -231,6 +236,20 @@ public class manager_controller extends HttpServlet {
                     request.setAttribute("iresh", 0);
                     List<History> history = gb.getHistory(null, arcincident);
                     request.setAttribute("allhistory", history);
+                }
+                
+                if (answer.equals("zOpen")) {
+                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("zId")));
+                    response.sendRedirect(request.getContextPath() + "/manager/spec_act_zamena?id="
+                            + zReq.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
+                    return;
+                }
+
+                if (answer.equals("aOpen")) {
+                    Docs aAct = ms.findDoc(Integer.parseInt(request.getParameter("aId")));
+                    response.sendRedirect(request.getContextPath() + "/manager/spec_act_done?id="
+                            + aAct.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
+                    return;
                 }
 
                 /*  //удалить
@@ -260,6 +279,8 @@ public class manager_controller extends HttpServlet {
 
                 List<Comments> comments = gb.getComments(incident, null);
                 request.setAttribute("comments", comments);
+                List<Docs> reqs = gb.getReqs(incident, null);
+                request.setAttribute("reqs", reqs);
 
                 if (ms.isTask(manager, incident)) {
                     getServletContext().setAttribute("task", 1);
@@ -368,10 +389,101 @@ public class manager_controller extends HttpServlet {
                 if (answer.equals("Send")) {
                     //ms.sendMail();
                 }
+                
+                //замена оборудования
+                if (answer.equals("Zamena")) {
+                    request.setAttribute("zamenaP", 1);
+                    List<Users> komises1 = gb.getAllUsers("none");
+                    List<Users> komises2 = gb.getAllUsers("none");
+                    request.setAttribute("komises1", komises1);
+                    request.setAttribute("komises2", komises2);
+                    request.setAttribute("zEd", 0);
+                }
+
+                //замена оборудования - готово
+                if (answer.equals("zDone")) {
+                    Users komis1 = ms.findUser(request.getParameter("komisId1"));
+                    Users komis2 = ms.findUser(request.getParameter("komisId2"));
+                    int idReq = ms.addReq(manager, request.getParameter("prich"), incident, komis1, komis2, request.getParameter("hw_on"), request.getParameter("hw_off"), false, null);
+                    List<Docs> reqas = gb.getReqs(incident, null);
+                    Docs eReq = null;
+                    for (Docs requ : reqas) {
+                        eReq = requ;
+                    }
+                    response.sendRedirect(request.getContextPath() + "/manager/spec_act_zamena?id="
+                            + eReq.getId() + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
+                    return;
+                }
+
+                if (answer.equals("zEdit")) {
+                    request.setAttribute("zamenaP", 1);
+                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("zId")));
+                    List<Users> komises1 = gb.getUsersForEdit(zReq.getKomis1());
+                    List<Users> komises2 = gb.getUsersForEdit(zReq.getKomis2());
+                    request.setAttribute("komises1", komises1);
+                    request.setAttribute("komises2", komises2);
+                    request.setAttribute("req", zReq);
+                    request.setAttribute("zEd", 1);
+                }
+
+                if (answer.equals("zEditDone")) {
+                    Users komis1 = ms.findUser(request.getParameter("komisId1"));
+                    Users komis2 = ms.findUser(request.getParameter("komisId2"));
+                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("rId")));
+                    int idReq = ms.addReq(manager, request.getParameter("prich"), incident, komis1, komis2, request.getParameter("hw_on"), request.getParameter("hw_off"), true, zReq);
+                    response.sendRedirect(request.getContextPath() + "/manager/spec_act_zamena?id="
+                            + idReq + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
+                    return;
+                }
+
+                if (answer.equals("zOpen")) {
+                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("zId")));
+                    response.sendRedirect(request.getContextPath() + "/manager/spec_act_zamena?id="
+                            + zReq.getId() + "&incId=" + incident.getId() + "&incDate=" + incident.getDateIncident());
+                    return;
+                }
+
+                if (answer.equals("zDel")) {
+                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("zId")));
+                    ms.deleteDoc(zReq);
+                    response.sendRedirect(request.getContextPath() + "/manager/incident_data?id=" + incident.getId());
+                    return;
+                }
 
             }
 
             request.getRequestDispatcher("/WEB-INF/manager/incident_data.jsp").forward(request, response);
+        }
+        
+        //заявка на замену оборудования ==================================================================================================
+        if ("/manager/spec_act_zamena".equals(request.getServletPath())) {
+            String answer = null;
+            answer = checkAction(request);
+
+            int idReq = 0;
+            idReq = Integer.parseInt(request.getParameter("id"));
+            Docs req = ms.findDoc(idReq);
+
+            getServletContext().setAttribute("inc_id", request.getParameter("incId"));
+            getServletContext().setAttribute("inc_date", request.getParameter("incDate"));
+            getServletContext().setAttribute("req", req);
+            request.getRequestDispatcher("/WEB-INF/manager/spec_act_zamena.jsp").forward(request, response);
+        }
+
+        //акт выполненных работ ==================================================================================================
+        if ("/manager/spec_act_done".equals(request.getServletPath())) {
+            String answer = null;
+            answer = checkAction(request);
+
+            int idAct = 0;
+            idAct = Integer.parseInt(request.getParameter("id"));
+
+            Docs act = ms.findDoc(idAct);
+
+            getServletContext().setAttribute("inc_id", request.getParameter("incId"));
+            getServletContext().setAttribute("inc_date", request.getParameter("incDate"));
+            getServletContext().setAttribute("act", act);
+            request.getRequestDispatcher("/WEB-INF/manager/spec_act_done.jsp").forward(request, response);
         }
 
         //сортировка закрытых обращений =============================================================================================================
@@ -597,6 +709,27 @@ public class manager_controller extends HttpServlet {
         }
         if (req.getParameter("bResh") != null) {
             return "bResh";
+        }
+        if (req.getParameter("aOpen") != null) {
+            return "aOpen";
+        }
+        if (req.getParameter("zOpen") != null) {
+            return "zOpen";
+        }
+        if (req.getParameter("zDel") != null) {
+            return "zDel";
+        }
+        if (req.getParameter("zEditDone") != null) {
+            return "zEditDone";
+        }
+        if (req.getParameter("zEdit") != null) {
+            return "zEdit";
+        }
+        if (req.getParameter("zDone") != null) {
+            return "zDone";
+        }
+        if (req.getParameter("Zamena") != null) {
+            return "Zamena";
         }
         return "none";
     }

@@ -109,10 +109,9 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         arcincident.setRevisionCount(incident.getRevisionCount());
         arcincident.setNew1(incident.getNew1());
         arcincident.setAttachment(incident.getAttachment());
-        arcincident.setReq(incident.getReq());
-        arcincident.setActDone(incident.getActDone());
+        arcincident.setKb(incident.getKb());
         em.persist(arcincident);
-        editHAndCInArc(incident, arcincident);
+        editHDAndCInArc(incident, arcincident);
         deleteIncident(incident);
     }
 
@@ -274,8 +273,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     }
 
     @Override
-    public void addReq(Users specialist, String cause, Incidents incident, Users komis1,
-            Users komis2, String zamenaIn, String zamenaOut, String text, boolean zEdit, Docs reqa) {
+    public int addReq(Users specialist, String cause, Incidents incident, Users komis1,
+            Users komis2, String zamenaIn, String zamenaOut, boolean zEdit, Docs reqa) {
         Docs req;
         if (zEdit) {
             req = reqa;
@@ -290,15 +289,34 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         req.setZamenaIn(zamenaIn);
         req.setZamenaOut(zamenaOut);
         req.setSpecialist(specialist);
-        req.setText(text);
+        req.setIncident(incident);
+        req.setTypeDoc(1);
+        int ret = 0;
         if (zEdit) {
             em.merge(req);
+            ret = req.getId();
         } else {
             em.persist(req);
-            incident.setReq(req);
-            em.merge(incident);
             addHistory(incident, specialist, "Создана заявка на замену оборудования");
         }
+        return ret;
+    }
+
+    @Override
+    public void addActDone(Incidents incident) {
+        Docs actd = new Docs();
+        actd.setDateDoc(new Date());
+        actd.setTimeDoc(new Date());
+        actd.setCause(incident.getDecision());
+        actd.setKomis1(incident.getZayavitel());
+        actd.setKomis2(incident.getManager());
+        actd.setSpecialist(incident.getSpecialist());
+        actd.setIncident(incident);
+        actd.setTypeDoc(2);
+        actd.setZamenaIn(" ");
+        actd.setZamenaOut(" ");
+        em.persist(actd);
+        addHistory(incident, incident.getSpecialist(), "Создан акт выполненных работ");
     }
 
     /* delete удаление ===============================================================================================*/
@@ -333,11 +351,9 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     }
 
     @Override
-    public void deleteDoc(Incidents incident) {
-        Query q = null;
-        q = em.createNamedQuery("Docs.deleteOpen");
-        q.setParameter("id", incident.getReq().getId());
-        q.executeUpdate();
+    public void deleteDoc(Docs doc) {
+        Docs toBeRemoved = em.merge(doc);
+        em.remove(toBeRemoved);
     }
 
     @Override
@@ -348,6 +364,14 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             q.setParameter("incident", incident);
         } else {
             q = em.createNamedQuery("History.deleteClosed");
+            q.setParameter("arcincident", arcincident);
+        }
+        q.executeUpdate();
+        if (incident != null) {
+            q = em.createNamedQuery("Docs.deleteOpen");
+            q.setParameter("incident", incident);
+        } else {
+            q = em.createNamedQuery("Docs.deleteClosed");
             q.setParameter("arcincident", arcincident);
         }
         q.executeUpdate();
@@ -490,6 +514,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     public void acceptIncident(Incidents incident) {
         incident.setStatus(gb.getStatuses().get(4));//5
         em.merge(incident);
+        addActDone(incident);
         addHistory(incident, incident.getManager(), "Перенесен в архив");
         addIncidentInArc(incident);
     }
@@ -538,9 +563,13 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     }
 
     @Override
-    public void editHAndCInArc(Incidents incident, Arcincidents arcincident) {
+    public void editHDAndCInArc(Incidents incident, Arcincidents arcincident) {
         Query q = null;
         q = em.createNamedQuery("History.updateClosed");
+        q.setParameter("incident", incident);
+        q.setParameter("arcincident", arcincident);
+        q.executeUpdate();
+        q = em.createNamedQuery("Docs.updateClosed");
         q.setParameter("incident", incident);
         q.setParameter("arcincident", arcincident);
         q.executeUpdate();

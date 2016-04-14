@@ -29,7 +29,7 @@
             </div>
         </div>
         <form action='<c:url value="/specialist/spec_incident_data"/>' method="POST">
-            
+
             <input type="hidden" name="id" value="${incident.id}"/>
             <div id="content">
                 <div class="incident_data">
@@ -107,14 +107,19 @@
                         </c:choose>
 
                         <c:if test="${zamenaP == 0}">
-                            <c:if test="${incident.req ne null}">
-                                <div class="nazn"><div class="ztext">Заявка на замену оборудования [ id ${incident.req.id} ]</div>
-                                    <div class="zButtons_tab">
-                                        <button type="submit" name="zEdit" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/edit.png"/>'>Редактировать</button>
-                                        <button type="submit" name="zOpen" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/cancel.png"/>'>Открыть</button>
-                                        <button type="submit" name="zDel" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/del.png"/>'>Удалить</button>
+                            <c:if test="${reqs.size() gt 0}">
+                                <c:forEach var="req" items="${reqs}">
+                                    <div class="nazn"><img class="img_nazn" src='<c:url value="/css/img/docs.png"/>'><div class="ztext">Заявка на замену оборудования [ id ${req.id} ]</div>
+                                        <div class="zButtons_tab">
+                                            <button type="submit" name="zOpen" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/cancel.png"/>'>Открыть</button>
+                                            <c:if test="${incident.status.id == 3}">
+                                                <button type="submit" name="zEdit" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/edit.png"/>'>Редактировать</button>
+                                                <button type="submit" name="zDel" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/del.png"/>'>Удалить</button>
+                                            </c:if>
+                                        </div>
                                     </div>
-                                </div>
+                                    <input type="hidden" name="zId" value="${req.id}"/>
+                                </c:forEach>
                             </c:if>
                         </c:if>
 
@@ -147,6 +152,17 @@
                             </c:when>
                         </c:choose>
 
+                        <c:if test="${acts.size() gt 0}">
+                            <c:forEach var="act" items="${acts}">
+                                <div class="nazna"><img class="img_nazn" src='<c:url value="/css/img/docs.png"/>'><div class="ztext">Акт выполненных работ [ id ${act.id} ]</div>
+                                    <div class="zButtons_tab">
+                                        <button type="submit" name="aOpen" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/cancel.png"/>'>Открыть</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="aId" value="${act.id}"/>
+                            </c:forEach>
+                        </c:if>
+
                         <c:choose>
                             <c:when test="${otmena == 1}">
                                 <div class="commentar">
@@ -175,15 +191,15 @@
                                     <br>
                                     Причина замены:
                                     <br>
-                                    <textarea placeholder="Причина замены" name="prich" class="editAddArea"/>${incident.req.cause}</textarea>
+                                    <textarea placeholder="Причина замены" name="prich" class="editAddArea"/>${req.cause}</textarea>
                                     <br>
                                     Оборудование:
                                     <br>
-                                    <textarea placeholder="Оборудование" name="hw_off" class="editAddArea"/>${incident.req.zamenaOut}</textarea>
+                                    <textarea placeholder="Оборудование" name="hw_off" class="editAddArea"/>${req.zamenaOut}</textarea>
                                     <br>
                                     Оборудование на замену:
                                     <br>
-                                    <textarea placeholder="Оборудование на замену" name="hw_on" class="editAddArea"/>${incident.req.zamenaIn}</textarea>
+                                    <textarea placeholder="Оборудование на замену" name="hw_on" class="editAddArea"/>${req.zamenaIn}</textarea>
                                     <br>
                                     <c:choose>
                                         <c:when test="${zEd == 0}">
@@ -191,6 +207,7 @@
                                         </c:when>
                                         <c:when test="${zEd == 1}">
                                             <button type="submit" name="zEditDone" class="ibutt" onclick="return SpecZamena(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Генерация</button>
+                                            <input type="hidden" name="rId" value="${req.id}"/>
                                         </c:when>
                                     </c:choose>
                                     <button type="submit" name="CancelZ" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отмена</button>
@@ -213,7 +230,7 @@
 
                                     <c:when test="${incident.status.id == 3}">
                                         <button type="submit" name="Doit" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Выполнить</button>
-                                        <c:if test="${incident.req == null}">
+                                        <c:if test="${reqs.size() == 0}">
                                             <button type="submit" name="Zamena" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/zamena.png"/>'>Замена оборудования</button>
                                         </c:if>
                                         <c:if test="${incident.zayavitel.login ne incident.manager.login}">

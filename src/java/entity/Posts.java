@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Posts.findSearch", query = "SELECT p FROM Posts p WHERE p.name like :post")
 })
 public class Posts implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +47,7 @@ public class Posts implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 100)
     @Column(name = "name")
     private String name;
     @OneToMany(mappedBy = "dpost")
@@ -113,5 +114,5 @@ public class Posts implements Serializable {
     public String toString() {
         return "entity.Posts[ id=" + id + " ]";
     }
-    
+
 }

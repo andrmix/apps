@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -35,7 +36,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Comments.findAll", query = "SELECT c FROM Comments c"),
     @NamedQuery(name = "Comments.findById", query = "SELECT c FROM Comments c WHERE c.id = :id"),
-    @NamedQuery(name = "Comments.findByText", query = "SELECT c FROM Comments c WHERE c.text = :text"),
     @NamedQuery(name = "Comments.findByDateComment", query = "SELECT c FROM Comments c WHERE c.dateComment = :dateComment"),
     @NamedQuery(name = "Comments.findByTimeComment", query = "SELECT c FROM Comments c WHERE c.timeComment = :timeComment"),
 
@@ -55,7 +55,8 @@ public class Comments implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Lob
+    @Size(min = 1, max = 65535)
     @Column(name = "text")
     private String text;
     @Basic(optional = false)

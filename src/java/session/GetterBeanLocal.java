@@ -8,6 +8,7 @@ package session;
 import entity.Arcincidents;
 import entity.Comments;
 import entity.Departs;
+import entity.Docs;
 import entity.History;
 import entity.Incidents;
 import entity.Posts;
@@ -64,4 +65,7 @@ public interface GetterBeanLocal {
     public List<Posts> getPostsSearch(String searchText);
     public List<Posts> getPostsForEdit(Posts dpost);
     public List<Users> getUsersForEdit(Users user);
+    public List<Docs> getDocs(Incidents incident, Arcincidents arcincident);
+    public List<Docs> getReqs(Incidents incident, Arcincidents arcincident);
+    public List<Docs> getActDone(Incidents incident, Arcincidents arcincident);
 }

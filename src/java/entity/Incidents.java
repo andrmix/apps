@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -41,13 +42,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findByDateIncident", query = "SELECT i FROM Incidents i WHERE i.dateIncident = :dateIncident"),
     @NamedQuery(name = "Incidents.findByTimeIncident", query = "SELECT i FROM Incidents i WHERE i.timeIncident = :timeIncident"),
     @NamedQuery(name = "Incidents.findByTitle", query = "SELECT i FROM Incidents i WHERE i.title = :title"),
-    @NamedQuery(name = "Incidents.findByText", query = "SELECT i FROM Incidents i WHERE i.text = :text"),
-    @NamedQuery(name = "Incidents.findByDecision", query = "SELECT i FROM Incidents i WHERE i.decision = :decision"),
     @NamedQuery(name = "Incidents.findByDateDone", query = "SELECT i FROM Incidents i WHERE i.dateDone = :dateDone"),
     @NamedQuery(name = "Incidents.findByTimeDone", query = "SELECT i FROM Incidents i WHERE i.timeDone = :timeDone"),
     @NamedQuery(name = "Incidents.findByRevisionCount", query = "SELECT i FROM Incidents i WHERE i.revisionCount = :revisionCount"),
     @NamedQuery(name = "Incidents.findByNew1", query = "SELECT i FROM Incidents i WHERE i.new1 = :new1"),
-    @NamedQuery(name = "Incidents.findByAttachment", query = "SELECT i FROM Incidents i WHERE i.attachment = :attachment"),
+    @NamedQuery(name = "Incidents.findByKb", query = "SELECT i FROM Incidents i WHERE i.kb = :kb"),
 
     @NamedQuery(name = "Incidents.findOpenByUser", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status.id >= :status1 AND i.status.id <= :status2"),
     @NamedQuery(name = "Incidents.findOpenByUserOrderName", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status.id >= :status1 AND i.status.id <= :status2 ORDER BY i.title"),
@@ -103,15 +102,17 @@ public class Incidents implements Serializable {
     private Date timeIncident;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 100)
     @Column(name = "title")
     private String title;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Lob
+    @Size(min = 1, max = 65535)
     @Column(name = "text")
     private String text;
-    @Size(max = 255)
+    @Lob
+    @Size(max = 65535)
     @Column(name = "decision")
     private String decision;
     @Column(name = "dateDone")
@@ -124,17 +125,16 @@ public class Incidents implements Serializable {
     private Integer revisionCount;
     @Column(name = "new")
     private Integer new1;
-    @Size(max = 255)
+    @Lob
+    @Size(max = 65535)
     @Column(name = "attachment")
     private String attachment;
+    @Column(name = "KB")
+    private Integer kb;
     @OneToMany(mappedBy = "incident")
     private Collection<Comments> commentsCollection;
-    @JoinColumn(name = "req", referencedColumnName = "id")
-    @ManyToOne
-    private Docs req;
-    @JoinColumn(name = "actDone", referencedColumnName = "id")
-    @ManyToOne
-    private Docs actDone;
+    @OneToMany(mappedBy = "incident")
+    private Collection<Docs> docsCollection;
     @JoinColumn(name = "status", referencedColumnName = "id")
     @ManyToOne
     private Statuses status;
@@ -278,6 +278,14 @@ public class Incidents implements Serializable {
         this.attachment = attachment;
     }
 
+    public Integer getKb() {
+        return kb;
+    }
+
+    public void setKb(Integer kb) {
+        this.kb = kb;
+    }
+
     @XmlTransient
     public Collection<Comments> getCommentsCollection() {
         return commentsCollection;
@@ -287,20 +295,13 @@ public class Incidents implements Serializable {
         this.commentsCollection = commentsCollection;
     }
 
-    public Docs getReq() {
-        return req;
+    @XmlTransient
+    public Collection<Docs> getDocsCollection() {
+        return docsCollection;
     }
 
-    public void setReq(Docs req) {
-        this.req = req;
-    }
-
-    public Docs getActDone() {
-        return actDone;
-    }
-
-    public void setActDone(Docs actDone) {
-        this.actDone = actDone;
+    public void setDocsCollection(Collection<Docs> docsCollection) {
+        this.docsCollection = docsCollection;
     }
 
     public Statuses getStatus() {

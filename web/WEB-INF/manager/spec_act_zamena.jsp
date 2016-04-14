@@ -11,10 +11,10 @@
         <title>Заявка на замену оборудования</title>
     </head>
     <body>
-        <form action='<c:url value="/specialist/spec_act_zamena"/>' method="POST">
+        <form action='<c:url value="/manager/spec_act_zamena"/>' method="POST">
             <input type="hidden" name="incaId" value="${inc_id}"/>
             <div class="noprint">
-                <a href='<c:url value="/specialist/spec_incident_data?id=${inc_id}"/>'><div class="abutt"><img class="img_butt" src='<c:url value="/css/img/nazad.png"/>'>Назад</div></a>
+                <a href='<c:url value="/manager/incident_data?id=${inc_id}"/>'><div class="abutt"><img class="img_butt" src='<c:url value="/css/img/nazad.png"/>'>Назад</div></a>
                 <a onclick="print()"><div class="abutt"><img class="img_butt" src='<c:url value="/css/img/print.png"/>'>Печать</div></a>
                 <div class="zliniya"></div>
             </div>

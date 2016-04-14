@@ -7,7 +7,6 @@ package entity;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,17 +15,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -40,12 +38,19 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Docs.findById", query = "SELECT d FROM Docs d WHERE d.id = :id"),
     @NamedQuery(name = "Docs.findByDateDoc", query = "SELECT d FROM Docs d WHERE d.dateDoc = :dateDoc"),
     @NamedQuery(name = "Docs.findByTimeDoc", query = "SELECT d FROM Docs d WHERE d.timeDoc = :timeDoc"),
-    @NamedQuery(name = "Docs.findByCause", query = "SELECT d FROM Docs d WHERE d.cause = :cause"),
     @NamedQuery(name = "Docs.findByZamenaOut", query = "SELECT d FROM Docs d WHERE d.zamenaOut = :zamenaOut"),
     @NamedQuery(name = "Docs.findByZamenaIn", query = "SELECT d FROM Docs d WHERE d.zamenaIn = :zamenaIn"),
-    @NamedQuery(name = "Docs.findByText", query = "SELECT d FROM Docs d WHERE d.text = :text"),
+    @NamedQuery(name = "Docs.findByTypeDoc", query = "SELECT d FROM Docs d WHERE d.typeDoc = :typeDoc"),
 
-    @NamedQuery(name = "Docs.deleteOpen", query = "DELETE FROM Docs d WHERE d.id = :id")
+    @NamedQuery(name = "Docs.findByIncident", query = "SELECT d FROM Docs d WHERE d.incident = :incident"),
+    @NamedQuery(name = "Docs.findByArcIncident", query = "SELECT d FROM Docs d WHERE d.arcincident = :arcincident"),
+    @NamedQuery(name = "Docs.deleteClosed", query = "DELETE FROM Docs d WHERE d.arcincident = :arcincident"),
+    @NamedQuery(name = "Docs.deleteOpen", query = "DELETE FROM Docs d WHERE d.incident = :incident"),
+    @NamedQuery(name = "Docs.updateClosed", query = "UPDATE Docs d SET d.arcincident = :arcincident WHERE d.incident = :incident"),
+    @NamedQuery(name = "Docs.findByIncidentReq", query = "SELECT d FROM Docs d WHERE d.incident = :incident AND d.typeDoc = 1"),
+    @NamedQuery(name = "Docs.findByArcIncidentReq", query = "SELECT d FROM Docs d WHERE d.arcincident = :arcincident AND d.typeDoc = 1"),
+    @NamedQuery(name = "Docs.findByIncidentAD", query = "SELECT d FROM Docs d WHERE d.incident = :incident AND d.typeDoc = 2"),
+    @NamedQuery(name = "Docs.findByArcIncidentAD", query = "SELECT d FROM Docs d WHERE d.arcincident = :arcincident AND d.typeDoc = 2")
 })
 public class Docs implements Serializable {
 
@@ -63,24 +68,28 @@ public class Docs implements Serializable {
     private Date timeDoc;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Lob
+    @Size(min = 1, max = 65535)
     @Column(name = "cause")
     private String cause;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 10000)
     @Column(name = "zamena_out")
     private String zamenaOut;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 10000)
     @Column(name = "zamena_in")
     private String zamenaIn;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "text")
-    private String text;
+    @Column(name = "typeDoc")
+    private Integer typeDoc;
+    @JoinColumn(name = "arcincident", referencedColumnName = "id")
+    @ManyToOne
+    private Arcincidents arcincident;
+    @JoinColumn(name = "incident", referencedColumnName = "id")
+    @ManyToOne
+    private Incidents incident;
     @JoinColumn(name = "specialist", referencedColumnName = "login")
     @ManyToOne
     private Users specialist;
@@ -90,14 +99,6 @@ public class Docs implements Serializable {
     @JoinColumn(name = "komis2", referencedColumnName = "login")
     @ManyToOne
     private Users komis2;
-    @OneToMany(mappedBy = "req")
-    private Collection<Arcincidents> arcincidentsCollection;
-    @OneToMany(mappedBy = "actDone")
-    private Collection<Arcincidents> arcincidentsCollection1;
-    @OneToMany(mappedBy = "req")
-    private Collection<Incidents> incidentsCollection;
-    @OneToMany(mappedBy = "actDone")
-    private Collection<Incidents> incidentsCollection1;
 
     public Docs() {
     }
@@ -106,12 +107,11 @@ public class Docs implements Serializable {
         this.id = id;
     }
 
-    public Docs(Integer id, String cause, String zamenaOut, String zamenaIn, String text) {
+    public Docs(Integer id, String cause, String zamenaOut, String zamenaIn) {
         this.id = id;
         this.cause = cause;
         this.zamenaOut = zamenaOut;
         this.zamenaIn = zamenaIn;
-        this.text = text;
     }
 
     public Integer getId() {
@@ -170,12 +170,28 @@ public class Docs implements Serializable {
         this.zamenaIn = zamenaIn;
     }
 
-    public String getText() {
-        return text;
+    public Integer getTypeDoc() {
+        return typeDoc;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setTypeDoc(Integer typeDoc) {
+        this.typeDoc = typeDoc;
+    }
+
+    public Arcincidents getArcincident() {
+        return arcincident;
+    }
+
+    public void setArcincident(Arcincidents arcincident) {
+        this.arcincident = arcincident;
+    }
+
+    public Incidents getIncident() {
+        return incident;
+    }
+
+    public void setIncident(Incidents incident) {
+        this.incident = incident;
     }
 
     public Users getSpecialist() {
@@ -200,42 +216,6 @@ public class Docs implements Serializable {
 
     public void setKomis2(Users komis2) {
         this.komis2 = komis2;
-    }
-
-    @XmlTransient
-    public Collection<Arcincidents> getArcincidentsCollection() {
-        return arcincidentsCollection;
-    }
-
-    public void setArcincidentsCollection(Collection<Arcincidents> arcincidentsCollection) {
-        this.arcincidentsCollection = arcincidentsCollection;
-    }
-
-    @XmlTransient
-    public Collection<Arcincidents> getArcincidentsCollection1() {
-        return arcincidentsCollection1;
-    }
-
-    public void setArcincidentsCollection1(Collection<Arcincidents> arcincidentsCollection1) {
-        this.arcincidentsCollection1 = arcincidentsCollection1;
-    }
-
-    @XmlTransient
-    public Collection<Incidents> getIncidentsCollection() {
-        return incidentsCollection;
-    }
-
-    public void setIncidentsCollection(Collection<Incidents> incidentsCollection) {
-        this.incidentsCollection = incidentsCollection;
-    }
-
-    @XmlTransient
-    public Collection<Incidents> getIncidentsCollection1() {
-        return incidentsCollection1;
-    }
-
-    public void setIncidentsCollection1(Collection<Incidents> incidentsCollection1) {
-        this.incidentsCollection1 = incidentsCollection1;
     }
 
     @Override

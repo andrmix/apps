@@ -122,8 +122,27 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <c:if test="${incident.status.id > 1}">
+                        <c:if test="${incident.status.id > 1 && incident.specialist.login != incident.manager.login}">
                             <div class="nazn">${incident.specialist.name} (${incident.specialist.dpost.name})</div>
+                        </c:if>
+
+                        <c:if test="${incident.specialist.login == incident.manager.login}">
+                            <c:if test="${zamenaP == 0}">
+                                <c:if test="${reqs.size() gt 0}">
+                                    <c:forEach var="req" items="${reqs}">
+                                        <div class="nazn"><div class="ztext">Заявка на замену оборудования [ id ${req.id} ]</div>
+                                            <div class="zButtons_tab">
+                                                <button type="submit" name="zOpen" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/cancel.png"/>'>Открыть</button>
+                                                <c:if test="${incident.status.id == 3}">
+                                                    <button type="submit" name="zEdit" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/edit.png"/>'>Редактировать</button>
+                                                    <button type="submit" name="zDel" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/del.png"/>'>Удалить</button>
+                                                </c:if>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="zId" value="${req.id}"/>
+                                    </c:forEach>
+                                </c:if>
+                            </c:if>
                         </c:if>
 
                         <c:choose>
@@ -164,6 +183,17 @@
                             </c:when>
                         </c:choose>
 
+                        <c:if test="${acts.size() gt 0}">
+                            <c:forEach var="act" items="${acts}">
+                                <div class="nazn"><div class="ztext">Акт выполненных работ [ id ${act.id} ]</div>
+                                    <div class="zButtons_tab">
+                                        <button type="submit" name="aOpen" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/cancel.png"/>'>Открыть</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="aId" value="${act.id}"/>
+                            </c:forEach>
+                        </c:if>
+
                         <c:choose>
                             <c:when test="${commenta == 1}">
                                 <div class="commentar">
@@ -186,6 +216,48 @@
                                     <button type="submit" name="gDone" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Готово</button>
                                 </div>
                             </c:when>
+                            <c:when test="${zamenaP == 1}"> 
+                                <div class="zamena_act">
+                                    <div class="man">Заявка на замену оборудования</div>
+                                    <div class="man_otd"></div>
+                                    Член комиссии 1:
+                                    <select name="komisId1" class="sel_komis">
+                                        <c:forEach var="komis" items="${komises1}">
+                                            <option value="${komis.login}" selected><c:out value="${komis.name}"/></option>
+                                        </c:forEach>
+                                    </select>
+                                    <br>
+                                    Член комиссии 2:
+                                    <select name="komisId2" class="sel_komis">
+                                        <c:forEach var="komis" items="${komises2}">
+                                            <option value="${komis.login}" selected><c:out value="${komis.name}"/></option>
+                                        </c:forEach>
+                                    </select>
+                                    <br>
+                                    Причина замены:
+                                    <br>
+                                    <textarea placeholder="Причина замены" name="prich" class="editAddArea"/>${req.cause}</textarea>
+                                    <br>
+                                    Оборудование:
+                                    <br>
+                                    <textarea placeholder="Оборудование" name="hw_off" class="editAddArea"/>${req.zamenaOut}</textarea>
+                                    <br>
+                                    Оборудование на замену:
+                                    <br>
+                                    <textarea placeholder="Оборудование на замену" name="hw_on" class="editAddArea"/>${req.zamenaIn}</textarea>
+                                    <br>
+                                    <c:choose>
+                                        <c:when test="${zEd == 0}">
+                                            <button type="submit" name="zDone" class="ibutt" onclick="return SpecZamena(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Генерация</button>
+                                        </c:when>
+                                        <c:when test="${zEd == 1}">
+                                            <button type="submit" name="zEditDone" class="ibutt" onclick="return SpecZamena(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Генерация</button>
+                                            <input type="hidden" name="rId" value="${req.id}"/>
+                                        </c:when>
+                                    </c:choose>
+                                    <button type="submit" name="CancelZ" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отмена</button>
+                                </div>
+                            </c:when>
                             <c:otherwise>
                                 <c:if test="${incident.status.id == 1}">
                                     <button type="submit" name="Appoint" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/appoint.png"/>'>Назначить</button>
@@ -200,6 +272,9 @@
                                 </c:if>
                                 <c:if test="${incident.status.id == 3 && incident.specialist.login == incident.manager.login}">
                                     <button type="submit" name="Doit" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Выполнить</button>
+                                    <c:if test="${reqs.size() == 0}">
+                                        <button type="submit" name="Zamena" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/zamena.png"/>'>Замена оборудования</button>
+                                    </c:if>
                                     <button type="submit" name="Close" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отклонить</button>
                                 </c:if>
                                 <c:if test="${task == 1 && (incident.status.id == 2 || incident.status.id == 3)}">

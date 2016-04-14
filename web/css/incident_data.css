@@ -66,7 +66,7 @@
     width: 760px;
     font-size: 20px;
     padding: 20px;
-    background: #A9F5A9;
+    background: #D9F8D9;
     margin-top: 10px;
     position: relative;
 }
@@ -322,11 +322,27 @@
     font-size: 15px;
     padding: 10px;
     background: #CEE3F6;
+    position: relative;
+}
+
+.nazna{
+    width: 780px;
+    font-size: 15px;
+    padding: 10px;
+    background: #A9F5A9;
+    position: relative;
 }
 
 .img_butt{
     position: absolute;
     height: 20px;
+    left: 15px;
+    top: 10px;
+}
+
+.img_nazn{
+    position: absolute;
+    height: 30px;
     left: 15px;
     top: 10px;
 }

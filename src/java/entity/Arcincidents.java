@@ -14,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -39,14 +40,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Arcincidents.findByDateIncident", query = "SELECT a FROM Arcincidents a WHERE a.dateIncident = :dateIncident"),
     @NamedQuery(name = "Arcincidents.findByTimeIncident", query = "SELECT a FROM Arcincidents a WHERE a.timeIncident = :timeIncident"),
     @NamedQuery(name = "Arcincidents.findByTitle", query = "SELECT a FROM Arcincidents a WHERE a.title = :title"),
-    @NamedQuery(name = "Arcincidents.findByText", query = "SELECT a FROM Arcincidents a WHERE a.text = :text"),
-    @NamedQuery(name = "Arcincidents.findByDecision", query = "SELECT a FROM Arcincidents a WHERE a.decision = :decision"),
     @NamedQuery(name = "Arcincidents.findByDateClose", query = "SELECT a FROM Arcincidents a WHERE a.dateClose = :dateClose"),
     @NamedQuery(name = "Arcincidents.findByTimeClose", query = "SELECT a FROM Arcincidents a WHERE a.timeClose = :timeClose"),
     @NamedQuery(name = "Arcincidents.findByRevisionCount", query = "SELECT a FROM Arcincidents a WHERE a.revisionCount = :revisionCount"),
     @NamedQuery(name = "Arcincidents.findByNew1", query = "SELECT a FROM Arcincidents a WHERE a.new1 = :new1"),
-    @NamedQuery(name = "Arcincidents.findByAttachment", query = "SELECT a FROM Arcincidents a WHERE a.attachment = :attachment"),
-    
+    @NamedQuery(name = "Arcincidents.findByKb", query = "SELECT a FROM Arcincidents a WHERE a.kb = :kb"),
+
     @NamedQuery(name = "Arcincidents.findClosedByUser", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2"),
     @NamedQuery(name = "Arcincidents.findClosedByUserOrderName", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 ORDER BY a.title"),
     @NamedQuery(name = "Arcincidents.findClosedByUserOrderDate", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 ORDER BY a.dateIncident"),
@@ -104,7 +103,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderDate", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.dateIncident"),
     @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderStatus", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.status"),
     @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderDatec", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.dateClose"),
-    @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderZay", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.zayavitel")})
+    @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderZay", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.zayavitel")
+})
 public class Arcincidents implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -120,15 +120,19 @@ public class Arcincidents implements Serializable {
     private Date timeIncident;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 100)
     @Column(name = "title")
     private String title;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Lob
+    @Size(min = 1, max = 65535)
     @Column(name = "text")
     private String text;
-    @Size(max = 255)
+    @Basic(optional = false)
+    @NotNull
+    @Lob
+    @Size(min = 1, max = 65535)
     @Column(name = "decision")
     private String decision;
     @Column(name = "dateClose")
@@ -141,17 +145,16 @@ public class Arcincidents implements Serializable {
     private Integer revisionCount;
     @Column(name = "new")
     private Integer new1;
-    @Size(max = 255)
+    @Lob
+    @Size(max = 65535)
     @Column(name = "attachment")
     private String attachment;
+    @Column(name = "KB")
+    private Integer kb;
     @OneToMany(mappedBy = "arcincident")
     private Collection<Comments> commentsCollection;
-    @JoinColumn(name = "req", referencedColumnName = "id")
-    @ManyToOne
-    private Docs req;
-    @JoinColumn(name = "actDone", referencedColumnName = "id")
-    @ManyToOne
-    private Docs actDone;
+    @OneToMany(mappedBy = "arcincident")
+    private Collection<Docs> docsCollection;
     @JoinColumn(name = "status", referencedColumnName = "id")
     @ManyToOne
     private Statuses status;
@@ -177,10 +180,11 @@ public class Arcincidents implements Serializable {
         this.id = id;
     }
 
-    public Arcincidents(Integer id, String title, String text) {
+    public Arcincidents(Integer id, String title, String text, String decision) {
         this.id = id;
         this.title = title;
         this.text = text;
+        this.decision = decision;
     }
 
     public Integer getId() {
@@ -287,6 +291,14 @@ public class Arcincidents implements Serializable {
         this.attachment = attachment;
     }
 
+    public Integer getKb() {
+        return kb;
+    }
+
+    public void setKb(Integer kb) {
+        this.kb = kb;
+    }
+
     @XmlTransient
     public Collection<Comments> getCommentsCollection() {
         return commentsCollection;
@@ -296,20 +308,13 @@ public class Arcincidents implements Serializable {
         this.commentsCollection = commentsCollection;
     }
 
-    public Docs getReq() {
-        return req;
+    @XmlTransient
+    public Collection<Docs> getDocsCollection() {
+        return docsCollection;
     }
 
-    public void setReq(Docs req) {
-        this.req = req;
-    }
-
-    public Docs getActDone() {
-        return actDone;
-    }
-
-    public void setActDone(Docs actDone) {
-        this.actDone = actDone;
+    public void setDocsCollection(Collection<Docs> docsCollection) {
+        this.docsCollection = docsCollection;
     }
 
     public Statuses getStatus() {

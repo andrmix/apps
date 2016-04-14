@@ -3,6 +3,7 @@ package session;
 import entity.Arcincidents;
 import entity.Comments;
 import entity.Departs;
+import entity.Docs;
 import entity.Groupuser;
 import entity.History;
 import entity.Incidents;
@@ -848,6 +849,49 @@ public class GetterBean implements GetterBeanLocal {
             q.setParameter("arcincident", arcincident);
         } else {
             q = em.createNamedQuery("Comments.findByIncident");
+            q.setParameter("incident", incident);
+        }
+        List resultList = q.getResultList();
+        return resultList;
+    }
+    
+    /* docs ===========================================================================================================*/
+    @Override
+    public List<Docs> getDocs(Incidents incident, Arcincidents arcincident) {
+        Query q = null;
+        if (incident == null) {
+            q = em.createNamedQuery("Docs.findByArcIncident");
+            q.setParameter("arcincident", arcincident);
+        } else {
+            q = em.createNamedQuery("Docs.findByIncident");
+            q.setParameter("incident", incident);
+        }
+        List resultList = q.getResultList();
+        return resultList;
+    }
+    
+    @Override
+    public List<Docs> getReqs(Incidents incident, Arcincidents arcincident) {
+        Query q = null;
+        if (incident == null) {
+            q = em.createNamedQuery("Docs.findByArcIncidentReq");
+            q.setParameter("arcincident", arcincident);
+        } else {
+            q = em.createNamedQuery("Docs.findByIncidentReq");
+            q.setParameter("incident", incident);
+        }
+        List resultList = q.getResultList();
+        return resultList;
+    }
+    
+    @Override
+    public List<Docs> getActDone(Incidents incident, Arcincidents arcincident) {
+        Query q = null;
+        if (incident == null) {
+            q = em.createNamedQuery("Docs.findByArcIncidentAD");
+            q.setParameter("arcincident", arcincident);
+        } else {
+            q = em.createNamedQuery("Docs.findByIncidentAD");
             q.setParameter("incident", incident);
         }
         List resultList = q.getResultList();

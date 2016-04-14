@@ -74,7 +74,7 @@ public interface ManagementSystemLocal {
 
     public Arcincidents findArcIncident(Object id);
 
-    public void editHAndCInArc(Incidents incident, Arcincidents arcincident);
+    public void editHDAndCInArc(Incidents incident, Arcincidents arcincident);
 
     public void deleteIncidentFull(Incidents incident, Arcincidents arcincident);
 
@@ -90,7 +90,7 @@ public interface ManagementSystemLocal {
     
     public boolean isBlockedUser(Users user);
     
-    public void addReq(Users specialist, String cause, Incidents incident, Users komis1, Users komis2, String zamenaIn, String zamenaOut, String text, boolean zEdit, Docs reqa);
+    public int addReq(Users specialist, String cause, Incidents incident, Users komis1, Users komis2, String zamenaIn, String zamenaOut, boolean zEdit, Docs reqa);
     
     public Posts findPost(Object id);
     
@@ -100,5 +100,7 @@ public interface ManagementSystemLocal {
     
     public Docs findDoc(Object id);
     
-    public void deleteDoc(Incidents incident);
+    public void deleteDoc(Docs doc);
+    
+    public void addActDone(Incidents incident);
 }

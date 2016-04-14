@@ -8,10 +8,10 @@
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/incident_data.css"/>'>
         <link rel="stylesheet" media="print" type="text/css" href='<c:url value="/css/print.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Заявка на замену оборудования</title>
+        <title>Акт выполненных работ</title>
     </head>
     <body>
-        <form action='<c:url value="/specialist/spec_act_zamena"/>' method="POST">
+        <form action='<c:url value="/specialist/spec_act_done"/>' method="POST">
             <input type="hidden" name="incaId" value="${inc_id}"/>
             <div class="noprint">
                 <a href='<c:url value="/specialist/spec_incident_data?id=${inc_id}"/>'><div class="abutt"><img class="img_butt" src='<c:url value="/css/img/nazad.png"/>'>Назад</div></a>
@@ -19,54 +19,27 @@
                 <div class="zliniya"></div>
             </div>
             <div class="zagol">
-                ЗАЯВКА НА ЗАМЕНУ ОБОРУДОВАНИЯ
+                АКТ ВЫПОЛНЕННЫХ РАБОТ
             </div>
-            <div class="gor_data"><div class="gorod">г. Омск</div><div class="data">${req.dateDoc}</div></div>
+            <div class="gor_data"><div class="gorod">г. Омск</div><div class="data">${act.dateDoc}</div></div>
             <div class="komis">
-                Комиссия в составе:
-                <table class="table_komis">
-                    <tbody>
-                        <tr>
-                            <td style="width: 33%" class="kfio">${req.komis1.name}</td>
-                            <td style="width: 33%" class="kpost">${req.komis1.dpost.name}</td>
-                            <td style="width: 34%" class="kdep">${req.komis1.depart.name}</td>
-                        </tr>
-                        <tr>
-                            <td style="width: 33%" class="kfio">${req.komis2.name}</td>
-                            <td style="width: 33%" class="kpost">${req.komis2.dpost.name}</td>
-                            <td style="width: 34%" class="kdep">${req.komis2.depart.name}</td>
-                        </tr>
-                        <tr>
-                            <td style="width: 33%" class="kfio">${req.specialist.name}</td>
-                            <td style="width: 33%" class="kpost">${req.specialist.dpost.name}</td>
-                            <td style="width: 34%" class="kdep">${req.specialist.depart.name}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                определила, что устранение технического инцидента ИД ${inc_id} от ${inc_date}
-                не представляется возможным по причине:
-                <table class="table_komisa">
+                Я, ведущий специалист отдела информационного и технического обеспечения ${act.specialist.name}<br>
+                составил настоящим акт о том, что в соответствии с поступившей в отдел заявки от сотрудника ${act.komis1.name}<br>
+                в виде электронного обращения ИД ${inc_id} от ${inc_date} выполнены и приняты работы по устранению технического инцидента.<br>
+
+                <br>
+                Решение инцидента:
+                <table class="table_komiso">
                     <tr>
-                        <td class="kfio">${req.cause}</td>
-                    </tr>
-                </table>
-                и установила необходимость в замене оборудования:
-                <table class="table_komisa">
-                    <tr>
-                        <td class="kfio">${req.zamenaOut}</td>
-                    </tr>
-                </table>
-                на оборудование со склада:
-                <table class="table_komisa">
-                    <tr>
-                        <td class="kfio">${req.zamenaIn}</td>
+                        <td class="kfio">${act.cause}</td>
                     </tr>
                 </table>
 
-                <table class="table_komis">
+                Работы произвел:
+                <table class="table_komiso">
                     <tbody>
                         <tr>
-                            <td style="width: 30%" class="kfio">${req.komis1.name}</td>
+                            <td style="width: 30%" class="kfio">${act.specialist.name}</td>
                             <td style="width: 50%" class="kpost">___________________</td>
                             <td style="width: 20%" class="kpost">___________________</td>
                         </tr>
@@ -75,8 +48,14 @@
                             <td style="width: 50%" class="podp">подпись</td>
                             <td style="width: 20%" class="podp">дата</td>
                         </tr>
+                    </tbody>
+                </table>
+
+                Заявитель:
+                <table class="table_komiso">
+                    <tbody>
                         <tr>
-                            <td style="width: 30%" class="kfio">${req.komis2.name}</td>
+                            <td style="width: 30%" class="kfio">${act.komis1.name}</td>
                             <td style="width: 50%" class="kpost">___________________</td>
                             <td style="width: 20%" class="kpost">___________________</td>
                         </tr>
@@ -85,8 +64,14 @@
                             <td style="width: 50%" class="podp">подпись</td>
                             <td style="width: 20%" class="podp">дата</td>
                         </tr>
+                    </tbody>
+                </table>
+
+                Работы принял:
+                <table class="table_komiso">
+                    <tbody>
                         <tr>
-                            <td style="width: 30%" class="kfio">${req.specialist.name}</td>
+                            <td style="width: 30%" class="kfio">${act.komis2.name}</td>
                             <td style="width: 50%" class="kpost">___________________</td>
                             <td style="width: 20%" class="kpost">___________________</td>
                         </tr>
