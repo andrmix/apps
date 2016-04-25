@@ -30,19 +30,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author admin
  */
 @Entity
-@Table(name = "history")
+@Table(name = "archistory")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "History.findAll", query = "SELECT h FROM History h"),
-    @NamedQuery(name = "History.findById", query = "SELECT h FROM History h WHERE h.id = :id"),
-    @NamedQuery(name = "History.findByDateAction", query = "SELECT h FROM History h WHERE h.dateAction = :dateAction"),
-    @NamedQuery(name = "History.findByTimeAction", query = "SELECT h FROM History h WHERE h.timeAction = :timeAction"),
-    @NamedQuery(name = "History.findByText", query = "SELECT h FROM History h WHERE h.text = :text"),
+    @NamedQuery(name = "Archistory.findAll", query = "SELECT a FROM Archistory a"),
+    @NamedQuery(name = "Archistory.findById", query = "SELECT a FROM Archistory a WHERE a.id = :id"),
+    @NamedQuery(name = "Archistory.findByDateAction", query = "SELECT a FROM Archistory a WHERE a.dateAction = :dateAction"),
+    @NamedQuery(name = "Archistory.findByTimeAction", query = "SELECT a FROM Archistory a WHERE a.timeAction = :timeAction"),
+    @NamedQuery(name = "Archistory.findByText", query = "SELECT a FROM Archistory a WHERE a.text = :text"),
 
-    @NamedQuery(name = "History.findByIncident", query = "SELECT h FROM History h WHERE h.incident = :incident ORDER BY h.id"),
-    @NamedQuery(name = "History.deleteOpen", query = "DELETE FROM History h WHERE h.incident = :incident")
+    @NamedQuery(name = "Archistory.findByIncident", query = "SELECT a FROM Archistory a WHERE a.arcincident = :incident")
 })
-public class History implements Serializable {
+public class Archistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -63,9 +62,9 @@ public class History implements Serializable {
     @Size(max = 255)
     @Column(name = "text")
     private String text;
-    @JoinColumn(name = "incident", referencedColumnName = "id")
+    @JoinColumn(name = "arcincident", referencedColumnName = "id")
     @ManyToOne
-    private Incidents incident;
+    private Arcincidents arcincident;
     @JoinColumn(name = "status", referencedColumnName = "id")
     @ManyToOne
     private Statuses status;
@@ -73,14 +72,14 @@ public class History implements Serializable {
     @ManyToOne(optional = false)
     private Users actioner;
 
-    public History() {
+    public Archistory() {
     }
 
-    public History(Integer id) {
+    public Archistory(Integer id) {
         this.id = id;
     }
 
-    public History(Integer id, Date dateAction, Date timeAction) {
+    public Archistory(Integer id, Date dateAction, Date timeAction) {
         this.id = id;
         this.dateAction = dateAction;
         this.timeAction = timeAction;
@@ -101,10 +100,6 @@ public class History implements Serializable {
             return "";
         }
     }
-    
-    public Date getDateActionD() {
-        return this.dateAction;
-    }
 
     public void setDateAction(Date dateAction) {
         this.dateAction = dateAction;
@@ -116,10 +111,6 @@ public class History implements Serializable {
         } catch (NullPointerException e) {
             return "";
         }
-    }
-    
-    public Date getTimeActionD() {
-        return this.timeAction;
     }
 
     public void setTimeAction(Date timeAction) {
@@ -134,12 +125,12 @@ public class History implements Serializable {
         this.text = text;
     }
 
-    public Incidents getIncident() {
-        return incident;
+    public Arcincidents getArcincident() {
+        return arcincident;
     }
 
-    public void setIncident(Incidents incident) {
-        this.incident = incident;
+    public void setArcincident(Arcincidents arcincident) {
+        this.arcincident = arcincident;
     }
 
     public Statuses getStatus() {
@@ -168,10 +159,10 @@ public class History implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof History)) {
+        if (!(object instanceof Archistory)) {
             return false;
         }
-        History other = (History) object;
+        Archistory other = (Archistory) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -180,7 +171,7 @@ public class History implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.History[ id=" + id + " ]";
+        return "entity.Archistory[ id=" + id + " ]";
     }
 
 }

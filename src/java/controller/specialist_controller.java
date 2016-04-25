@@ -5,6 +5,9 @@
  */
 package controller;
 
+import entity.Arccomments;
+import entity.Arcdocs;
+import entity.Archistory;
 import entity.Arcincidents;
 import entity.Comments;
 import entity.Docs;
@@ -35,7 +38,8 @@ import session.ManagementSystemLocal;
             "/specialist/sort_by_name_closed", "/specialist/sort_by_dateo_closed",
             "/specialist/sort_by_status_closed", "/specialist/sort_by_zay_closed",
             "/specialist/sort_by_datec_closed", "/specialist/spec_act_zamena",
-            "/specialist/spec_act_done"})
+            "/specialist/spec_act_done", "/specialist/sort_by_id_closed",
+            "/specialist/sort_by_id_done", "/specialist/sort_by_id_open"})
 public class specialist_controller extends HttpServlet {
 
     @EJB
@@ -67,6 +71,10 @@ public class specialist_controller extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/specialist/spec_incidents.jsp").forward(request, response);
         }
 
+        if ("/specialist/sort_by_id_open".equals(request.getServletPath())) {
+            getServletContext().setAttribute("openIncidents", gb.getSpecialistOpenIncidents(specialist, "id"));
+            request.getRequestDispatcher("/WEB-INF/specialist/spec_incidents.jsp").forward(request, response);
+        }
         if ("/specialist/sort_by_name_open".equals(request.getServletPath())) {
             getServletContext().setAttribute("openIncidents", gb.getSpecialistOpenIncidents(specialist, "name"));
             request.getRequestDispatcher("/WEB-INF/specialist/spec_incidents.jsp").forward(request, response);
@@ -84,6 +92,10 @@ public class specialist_controller extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/specialist/spec_incidents.jsp").forward(request, response);
         }
 
+        if ("/specialist/sort_by_id_done".equals(request.getServletPath())) {
+            getServletContext().setAttribute("doneIncidents", gb.getSpecialistDoneIncidents(specialist, "id"));
+            request.getRequestDispatcher("/WEB-INF/specialist/spec_done_incidents.jsp").forward(request, response);
+        }
         if ("/specialist/sort_by_name_done".equals(request.getServletPath())) {
             getServletContext().setAttribute("doneIncidents", gb.getSpecialistDoneIncidents(specialist, "name"));
             request.getRequestDispatcher("/WEB-INF/specialist/spec_done_incidents.jsp").forward(request, response);
@@ -101,6 +113,11 @@ public class specialist_controller extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/specialist/spec_done_incidents.jsp").forward(request, response);
         }
 
+        if ("/specialist/sort_by_id_closed".equals(request.getServletPath())) {
+            getServletContext().setAttribute("action", request.getServletPath());
+            filterOn(request, specialist, "id");
+            request.getRequestDispatcher("/WEB-INF/specialist/spec_closed_incidents.jsp").forward(request, response);
+        }
         if ("/specialist/sort_by_name_closed".equals(request.getServletPath())) {
             getServletContext().setAttribute("action", request.getServletPath());
             filterOn(request, specialist, "name");
@@ -138,27 +155,27 @@ public class specialist_controller extends HttpServlet {
             String answer = null;
             answer = checkAction(request);
 
-            int idIncident = 0;
-            idIncident = Integer.parseInt(request.getParameter("id"));
+            String idIncident = null;
+            idIncident = request.getParameter("id");
 
             Incidents incident = ms.findIncident(idIncident);
             if (incident == null) {
                 Arcincidents arcincident = ms.findArcIncident(idIncident);
                 request.setAttribute("incident", arcincident);
-                List<Comments> comments = gb.getComments(null, arcincident);
-                request.setAttribute("comments", comments);
-                List<Docs> reqs = gb.getReqs(null, arcincident);
-                request.setAttribute("reqs", reqs);
-                List<Docs> acts = gb.getActDone(null, arcincident);
-                request.setAttribute("acts", acts);
+                List<Arccomments> arccomments = gb.getArccomments(arcincident);
+                request.setAttribute("comments", arccomments);
+                List<Arcdocs> arcReqs = gb.getArcReqs(arcincident);
+                request.setAttribute("reqs", arcReqs);
+                List<Arcdocs> arcActs = gb.getArcActDone(arcincident);
+                request.setAttribute("acts", arcActs);
 
                 //история
                 if (answer.equals("bHist")) {
                     request.setAttribute("ihistory", 1);
                     request.setAttribute("iresh", 0);
                     request.setAttribute("icomm", 0);
-                    List<History> history = gb.getHistory(null, arcincident);
-                    request.setAttribute("allhistory", history);
+                    List<Archistory> archistory = gb.getArchistory(arcincident);
+                    request.setAttribute("allhistory", archistory);
                 }
 
                 //comments
@@ -169,23 +186,23 @@ public class specialist_controller extends HttpServlet {
                 }
 
                 if (answer.equals("zOpen")) {
-                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("zId")));
+                    Arcdocs zArcReq = ms.findArcDoc(Integer.parseInt(request.getParameter("zId")));
                     response.sendRedirect(request.getContextPath() + "/specialist/spec_act_zamena?id="
-                            + zReq.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
+                            + zArcReq.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
                     return;
                 }
 
                 if (answer.equals("aOpen")) {
-                    Docs aAct = ms.findDoc(Integer.parseInt(request.getParameter("aId")));
+                    Arcdocs aArcAct = ms.findArcDoc(Integer.parseInt(request.getParameter("aId")));
                     response.sendRedirect(request.getContextPath() + "/specialist/spec_act_done?id="
-                            + aAct.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
+                            + aArcAct.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
                     return;
                 }
             } else {
                 request.setAttribute("incident", incident);
-                List<Comments> comments = gb.getComments(incident, null);
+                List<Comments> comments = gb.getComments(incident);
                 request.setAttribute("comments", comments);
-                List<Docs> reqs = gb.getReqs(incident, null);
+                List<Docs> reqs = gb.getReqs(incident);
                 request.setAttribute("reqs", reqs);
 
                 if (incident.getNew1().equals(1) && (incident.getStatus().getId().equals(2) || incident.getStatus().getId().equals(3))) {
@@ -211,7 +228,11 @@ public class specialist_controller extends HttpServlet {
 
                 //Выполнить - Готово
                 if (answer.equals("Done")) {
-                    ms.doneIncident(incident, request.getParameter("decision"));
+                    if (request.getParameter("kb") != null) {
+                        ms.doneIncident(incident, request.getParameter("decision"), true);
+                    } else {
+                        ms.doneIncident(incident, request.getParameter("decision"), false);
+                    }
                     response.sendRedirect(request.getContextPath() + "/specialist/spec_incident_data?id=" + incident.getId());
                     return;
                 }
@@ -238,7 +259,7 @@ public class specialist_controller extends HttpServlet {
                     request.setAttribute("ihistory", 1);
                     request.setAttribute("iresh", 0);
                     request.setAttribute("icomm", 0);
-                    List<History> history = gb.getHistory(incident, null);
+                    List<History> history = gb.getHistory(incident);
                     request.setAttribute("allhistory", history);
                 }
 
@@ -273,7 +294,7 @@ public class specialist_controller extends HttpServlet {
                     Users komis1 = ms.findUser(request.getParameter("komisId1"));
                     Users komis2 = ms.findUser(request.getParameter("komisId2"));
                     int idReq = ms.addReq(specialist, request.getParameter("prich"), incident, komis1, komis2, request.getParameter("hw_on"), request.getParameter("hw_off"), false, null);
-                    List<Docs> reqas = gb.getReqs(incident, null);
+                    List<Docs> reqas = gb.getReqs(incident);
                     Docs eReq = null;
                     for (Docs requ : reqas) {
                         eReq = requ;
@@ -330,10 +351,15 @@ public class specialist_controller extends HttpServlet {
             int idReq = 0;
             idReq = Integer.parseInt(request.getParameter("id"));
             Docs req = ms.findDoc(idReq);
+            if (req == null) {
+                Arcdocs arcreq = ms.findArcDoc(idReq);
+                getServletContext().setAttribute("req", arcreq);
+            } else {
+                getServletContext().setAttribute("req", req);
+            }
 
             getServletContext().setAttribute("inc_id", request.getParameter("incId"));
             getServletContext().setAttribute("inc_date", request.getParameter("incDate"));
-            getServletContext().setAttribute("req", req);
             request.getRequestDispatcher("/WEB-INF/specialist/spec_act_zamena.jsp").forward(request, response);
         }
 
@@ -346,10 +372,15 @@ public class specialist_controller extends HttpServlet {
             idAct = Integer.parseInt(request.getParameter("id"));
 
             Docs act = ms.findDoc(idAct);
+            if (act == null) {
+                Arcdocs arcact = ms.findArcDoc(idAct);
+                getServletContext().setAttribute("act", arcact);
+            } else {
+                getServletContext().setAttribute("act", act);
+            }
 
             getServletContext().setAttribute("inc_id", request.getParameter("incId"));
             getServletContext().setAttribute("inc_date", request.getParameter("incDate"));
-            getServletContext().setAttribute("act", act);
             request.getRequestDispatcher("/WEB-INF/specialist/spec_act_done.jsp").forward(request, response);
         }
 

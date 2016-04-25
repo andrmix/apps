@@ -75,7 +75,7 @@
     width: 760px;
     font-size: 20px;
     padding: 20px;
-    background: red;
+    background: #FAC0C0;
     margin-top: 10px;
     position: relative;
 }
@@ -380,7 +380,7 @@
     display: inline-block;
     height: 30px;
     line-height: 30px;
-    padding-left: 65px;
+    padding-left: 55px;
 }
 
 .zButtons_tab{
@@ -464,4 +464,9 @@
 .commgo td{
     border-width: 0;
     padding: 5px;
+}
+
+.in_kb{
+    display: inline-block;
+    margin-left: 20px;
 }

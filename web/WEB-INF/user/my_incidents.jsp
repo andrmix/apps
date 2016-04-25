@@ -58,6 +58,7 @@
                 <table class="incidents_tab">
                     <thead>
                         <tr>
+                            <th><a href='<c:url value="/sort_by_id"/>'>ИД</a></th>
                             <th><a href='<c:url value="/sort_by_name"/>'>Заголовок обращения</a></th>
                             <th><a href='<c:url value="/sort_by_date"/>'>Дата/Время создания</a></th>
                             <th><a href='<c:url value="/sort_by_status"/>'>Статус</a></th>
@@ -66,7 +67,7 @@
                     </thead>
                     <tbody>
                         <c:if test="${openIncidents.isEmpty()}">
-                        <td colspan="4" style="text-align: center;">Активных обращений нет</td>
+                        <td colspan="5" style="text-align: center;">Активных обращений нет</td>
                     </c:if>
                     <c:forEach var="incident" items="${openIncidents}">
                         <c:choose>
@@ -77,6 +78,7 @@
                                 <tr> 
                                 </c:otherwise>
                             </c:choose>
+                            <td>${incident.id}</td>
                             <td><a href='<c:url value="/user/user_incident?id=${incident.id}"/>'>${incident.title}</a></td>
                             <td>${incident.dateIncident} ${incident.timeIncident}</td>
                             <td>${incident.status.name}</td>

@@ -110,6 +110,7 @@
                 <table class="incidents_tab">
                     <thead>
                         <tr>
+                            <th><a href='<c:url value="/specialist/sort_by_id_closed"/>'>ИД</a></th>
                             <th><a href='<c:url value="/specialist/sort_by_name_closed"/>'>Заголовок обращения</a></th>
                             <th><a href='<c:url value="/specialist/sort_by_dateo_closed"/>'>Дата/Время создания</a></th>
                             <th><a href='<c:url value="/specialist/sort_by_status_closed"/>'>Статус</a></th>
@@ -119,10 +120,11 @@
                     </thead>
                     <tbody>
                         <c:if test="${closedIncidents.isEmpty()}">
-                        <td colspan="5" style="text-align: center;">Закрытых обращений нет</td>
+                        <td colspan="6" style="text-align: center;">Закрытых обращений нет</td>
                     </c:if>
                     <c:forEach var="incident" items="${closedIncidents}">
                         <tr>
+                            <td>${incident.id}</td>
                             <td><a href='<c:url value="/specialist/spec_incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
                             <td>${incident.dateIncident} ${incident.timeIncident}</td>
                             <td>${incident.status.name}</td>

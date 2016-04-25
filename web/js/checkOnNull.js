@@ -26,6 +26,22 @@ function AdminDepart(data) {
     }
 }
 
+function DoneInc(data) {
+    if (data.decision.value == 0)
+    {
+        alert('Заполните поле "Решение"');
+        return false;
+    }
+}
+
+function CancelInc(data) {
+    if (data.textc.value == 0)
+    {
+        alert('Заполните поле "Причина"');
+        return false;
+    }
+}
+
 function Comment(data) {
     if (data.textcomm.value == 0)
     {

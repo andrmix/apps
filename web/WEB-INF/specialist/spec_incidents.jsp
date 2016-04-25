@@ -62,6 +62,7 @@
                 <table class="incidents_tab">
                     <thead>
                         <tr>
+                            <th><a href='<c:url value="/specialist/sort_by_id_open"/>'>ИД</a></th>
                             <th><a href='<c:url value="/specialist/sort_by_name_open"/>'>Заголовок обращения</a></th>
                             <th><a href='<c:url value="/specialist/sort_by_date_open"/>'>Дата/Время создания</a></th>
                             <th><a href='<c:url value="/specialist/sort_by_status_open"/>'>Статус</a></th>
@@ -70,7 +71,7 @@
                     </thead>
                     <tbody>
                         <c:if test="${openIncidents.isEmpty()}">
-                        <td colspan="4" style="text-align: center;">Активных обращений нет</td>
+                        <td colspan="5" style="text-align: center;">Активных обращений нет</td>
                     </c:if>
                     <c:forEach var="incident" items="${openIncidents}">
                         <c:choose>
@@ -81,6 +82,7 @@
                                 <tr> 
                                 </c:otherwise>
                             </c:choose>
+                            <td>${incident.id}</td>
                             <td><a href='<c:url value="/specialist/spec_incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
                             <td>${incident.dateIncident} ${incident.timeIncident}</td>
                             <td>${incident.status.name}</td>

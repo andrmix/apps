@@ -5,6 +5,7 @@
  */
 package session;
 
+import entity.Arcdocs;
 import entity.Arcincidents;
 import entity.Departs;
 import entity.Docs;
@@ -18,9 +19,9 @@ import javax.ejb.Local;
 @Local
 public interface ManagementSystemLocal {
 
-    public int addIncident(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id, String attachment);
+    public String addIncident(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, String id, String attachment);
 
-    public int addTask(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, int id, Users specialist);
+    public String addTask(String title, String text, Users zayavitel, Typeincident ti, boolean addIncident, String id, Users specialist);
 
     public void cancelIncident(Incidents incident, String textp, String tstatus, boolean it, Users manager);
 
@@ -50,7 +51,7 @@ public interface ManagementSystemLocal {
 
     public void inWork(Incidents incident);
 
-    public void doneIncident(Incidents incident, String decision);
+    public void doneIncident(Incidents incident, String decision, boolean kb);
 
     public void addComment(String text, Users commentator, Incidents incident);
 
@@ -103,4 +104,6 @@ public interface ManagementSystemLocal {
     public void deleteDoc(Docs doc);
     
     public void addActDone(Incidents incident);
+    
+    public Arcdocs findArcDoc(Object id);
 }

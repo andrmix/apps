@@ -5,6 +5,9 @@
  */
 package session;
 
+import entity.Arccomments;
+import entity.Arcdocs;
+import entity.Archistory;
 import entity.Arcincidents;
 import entity.Comments;
 import entity.Departs;
@@ -24,7 +27,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface GetterBeanLocal {
-    public List<Incidents> getClosedIncidents(Users user, String sort);
+    public List<Arcincidents> getClosedIncidents(Users user, String sort);
     public List<Incidents> getOpenIncidents(Users user, String sort);
     public List<Users> getAllUsers(String sort);
     public List<Departs> getAllDeparts(String sort);
@@ -38,26 +41,26 @@ public interface GetterBeanLocal {
     public List<Users> getSpecialists(Users manager);
     public List<Incidents> getSpecialistOpenIncidents(Users specialist, String sort);
     public List<Incidents> getSpecialistDoneIncidents(Users specialist, String sort);
-    public List<Incidents> getSpecialistClosedIncidents(Users specialist, String sort);
+    public List<Arcincidents> getSpecialistClosedIncidents(Users specialist, String sort);
     public List<Typeincident> getTypesIncidentsForEdit(Typeincident typeincident);
-    public List<Comments> getComments(Incidents incident, Arcincidents arcincident);
+    public List<Comments> getComments(Incidents incident);
     public List<Incidents> getAllocatedIncidents(String sort, Users manager);
     public List getSpecialistsStatistics();
     public List getSpecialistsStatsForLow();
     public List getOneSpecialistsStatistics(String specialist);
     public List getYearStatistic(String year, String specialist, int period);
     public List<Incidents> getOpenIncidentsNew(Users user);
-    public List<Incidents> getClosedIncidentsNew(Users user);
+    public List<Arcincidents> getClosedIncidentsNew(Users user);
     public List<Incidents> getUnallocatedIncidentsNew();
     public List<Incidents> getSpecialistOpenIncidentsNew(Users specialist);
     public List<Incidents> getAgreeIncidents(Users manager, String sort);
     public List<Incidents> getAgreeIncidentsNew(Users manager);
-    public List<History> getHistory(Incidents incident, Arcincidents arcincident);
-    public List<Incidents> getClosedIncidentsManager(String sort);
-    public List<Incidents> getClosedIncidentsMF(String sort, String dateBeg, String dateEnd, String filterParam);
+    public List<History> getHistory(Incidents incident);
+    public List<Arcincidents> getClosedIncidentsManager(String sort);
+    public List<Arcincidents> getClosedIncidentsMF(String sort, String dateBeg, String dateEnd, String filterParam);
     public List<Statuses> getStatuses();
-    public List<Incidents> getClosedIncidentsF(Users user, String sort, String dateBeg, String dateEnd, String filterParam);
-    public List<Incidents> getSpecialistClosedIncidentsF(Users specialist, String sort, String dateBeg, String dateEnd, String filterParam);
+    public List<Arcincidents> getClosedIncidentsF(Users user, String sort, String dateBeg, String dateEnd, String filterParam);
+    public List<Arcincidents> getSpecialistClosedIncidentsF(Users specialist, String sort, String dateBeg, String dateEnd, String filterParam);
     public List<Incidents> getNotManagedIncidents();
     public List getSimilarIncidents(Incidents incident);
     public List<Users> whoIsManager();
@@ -65,7 +68,14 @@ public interface GetterBeanLocal {
     public List<Posts> getPostsSearch(String searchText);
     public List<Posts> getPostsForEdit(Posts dpost);
     public List<Users> getUsersForEdit(Users user);
-    public List<Docs> getDocs(Incidents incident, Arcincidents arcincident);
-    public List<Docs> getReqs(Incidents incident, Arcincidents arcincident);
-    public List<Docs> getActDone(Incidents incident, Arcincidents arcincident);
+    public List<Docs> getDocs(Incidents incident);
+    public List<Docs> getReqs(Incidents incident);
+    public List<Docs> getActDone(Incidents incident);
+    public List<Arcincidents> getArcincidents(boolean task);
+    public List<Arccomments> getArccomments(Arcincidents arcincident);
+    public List<Archistory> getArchistory(Arcincidents arcincident);
+    public List<Arcdocs> getArcdocs(Arcincidents arcincident);
+    public List<Arcdocs> getArcReqs(Arcincidents arcincident);
+    public List<Arcdocs> getArcActDone(Arcincidents arcincident);
+    public List<Incidents> getIncidents(boolean task);
 }

@@ -122,17 +122,19 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <c:if test="${incident.status.id > 1 && incident.specialist.login != incident.manager.login}">
-                            <div class="nazn">${incident.specialist.name} (${incident.specialist.dpost.name})</div>
-                        </c:if>
+                        <c:if test="${incident.specialist ne null}">
+                            <c:if test="${incident.status.id > 1 && incident.specialist.login != incident.manager.login}">
+                                <div class="nazn"><img class="img_nazn" src='<c:url value="/css/img/appoint.png"/>'><div class="ztext">${incident.specialist.name} (${incident.specialist.dpost.name})</div></div>
+                                </c:if>
+                            </c:if>
 
                         <c:if test="${incident.specialist.login == incident.manager.login}">
                             <c:if test="${zamenaP == 0}">
                                 <c:if test="${reqs.size() gt 0}">
                                     <c:forEach var="req" items="${reqs}">
-                                        <div class="nazn"><div class="ztext">Заявка на замену оборудования [ id ${req.id} ]</div>
+                                        <div class="nazn"><img class="img_nazn" src='<c:url value="/css/img/docs.png"/>'><div class="ztext">Заявка на замену оборудования</div>
                                             <div class="zButtons_tab">
-                                                <button type="submit" name="zOpen" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/cancel.png"/>'>Открыть</button>
+                                                <button type="submit" name="zOpen" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/open.png"/>'>Открыть</button>
                                                 <c:if test="${incident.status.id == 3}">
                                                     <button type="submit" name="zEdit" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/edit.png"/>'>Редактировать</button>
                                                     <button type="submit" name="zDel" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/del.png"/>'>Удалить</button>
@@ -185,9 +187,9 @@
 
                         <c:if test="${acts.size() gt 0}">
                             <c:forEach var="act" items="${acts}">
-                                <div class="nazn"><div class="ztext">Акт выполненных работ [ id ${act.id} ]</div>
+                                <div class="nazna"><img class="img_nazn" src='<c:url value="/css/img/docs.png"/>'><div class="ztext">Акт выполненных работ</div>
                                     <div class="zButtons_tab">
-                                        <button type="submit" name="aOpen" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/cancel.png"/>'>Открыть</button>
+                                        <button type="submit" name="aOpen" class="ibuttz"/><img class="img_buttz" src='<c:url value="/css/img/open.png"/>'>Открыть</button>
                                     </div>
                                 </div>
                                 <input type="hidden" name="aId" value="${act.id}"/>
@@ -198,7 +200,7 @@
                             <c:when test="${commenta == 1}">
                                 <div class="commentar">
                                     <textarea placeholder="Укажите причину" name="textc" class="commEdit"/></textarea>
-                                    <button type="submit" name="pDone" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Готово</button>
+                                    <button type="submit" name="pDone" class="ibutt" onclick="return CancelInc(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Готово</button>
                                     <input type="hidden" name="status" value="${incident.status.id}"/>
                                 </div>
                             </c:when>
@@ -213,7 +215,8 @@
                             <c:when test="${done == 1}">
                                 <div class="commentar">
                                     <textarea placeholder="Решение" name="decision" class="commEdit"/></textarea>
-                                    <button type="submit" name="gDone" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Готово</button>
+                                    <button type="submit" name="gDone" class="ibutt" onclick="return DoneInc(this.form)"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Готово</button>
+                                    <div class="in_kb"><input type="checkbox" name="kb">Добавить в Базу Знаний</div>
                                 </div>
                             </c:when>
                             <c:when test="${zamenaP == 1}"> 
@@ -301,20 +304,27 @@
                                         </c:if>
                                     </div>
                                     <div class="comm_inc_mod">
-                                        <c:forEach var="comment" items="${comments}">
-                                            <div class="comm_inc">
-                                                <div class="man_comm">${comment.usersLogin.name}</div>
-                                                <div class="man_otd_comm">${comment.usersLogin.depart.name} / ${comment.usersLogin.dpost.name}</div>
-                                                <div class="dat_comm">${comment.dateComment} ${comment.timeComment}</div>
-                                                ${comment.text}
-                                            </div>
-                                            <div class="liniya_kor"></div>
-                                        </c:forEach>
+                                        <c:choose>
+                                            <c:when test="${comments.size() > 0}">
+                                                <c:forEach var="comment" items="${comments}">
+                                                    <div class="comm_inc">
+                                                        <div class="man_comm">${comment.usersLogin.name}</div>
+                                                        <div class="man_otd_comm">${comment.usersLogin.depart.name} / ${comment.usersLogin.dpost.name}</div>
+                                                        <div class="dat_comm">${comment.dateComment} ${comment.timeComment}</div>
+                                                        ${comment.text}
+                                                    </div>
+                                                    <div class="liniya_kor"></div>
+                                                </c:forEach>
 
-                                        <c:if test="${incident.status.id == 3}">
-                                            <textarea placeholder="Комментировать..." name="textcomm" class="commEdit_comm"/></textarea>
-                                            <button type="submit" name="bCommGo" class="ibutt" onclick="return Comment(this.form)"/><img class="img_butt" src='<c:url value="/css/img/comm_2.png"/>'>Отправить</button>
-                                        </c:if>    
+                                                <c:if test="${incident.status.id == 3}">
+                                                    <textarea placeholder="Комментировать..." name="textcomm" class="commEdit_comm"/></textarea>
+                                                    <button type="submit" name="bCommGo" class="ibutt" onclick="return Comment(this.form)"/><img class="img_butt" src='<c:url value="/css/img/comm_2.png"/>'>Отправить</button>
+                                                </c:if>
+                                            </c:when>
+                                            <c:otherwise>
+                                                Сообщений нет
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                 </c:when>
 
@@ -350,7 +360,7 @@
                                     <div class="comm_inc_mod">
                                         <c:choose>
                                             <c:when test="${rIncidents.size() > 0}">
-                                                <table class="comments">
+                                                <table class="commgo">
                                                     <tbody>
                                                         <c:forEach var="inc" items="${rIncidents}">
                                                             <tr>

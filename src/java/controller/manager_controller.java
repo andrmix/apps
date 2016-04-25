@@ -1,5 +1,8 @@
 package controller;
 
+import entity.Arccomments;
+import entity.Arcdocs;
+import entity.Archistory;
 import entity.Arcincidents;
 import entity.Comments;
 import entity.Docs;
@@ -7,7 +10,6 @@ import entity.History;
 import entity.Incidents;
 import entity.Typeincident;
 import entity.Users;
-import filter.Porter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,7 +36,9 @@ import session.ManagementSystemLocal;
             "/sort_by_datec_m_closed", "/sort_by_name_m_act", "/sort_by_date_m_act",
             "/sort_by_status_m_act", "/sort_by_zay_m_act", "/sort_by_name_m_done",
             "/sort_by_dateo_m_done", "/sort_by_zay_m_done", "/sort_by_dated_m_done",
-            "/manager/manager_tools", "/manager/spec_act_zamena", "/manager/spec_act_done"})
+            "/manager/manager_tools", "/manager/spec_act_zamena", "/manager/spec_act_done",
+            "/sort_by_id_allo", "/sort_by_id_m_closed", "/sort_by_id_m_done",
+            "/sort_by_id_m_act", "/sort_by_id_m_agr", "/sort_by_id_un"})
 public class manager_controller extends HttpServlet {
 
     @EJB
@@ -62,6 +66,10 @@ public class manager_controller extends HttpServlet {
         onSideBar(answera);
 
         //сортировка нераспределенных обращений =============================================================================================================
+        if ("/sort_by_id_un".equals(request.getServletPath())) {
+            getServletContext().setAttribute("unallocatedIncidents", gb.getUnallocatedIncidents("id"));
+            request.getRequestDispatcher("/WEB-INF/manager/unallocated_incidents.jsp").forward(request, response);
+        }
         if ("/sort_by_name_un".equals(request.getServletPath())) {
             getServletContext().setAttribute("unallocatedIncidents", gb.getUnallocatedIncidents("name"));
             request.getRequestDispatcher("/WEB-INF/manager/unallocated_incidents.jsp").forward(request, response);
@@ -96,7 +104,7 @@ public class manager_controller extends HttpServlet {
             if (answer.equals("Add")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                 Users specialist = ms.findUser(request.getParameter("specId"));
-                int idTask = ms.addTask(request.getParameter("title"), request.getParameter("texti"), manager, ti, true, 0, specialist);
+                String idTask = ms.addTask(request.getParameter("title"), request.getParameter("texti"), manager, ti, true, null, specialist);
                 response.sendRedirect(request.getContextPath() + "/manager");
                 return;
             }
@@ -105,7 +113,7 @@ public class manager_controller extends HttpServlet {
             if (answer.equals("Edit")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
                 Users specialist = ms.findUser(request.getParameter("specId"));
-                int idTask = ms.addTask(request.getParameter("title"), request.getParameter("texti"), manager, ti, false, Integer.parseInt(request.getParameter("id")), specialist);
+                String idTask = ms.addTask(request.getParameter("title"), request.getParameter("texti"), manager, ti, false, request.getParameter("id"), specialist);
                 response.sendRedirect(request.getContextPath() + "/manager/incident_data?id=" + idTask);
                 return;
             }
@@ -117,6 +125,10 @@ public class manager_controller extends HttpServlet {
         }
 
         //сортировка распределенных обращений =============================================================================================================
+        if ("/sort_by_id_allo".equals(request.getServletPath())) {
+            getServletContext().setAttribute("allocatedIncidents", gb.getAllocatedIncidents("id", manager));
+            request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
+        }
         if ("/sort_by_name_allo".equals(request.getServletPath())) {
             getServletContext().setAttribute("allocatedIncidents", gb.getAllocatedIncidents("name", manager));
             request.getRequestDispatcher("/WEB-INF/manager/allocated_incidents.jsp").forward(request, response);
@@ -169,6 +181,10 @@ public class manager_controller extends HttpServlet {
         }
 
         //сортировка на согласовании =============================================================================================================
+        if ("/sort_by_id_m_agr".equals(request.getServletPath())) {
+            getServletContext().setAttribute("agreeIncidents", gb.getAgreeIncidents(manager, "id"));
+            request.getRequestDispatcher("/WEB-INF/manager/on_agreement.jsp").forward(request, response);
+        }
         if ("/sort_by_name_m_agr".equals(request.getServletPath())) {
             getServletContext().setAttribute("agreeIncidents", gb.getAgreeIncidents(manager, "name"));
             request.getRequestDispatcher("/WEB-INF/manager/on_agreement.jsp").forward(request, response);
@@ -209,18 +225,18 @@ public class manager_controller extends HttpServlet {
             String answer = null;
             answer = checkAction(request);
 
-            int idIncident = 0;
-            idIncident = Integer.parseInt(request.getParameter("id"));
+            String idIncident = null;
+            idIncident = request.getParameter("id");
             Incidents incident = ms.findIncident(idIncident);
             if (incident == null) {
                 Arcincidents arcincident = ms.findArcIncident(idIncident);
                 request.setAttribute("incident", arcincident);
-                List<Comments> comments = gb.getComments(null, arcincident);
-                request.setAttribute("comments", comments);
-                List<Docs> reqs = gb.getReqs(null, arcincident);
-                request.setAttribute("reqs", reqs);
-                List<Docs> acts = gb.getActDone(null, arcincident);
-                request.setAttribute("acts", acts);
+                List<Arccomments> arccomments = gb.getArccomments(arcincident);
+                request.setAttribute("comments", arccomments);
+                List<Arcdocs> arcReqs = gb.getArcReqs(arcincident);
+                request.setAttribute("reqs", arcReqs);
+                List<Arcdocs> arcActs = gb.getArcActDone(arcincident);
+                request.setAttribute("acts", arcActs);
 
                 //комментарии
                 if (answer.equals("bComm")) {
@@ -234,21 +250,21 @@ public class manager_controller extends HttpServlet {
                     request.setAttribute("ihistory", 1);
                     request.setAttribute("commento", 0);
                     request.setAttribute("iresh", 0);
-                    List<History> history = gb.getHistory(null, arcincident);
-                    request.setAttribute("allhistory", history);
+                    List<Archistory> archistory = gb.getArchistory(arcincident);
+                    request.setAttribute("allhistory", archistory);
                 }
-                
+
                 if (answer.equals("zOpen")) {
-                    Docs zReq = ms.findDoc(Integer.parseInt(request.getParameter("zId")));
+                    Arcdocs zArcReq = ms.findArcDoc(Integer.parseInt(request.getParameter("zId")));
                     response.sendRedirect(request.getContextPath() + "/manager/spec_act_zamena?id="
-                            + zReq.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
+                            + zArcReq.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
                     return;
                 }
 
                 if (answer.equals("aOpen")) {
-                    Docs aAct = ms.findDoc(Integer.parseInt(request.getParameter("aId")));
+                    Arcdocs aArcAct = ms.findArcDoc(Integer.parseInt(request.getParameter("aId")));
                     response.sendRedirect(request.getContextPath() + "/manager/spec_act_done?id="
-                            + aAct.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
+                            + aArcAct.getId() + "&incId=" + arcincident.getId() + "&incDate=" + arcincident.getDateIncident());
                     return;
                 }
 
@@ -277,9 +293,9 @@ public class manager_controller extends HttpServlet {
                     }
                 }
 
-                List<Comments> comments = gb.getComments(incident, null);
+                List<Comments> comments = gb.getComments(incident);
                 request.setAttribute("comments", comments);
-                List<Docs> reqs = gb.getReqs(incident, null);
+                List<Docs> reqs = gb.getReqs(incident);
                 request.setAttribute("reqs", reqs);
 
                 if (ms.isTask(manager, incident)) {
@@ -355,7 +371,11 @@ public class manager_controller extends HttpServlet {
 
                 //Выполнить - Готово
                 if (answer.equals("gDone")) {
-                    ms.doneIncident(incident, request.getParameter("decision"));
+                    if (request.getParameter("kb") != null) {
+                        ms.doneIncident(incident, request.getParameter("decision"), true);
+                    } else {
+                        ms.doneIncident(incident, request.getParameter("decision"), false);
+                    }
                     response.sendRedirect(request.getContextPath() + "/manager/manager_done_incidents");
                     return;
                 }
@@ -372,10 +392,10 @@ public class manager_controller extends HttpServlet {
                     request.setAttribute("ihistory", 1);
                     request.setAttribute("commento", 0);
                     request.setAttribute("iresh", 0);
-                    List<History> history = gb.getHistory(incident, null);
+                    List<History> history = gb.getHistory(incident);
                     request.setAttribute("allhistory", history);
                 }
-                
+
                 //база знаний
                 if (answer.equals("bResh")) {
                     request.setAttribute("ihistory", 0);
@@ -389,7 +409,7 @@ public class manager_controller extends HttpServlet {
                 if (answer.equals("Send")) {
                     //ms.sendMail();
                 }
-                
+
                 //замена оборудования
                 if (answer.equals("Zamena")) {
                     request.setAttribute("zamenaP", 1);
@@ -405,7 +425,7 @@ public class manager_controller extends HttpServlet {
                     Users komis1 = ms.findUser(request.getParameter("komisId1"));
                     Users komis2 = ms.findUser(request.getParameter("komisId2"));
                     int idReq = ms.addReq(manager, request.getParameter("prich"), incident, komis1, komis2, request.getParameter("hw_on"), request.getParameter("hw_off"), false, null);
-                    List<Docs> reqas = gb.getReqs(incident, null);
+                    List<Docs> reqas = gb.getReqs(incident);
                     Docs eReq = null;
                     for (Docs requ : reqas) {
                         eReq = requ;
@@ -454,7 +474,7 @@ public class manager_controller extends HttpServlet {
 
             request.getRequestDispatcher("/WEB-INF/manager/incident_data.jsp").forward(request, response);
         }
-        
+
         //заявка на замену оборудования ==================================================================================================
         if ("/manager/spec_act_zamena".equals(request.getServletPath())) {
             String answer = null;
@@ -463,10 +483,15 @@ public class manager_controller extends HttpServlet {
             int idReq = 0;
             idReq = Integer.parseInt(request.getParameter("id"));
             Docs req = ms.findDoc(idReq);
+            if (req == null) {
+                Arcdocs arcreq = ms.findArcDoc(idReq);
+                getServletContext().setAttribute("req", arcreq);
+            } else {
+                getServletContext().setAttribute("req", req);
+            }
 
             getServletContext().setAttribute("inc_id", request.getParameter("incId"));
             getServletContext().setAttribute("inc_date", request.getParameter("incDate"));
-            getServletContext().setAttribute("req", req);
             request.getRequestDispatcher("/WEB-INF/manager/spec_act_zamena.jsp").forward(request, response);
         }
 
@@ -479,14 +504,24 @@ public class manager_controller extends HttpServlet {
             idAct = Integer.parseInt(request.getParameter("id"));
 
             Docs act = ms.findDoc(idAct);
+            if (act == null) {
+                Arcdocs arcact = ms.findArcDoc(idAct);
+                getServletContext().setAttribute("act", arcact);
+            } else {
+                getServletContext().setAttribute("act", act);
+            }
 
             getServletContext().setAttribute("inc_id", request.getParameter("incId"));
             getServletContext().setAttribute("inc_date", request.getParameter("incDate"));
-            getServletContext().setAttribute("act", act);
             request.getRequestDispatcher("/WEB-INF/manager/spec_act_done.jsp").forward(request, response);
         }
 
         //сортировка закрытых обращений =============================================================================================================
+        if ("/sort_by_id_m_closed".equals(request.getServletPath())) {
+            getServletContext().setAttribute("action", request.getServletPath());
+            filterOn(request, "id");
+            request.getRequestDispatcher("/WEB-INF/manager/closed.jsp").forward(request, response);
+        }
         if ("/sort_by_name_m_closed".equals(request.getServletPath())) {
             getServletContext().setAttribute("action", request.getServletPath());
             filterOn(request, "name");
@@ -527,6 +562,10 @@ public class manager_controller extends HttpServlet {
         }
 
         //сортировка обращений менеджера =============================================================================================================
+        if ("/sort_by_id_m_act".equals(request.getServletPath())) {
+            getServletContext().setAttribute("openIncidentsManager", gb.getSpecialistOpenIncidents(manager, "id"));
+            request.getRequestDispatcher("/WEB-INF/manager/manager_incidents.jsp").forward(request, response);
+        }
         if ("/sort_by_name_m_act".equals(request.getServletPath())) {
             getServletContext().setAttribute("openIncidentsManager", gb.getSpecialistOpenIncidents(manager, "name"));
             request.getRequestDispatcher("/WEB-INF/manager/manager_incidents.jsp").forward(request, response);
@@ -551,6 +590,10 @@ public class manager_controller extends HttpServlet {
         }
 
         //сортировка выполненных обращений менеджера =============================================================================================================
+        if ("/sort_by_id_m_done".equals(request.getServletPath())) {
+            getServletContext().setAttribute("doneIncidentsManager", gb.getSpecialistDoneIncidents(manager, "id"));
+            request.getRequestDispatcher("/WEB-INF/manager/manager_done_incidents.jsp").forward(request, response);
+        }
         if ("/sort_by_name_m_done".equals(request.getServletPath())) {
             getServletContext().setAttribute("doneIncidentsManager", gb.getSpecialistDoneIncidents(manager, "name"));
             request.getRequestDispatcher("/WEB-INF/manager/manager_done_incidents.jsp").forward(request, response);
@@ -806,6 +849,5 @@ public class manager_controller extends HttpServlet {
         if (answer.equals("bToolsOff")) {
             getServletContext().setAttribute("tools", 0);
         }
-
     }
 }

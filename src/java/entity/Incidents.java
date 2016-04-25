@@ -12,8 +12,6 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -53,6 +51,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findOpenByUserOrderDate", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status.id >= :status1 AND i.status.id <= :status2 ORDER BY i.dateIncident"),
     @NamedQuery(name = "Incidents.findOpenByUserOrderStatus", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status.id >= :status1 AND i.status.id <= :status2 ORDER BY i.status"),
     @NamedQuery(name = "Incidents.findOpenByUserOrderSpec", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status.id >= :status1 AND i.status.id <= :status2 ORDER BY i.specialist"),
+    @NamedQuery(name = "Incidents.findOpenByUserOrderId", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status.id >= :status1 AND i.status.id <= :status2 ORDER BY i.id"),
     @NamedQuery(name = "Incidents.findByUser1StatusNew", query = "SELECT i FROM Incidents i WHERE i.zayavitel = :user AND i.status = :status AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findUnallocatedNew", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.new1 = 1"),
     @NamedQuery(name = "Incidents.findAgreeNew", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager AND i.new1 = 1"),
@@ -61,39 +60,46 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Incidents.findUnallocatedOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.title"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.dateDone"),
     @NamedQuery(name = "Incidents.findUnallocatedOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.zayavitel"),
+    @NamedQuery(name = "Incidents.findUnallocatedOrderId", query = "SELECT i FROM Incidents i WHERE i.status = :status ORDER BY i.id"),
     @NamedQuery(name = "Incidents.findAllocated", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager)"),
     @NamedQuery(name = "Incidents.findAllocatedOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.title"),
     @NamedQuery(name = "Incidents.findAllocatedOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.dateIncident"),
     @NamedQuery(name = "Incidents.findAllocatedOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.status"),
     @NamedQuery(name = "Incidents.findAllocatedOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.zayavitel"),
     @NamedQuery(name = "Incidents.findAllocatedOrderSpec", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.specialist"),
+    @NamedQuery(name = "Incidents.findAllocatedOrderId", query = "SELECT i FROM Incidents i WHERE i.status = :status1 OR i.status = :status2 OR (i.status = :status3 AND i.zayavitel != :manager) ORDER BY i.id"),
     @NamedQuery(name = "Incidents.findAgree", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager"),
     @NamedQuery(name = "Incidents.findAgreeOrderName", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.title"),
     @NamedQuery(name = "Incidents.findAgreeOrderDate", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.dateIncident"),
     @NamedQuery(name = "Incidents.findAgreeOrderStatus", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.status"),
     @NamedQuery(name = "Incidents.findAgreeOrderZay", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.zayavitel"),
     @NamedQuery(name = "Incidents.findAgreeOrderSpec", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.specialist"),
+    @NamedQuery(name = "Incidents.findAgreeOrderId", query = "SELECT i FROM Incidents i WHERE i.status = :status AND i.zayavitel = :manager ORDER BY i.id"),
     @NamedQuery(name = "Incidents.findBySpecialist2Status", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2)"),
     @NamedQuery(name = "Incidents.findBySpecialist2StatusOrderName", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) ORDER BY i.title"),
     @NamedQuery(name = "Incidents.findBySpecialist2StatusOrderDate", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) ORDER BY i.dateIncident"),
     @NamedQuery(name = "Incidents.findBySpecialist2StatusOrderStatus", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) ORDER BY i.status"),
     @NamedQuery(name = "Incidents.findBySpecialist2StatusOrderZay", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) ORDER BY i.zayavitel"),
+    @NamedQuery(name = "Incidents.findBySpecialist2StatusOrderId", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND (i.status = :status1 OR i.status = :status2) ORDER BY i.id"),
     @NamedQuery(name = "Incidents.findBySpecialistDone", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status"),
     @NamedQuery(name = "Incidents.findBySpecialistDoneOrderName", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status ORDER BY i.title"),
     @NamedQuery(name = "Incidents.findBySpecialistDoneOrderDate", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status ORDER BY i.dateIncident"),
     @NamedQuery(name = "Incidents.findBySpecialistDoneOrderZay", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status ORDER BY i.zayavitel"),
     @NamedQuery(name = "Incidents.findBySpecialistDoneOrderDated", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status ORDER BY i.dateDone"),
+    @NamedQuery(name = "Incidents.findBySpecialistDoneOrderId", query = "SELECT i FROM Incidents i WHERE i.specialist = :specialist AND i.status = :status ORDER BY i.id"),
     @NamedQuery(name = "Incidents.updateManager", query = "UPDATE Incidents i SET i.manager = :manager WHERE i.manager IS NOT NULL"),
-    @NamedQuery(name = "Incidents.findNotManaged", query = "SELECT i FROM Incidents i WHERE i.status = :status1")
+    @NamedQuery(name = "Incidents.findNotManaged", query = "SELECT i FROM Incidents i WHERE i.status = :status1"),
+    @NamedQuery(name = "Incidents.findByCount", query = "SELECT i FROM Incidents i WHERE i.id like :id")
 })
 public class Incidents implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "id")
-    private Integer id;
+    private String id;
     @Column(name = "dateIncident")
     @Temporal(TemporalType.DATE)
     private Date dateIncident;
@@ -134,6 +140,8 @@ public class Incidents implements Serializable {
     @OneToMany(mappedBy = "incident")
     private Collection<Comments> commentsCollection;
     @OneToMany(mappedBy = "incident")
+    private Collection<History> historyCollection;
+    @OneToMany(mappedBy = "incident")
     private Collection<Docs> docsCollection;
     @JoinColumn(name = "status", referencedColumnName = "id")
     @ManyToOne
@@ -150,27 +158,25 @@ public class Incidents implements Serializable {
     @JoinColumn(name = "manager", referencedColumnName = "login")
     @ManyToOne
     private Users manager;
-    @OneToMany(mappedBy = "incident")
-    private Collection<History> historyCollection;
 
     public Incidents() {
     }
 
-    public Incidents(Integer id) {
+    public Incidents(String id) {
         this.id = id;
     }
 
-    public Incidents(Integer id, String title, String text) {
+    public Incidents(String id, String title, String text) {
         this.id = id;
         this.title = title;
         this.text = text;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -296,6 +302,15 @@ public class Incidents implements Serializable {
     }
 
     @XmlTransient
+    public Collection<History> getHistoryCollection() {
+        return historyCollection;
+    }
+
+    public void setHistoryCollection(Collection<History> historyCollection) {
+        this.historyCollection = historyCollection;
+    }
+
+    @XmlTransient
     public Collection<Docs> getDocsCollection() {
         return docsCollection;
     }
@@ -342,15 +357,6 @@ public class Incidents implements Serializable {
 
     public void setManager(Users manager) {
         this.manager = manager;
-    }
-
-    @XmlTransient
-    public Collection<History> getHistoryCollection() {
-        return historyCollection;
-    }
-
-    public void setHistoryCollection(Collection<History> historyCollection) {
-        this.historyCollection = historyCollection;
     }
 
     @Override

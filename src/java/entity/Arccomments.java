@@ -31,18 +31,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author admin
  */
 @Entity
-@Table(name = "comments")
+@Table(name = "arccomments")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Comments.findAll", query = "SELECT c FROM Comments c"),
-    @NamedQuery(name = "Comments.findById", query = "SELECT c FROM Comments c WHERE c.id = :id"),
-    @NamedQuery(name = "Comments.findByDateComment", query = "SELECT c FROM Comments c WHERE c.dateComment = :dateComment"),
-    @NamedQuery(name = "Comments.findByTimeComment", query = "SELECT c FROM Comments c WHERE c.timeComment = :timeComment"),
+    @NamedQuery(name = "Arccomments.findAll", query = "SELECT a FROM Arccomments a"),
+    @NamedQuery(name = "Arccomments.findById", query = "SELECT a FROM Arccomments a WHERE a.id = :id"),
+    @NamedQuery(name = "Arccomments.findByDateComment", query = "SELECT a FROM Arccomments a WHERE a.dateComment = :dateComment"),
+    @NamedQuery(name = "Arccomments.findByTimeComment", query = "SELECT a FROM Arccomments a WHERE a.timeComment = :timeComment"),
 
-    @NamedQuery(name = "Comments.findByIncident", query = "SELECT c FROM Comments c WHERE c.incident = :incident ORDER BY c.id"),
-    @NamedQuery(name = "Comments.deleteOpen", query = "DELETE FROM Comments c WHERE c.incident = :incident")
+    @NamedQuery(name = "Arccomments.findByIncident", query = "SELECT a FROM Arccomments a WHERE a.arcincident = :incident")
 })
-public class Comments implements Serializable {
+public class Arccomments implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -66,21 +65,21 @@ public class Comments implements Serializable {
     @Column(name = "timeComment")
     @Temporal(TemporalType.TIME)
     private Date timeComment;
-    @JoinColumn(name = "incident", referencedColumnName = "id")
+    @JoinColumn(name = "arcincident", referencedColumnName = "id")
     @ManyToOne
-    private Incidents incident;
+    private Arcincidents arcincident;
     @JoinColumn(name = "usersLogin", referencedColumnName = "login")
     @ManyToOne(optional = false)
     private Users usersLogin;
 
-    public Comments() {
+    public Arccomments() {
     }
 
-    public Comments(Integer id) {
+    public Arccomments(Integer id) {
         this.id = id;
     }
 
-    public Comments(Integer id, String text, Date dateComment, Date timeComment) {
+    public Arccomments(Integer id, String text, Date dateComment, Date timeComment) {
         this.id = id;
         this.text = text;
         this.dateComment = dateComment;
@@ -110,10 +109,6 @@ public class Comments implements Serializable {
             return "";
         }
     }
-    
-    public Date getDateCommentD() {
-        return this.dateComment;
-    }
 
     public void setDateComment(Date dateComment) {
         this.dateComment = dateComment;
@@ -126,21 +121,17 @@ public class Comments implements Serializable {
             return "";
         }
     }
-    
-    public Date getTimeCommentD() {
-        return this.timeComment;
-    }
 
     public void setTimeComment(Date timeComment) {
         this.timeComment = timeComment;
     }
 
-    public Incidents getIncident() {
-        return incident;
+    public Arcincidents getArcincident() {
+        return arcincident;
     }
 
-    public void setIncident(Incidents incident) {
-        this.incident = incident;
+    public void setArcincident(Arcincidents arcincident) {
+        this.arcincident = arcincident;
     }
 
     public Users getUsersLogin() {
@@ -161,10 +152,10 @@ public class Comments implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Comments)) {
+        if (!(object instanceof Arccomments)) {
             return false;
         }
-        Comments other = (Comments) object;
+        Arccomments other = (Arccomments) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -173,7 +164,7 @@ public class Comments implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Comments[ id=" + id + " ]";
+        return "entity.Arccomments[ id=" + id + " ]";
     }
 
 }

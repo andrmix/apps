@@ -31,23 +31,23 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author admin
  */
 @Entity
-@Table(name = "docs")
+@Table(name = "arcdocs")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Docs.findAll", query = "SELECT d FROM Docs d"),
-    @NamedQuery(name = "Docs.findById", query = "SELECT d FROM Docs d WHERE d.id = :id"),
-    @NamedQuery(name = "Docs.findByDateDoc", query = "SELECT d FROM Docs d WHERE d.dateDoc = :dateDoc"),
-    @NamedQuery(name = "Docs.findByTimeDoc", query = "SELECT d FROM Docs d WHERE d.timeDoc = :timeDoc"),
-    @NamedQuery(name = "Docs.findByZamenaOut", query = "SELECT d FROM Docs d WHERE d.zamenaOut = :zamenaOut"),
-    @NamedQuery(name = "Docs.findByZamenaIn", query = "SELECT d FROM Docs d WHERE d.zamenaIn = :zamenaIn"),
-    @NamedQuery(name = "Docs.findByTypeDoc", query = "SELECT d FROM Docs d WHERE d.typeDoc = :typeDoc"),
+    @NamedQuery(name = "Arcdocs.findAll", query = "SELECT a FROM Arcdocs a"),
+    @NamedQuery(name = "Arcdocs.findById", query = "SELECT a FROM Arcdocs a WHERE a.id = :id"),
+    @NamedQuery(name = "Arcdocs.findByDateDoc", query = "SELECT a FROM Arcdocs a WHERE a.dateDoc = :dateDoc"),
+    @NamedQuery(name = "Arcdocs.findByTimeDoc", query = "SELECT a FROM Arcdocs a WHERE a.timeDoc = :timeDoc"),
+    @NamedQuery(name = "Arcdocs.findByZamenaOut", query = "SELECT a FROM Arcdocs a WHERE a.zamenaOut = :zamenaOut"),
+    @NamedQuery(name = "Arcdocs.findByZamenaIn", query = "SELECT a FROM Arcdocs a WHERE a.zamenaIn = :zamenaIn"),
+    @NamedQuery(name = "Arcdocs.findByTypeDoc", query = "SELECT a FROM Arcdocs a WHERE a.typeDoc = :typeDoc"),
 
-    @NamedQuery(name = "Docs.findByIncident", query = "SELECT d FROM Docs d WHERE d.incident = :incident ORDER BY d.id"),
-    @NamedQuery(name = "Docs.deleteOpen", query = "DELETE FROM Docs d WHERE d.incident = :incident"),
-    @NamedQuery(name = "Docs.findByIncidentReq", query = "SELECT d FROM Docs d WHERE d.incident = :incident AND d.typeDoc = 1"),
-    @NamedQuery(name = "Docs.findByIncidentAD", query = "SELECT d FROM Docs d WHERE d.incident = :incident AND d.typeDoc = 2")
+    @NamedQuery(name = "Arcdocs.findByIncident", query = "SELECT a FROM Arcdocs a WHERE a.arcincident = :incident"),
+    @NamedQuery(name = "Arcdocs.findByArcIncidentReq", query = "SELECT a FROM Arcdocs a WHERE a.arcincident = :arcincident AND a.typeDoc = 1"),
+    @NamedQuery(name = "Arcdocs.findByArcIncidentAD", query = "SELECT a FROM Arcdocs a WHERE a.arcincident = :arcincident AND a.typeDoc = 2")
 })
-public class Docs implements Serializable {
+public class Arcdocs implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,9 +74,9 @@ public class Docs implements Serializable {
     private String zamenaIn;
     @Column(name = "typeDoc")
     private Integer typeDoc;
-    @JoinColumn(name = "incident", referencedColumnName = "id")
+    @JoinColumn(name = "arcincident", referencedColumnName = "id")
     @ManyToOne
-    private Incidents incident;
+    private Arcincidents arcincident;
     @JoinColumn(name = "specialist", referencedColumnName = "login")
     @ManyToOne
     private Users specialist;
@@ -87,14 +87,14 @@ public class Docs implements Serializable {
     @ManyToOne
     private Users komis2;
 
-    public Docs() {
+    public Arcdocs() {
     }
 
-    public Docs(Integer id) {
+    public Arcdocs(Integer id) {
         this.id = id;
     }
 
-    public Docs(Integer id, String cause) {
+    public Arcdocs(Integer id, String cause) {
         this.id = id;
         this.cause = cause;
     }
@@ -114,10 +114,6 @@ public class Docs implements Serializable {
             return "";
         }
     }
-    
-    public Date getDateDocD() {
-        return this.dateDoc;
-    }
 
     public void setDateDoc(Date dateDoc) {
         this.dateDoc = dateDoc;
@@ -129,10 +125,6 @@ public class Docs implements Serializable {
         } catch (NullPointerException e) {
             return "";
         }
-    }
-    
-    public Date getTimeDocD() {
-        return this.timeDoc;
     }
 
     public void setTimeDoc(Date timeDoc) {
@@ -171,12 +163,12 @@ public class Docs implements Serializable {
         this.typeDoc = typeDoc;
     }
 
-    public Incidents getIncident() {
-        return incident;
+    public Arcincidents getArcincident() {
+        return arcincident;
     }
 
-    public void setIncident(Incidents incident) {
-        this.incident = incident;
+    public void setArcincident(Arcincidents arcincident) {
+        this.arcincident = arcincident;
     }
 
     public Users getSpecialist() {
@@ -213,10 +205,10 @@ public class Docs implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Docs)) {
+        if (!(object instanceof Arcdocs)) {
             return false;
         }
-        Docs other = (Docs) object;
+        Arcdocs other = (Arcdocs) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -225,7 +217,7 @@ public class Docs implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Docs[ id=" + id + " ]";
+        return "entity.Arcdocs[ id=" + id + " ]";
     }
-    
+
 }

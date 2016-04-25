@@ -103,6 +103,7 @@
                 <table class="incidents_tab">
                     <thead>
                         <tr>
+                            <th><a href='<c:url value="/sort_by_id_un"/>'>ИД</a></th>
                             <th><a href='<c:url value="/sort_by_name_un"/>'>Заголовок обращения</a></th>
                             <th><a href='<c:url value="/sort_by_date_un"/>'>Дата/Время создания</a></th>
                             <th><a href='<c:url value="/sort_by_zay_un"/>'>Заявитель</a></th>
@@ -110,7 +111,7 @@
                     </thead>
                     <tbody>
                         <c:if test="${unallocatedIncidents.isEmpty()}">
-                        <td colspan="3" style="text-align: center;">Нераспределенных обращений нет</td>
+                        <td colspan="4" style="text-align: center;">Нераспределенных обращений нет</td>
                     </c:if>
                     <c:forEach var="incident" items="${unallocatedIncidents}">
                         <c:choose>
@@ -121,6 +122,7 @@
                                 <tr> 
                                 </c:otherwise>
                             </c:choose>
+                            <td>${incident.id}</td>
                             <td><a href='<c:url value="/manager/incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
                             <td>${incident.dateIncident} ${incident.timeIncident}</td>
                             <td>${incident.zayavitel.name}</td>

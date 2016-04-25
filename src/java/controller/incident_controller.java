@@ -1,5 +1,7 @@
 package controller;
 
+import entity.Arccomments;
+import entity.Archistory;
 import entity.Arcincidents;
 import entity.Comments;
 import entity.History;
@@ -23,7 +25,7 @@ import session.ManagementSystemLocal;
     "/user/new_incident", "/user/closed_incidents", "/user/done_incidents",
     "/sort_by_name", "/sort_by_date", "/sort_by_status", "/sort_by_spec",
     "/sort_by_name_closed", "/sort_by_dateo_closed", "/sort_by_status_closed",
-    "/sort_by_spec_closed", "/sort_by_datec_closed"})
+    "/sort_by_spec_closed", "/sort_by_datec_closed", "/sort_by_id_closed", "/sort_by_id"})
 public class incident_controller extends HttpServlet {
 
     @EJB
@@ -45,6 +47,10 @@ public class incident_controller extends HttpServlet {
         request.setAttribute("user", user);
 
         //сортировка =================================================================================================
+        if ("/sort_by_id".equals(userPath)) {
+            getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "id"));
+            request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
+        }
         if ("/sort_by_name".equals(userPath)) {
             getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "name"));
             request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
@@ -62,6 +68,11 @@ public class incident_controller extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/user/my_incidents.jsp").forward(request, response);
         }
 
+        if ("/sort_by_id_closed".equals(userPath)) {
+            getServletContext().setAttribute("action", userPath);
+            filterOn(request, user, "id");
+            request.getRequestDispatcher("/WEB-INF/user/closed_incidents.jsp").forward(request, response);
+        }
         if ("/sort_by_name_closed".equals(userPath)) {
             getServletContext().setAttribute("action", userPath);
             filterOn(request, user, "name");
@@ -96,14 +107,14 @@ public class incident_controller extends HttpServlet {
             request.setAttribute("ihistory", 0);
             request.setAttribute("commenta", 0);
 
-            int idIncident = 0;
-            idIncident = Integer.parseInt(request.getParameter("id"));
+            String idIncident = null;
+            idIncident = request.getParameter("id");
             Incidents incident = ms.findIncident(idIncident);
             if (incident == null) {
                 Arcincidents arcincident = ms.findArcIncident(idIncident);
 
-                List<Comments> comments = gb.getComments(null, arcincident);
-                request.setAttribute("comments", comments);
+                List<Arccomments> arccomments = gb.getArccomments(arcincident);
+                request.setAttribute("comments", arccomments);
 
                 if (arcincident.getNew1().equals(1) && arcincident.getStatus().getId().equals(7)) {
                     ms.setNotNewIncident(null, arcincident);
@@ -119,14 +130,14 @@ public class incident_controller extends HttpServlet {
                 if (answer.equals("bHist")) {
                     request.setAttribute("ihistory", 1);
                     request.setAttribute("commento", 0);
-                    List<History> history = gb.getHistory(null, arcincident);
-                    request.setAttribute("allhistory", history);
+                    List<Archistory> archistory = gb.getArchistory(arcincident);
+                    request.setAttribute("allhistory", archistory);
                 }
 
                 request.setAttribute("incident", arcincident);
             } else {
 
-                List<Comments> comments = gb.getComments(incident, null);
+                List<Comments> comments = gb.getComments(incident);
                 request.setAttribute("comments", comments);
 
                 if (incident.getNew1().equals(1) && incident.getStatus().getId().equals(4)) {
@@ -180,7 +191,7 @@ public class incident_controller extends HttpServlet {
                 if (answer.equals("bHist")) {
                     request.setAttribute("ihistory", 1);
                     request.setAttribute("commento", 0);
-                    List<History> history = gb.getHistory(incident, null);
+                    List<History> history = gb.getHistory(incident);
                     request.setAttribute("allhistory", history);
                 }
 
@@ -213,7 +224,7 @@ public class incident_controller extends HttpServlet {
             //добавить
             if (answer.equals("Add")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
-                int idInca = ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, true, 0, null);
+                String idInca = ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, true, null, null);
                 response.sendRedirect(request.getContextPath() + "/user");
                 return;
             }
@@ -221,7 +232,7 @@ public class incident_controller extends HttpServlet {
             //редактировать
             if (answer.equals("Edit")) {
                 Typeincident ti = ms.findTypeIncident(Integer.parseInt(request.getParameter("typId")));
-                int idInc = ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, false, Integer.parseInt(request.getParameter("id")), null);
+                String idInc = ms.addIncident(request.getParameter("title"), request.getParameter("texti"), user, ti, false, request.getParameter("id"), null);
                 response.sendRedirect(request.getContextPath() + "/user/user_incident?id=" + idInc);
                 return;
             }
@@ -241,7 +252,7 @@ public class incident_controller extends HttpServlet {
                 request.setAttribute("typs", typs);
                 editInca = Integer.parseInt(request.getParameter("editInc"));
                 if (editInca == 1) {
-                    request.setAttribute("id", Integer.parseInt(request.getParameter("id")));
+                    request.setAttribute("id", request.getParameter("id"));
                 }
                 request.setAttribute("title", request.getParameter("title"));
                 request.setAttribute("texti", request.getParameter("texti"));

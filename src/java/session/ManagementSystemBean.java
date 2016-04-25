@@ -5,6 +5,9 @@
  */
 package session;
 
+import entity.Arccomments;
+import entity.Arcdocs;
+import entity.Archistory;
 import entity.Arcincidents;
 import entity.Comments;
 import entity.Departs;
@@ -56,14 +59,19 @@ public class ManagementSystemBean implements ManagementSystemLocal {
 
     /* add добавление =================================================================================================*/
     @Override
-    public int addIncident(String title, String text, Users zayavitel,
-            Typeincident ti, boolean addIncident, int id, String attachment) {
+    public String addIncident(String title, String text, Users zayavitel,
+            Typeincident ti, boolean addIncident, String id, String attachment) {
         Incidents incident;
         if (addIncident) {
             incident = new Incidents();
         } else {
             incident = findIncident(id);
         }
+        int countOpen = gb.getIncidents(false).size();
+        int countClose = gb.getArcincidents(false).size();
+        int count = countClose + countOpen;
+        count = count + 1;
+        incident.setId("A" + count);
         incident.setDateIncident(new Date());
         incident.setTimeIncident(new Date());
         Statuses status = em.find(Statuses.class, 1);
@@ -74,7 +82,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setTypeIncident(ti);
         incident.setAttachment(attachment);
         incident.setNew1(1);
-        int ret = 0;
+        incident.setKb(0);
+        String ret = null;
         if (addIncident) {
             em.persist(incident);
             addHistory(incident, zayavitel, null);
@@ -116,14 +125,19 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     }
 
     @Override
-    public int addTask(String title, String text, Users manager,
-            Typeincident ti, boolean addIncident, int id, Users specialist) {
+    public String addTask(String title, String text, Users manager,
+            Typeincident ti, boolean addIncident, String id, Users specialist) {
         Incidents incident;
         if (addIncident) {
             incident = new Incidents();
         } else {
             incident = findIncident(id);
         }
+        int countOpen = gb.getIncidents(true).size();
+        int countClose = gb.getArcincidents(true).size();
+        int count = countClose + countOpen;
+        count = count + 1;
+        incident.setId("T" + count);
         incident.setDateIncident(new Date());
         incident.setTimeIncident(new Date());
         Statuses status = em.find(Statuses.class, 2);
@@ -136,7 +150,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setTypeIncident(ti);
         incident.setAttachment(null);
         incident.setNew1(1);
-        int ret = 0;
+        incident.setKb(0);
+        String ret = null;
         if (addIncident) {
             em.persist(incident);
             addHistory(incident, manager, null);
@@ -145,7 +160,6 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             em.merge(incident);
             addHistory(incident, manager, "Исправление");
         }
-
         return ret;
     }
 
@@ -425,6 +439,11 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     public Docs findDoc(Object id) {
         return em.find(Docs.class, id);
     }
+    
+    @Override
+    public Arcdocs findArcDoc(Object id) {
+        return em.find(Arcdocs.class, id);
+    }
 
     @Override
     public Groupuser findGroupuser(Users user) {
@@ -500,12 +519,15 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     }
 
     @Override
-    public void doneIncident(Incidents incident, String decision) {
+    public void doneIncident(Incidents incident, String decision, boolean kb) {
         incident.setDateDone(new Date());
         incident.setTimeDone(new Date());
         incident.setStatus(gb.getStatuses().get(3));//4
         incident.setDecision(decision);
         incident.setNew1(1);
+        if (kb){
+            incident.setKb(1);
+        }
         em.merge(incident);
         addHistory(incident, incident.getSpecialist(), null);
     }
@@ -564,18 +586,53 @@ public class ManagementSystemBean implements ManagementSystemLocal {
 
     @Override
     public void editHDAndCInArc(Incidents incident, Arcincidents arcincident) {
+        List<Comments> comments = gb.getComments(incident);
+        for (Comments comment : comments) {
+            Arccomments arccomment = new Arccomments();
+            arccomment.setDateComment(comment.getDateCommentD());
+            arccomment.setTimeComment(comment.getTimeCommentD());
+            arccomment.setText(comment.getText());
+            arccomment.setUsersLogin(comment.getUsersLogin());
+            arccomment.setArcincident(arcincident);
+            em.persist(arccomment);
+        }
         Query q = null;
-        q = em.createNamedQuery("History.updateClosed");
+        q = em.createNamedQuery("Comments.deleteOpen");
         q.setParameter("incident", incident);
-        q.setParameter("arcincident", arcincident);
         q.executeUpdate();
-        q = em.createNamedQuery("Docs.updateClosed");
+        
+        List<History> historys = gb.getHistory(incident);
+        for (History history : historys) {
+            Archistory archistory = new Archistory();
+            archistory.setActioner(history.getActioner());
+            archistory.setDateAction(history.getDateActionD());
+            archistory.setTimeAction(history.getTimeActionD());
+            archistory.setStatus(history.getStatus());
+            archistory.setText(history.getText());
+            archistory.setArcincident(arcincident);
+            em.persist(archistory);
+        }
+        q = em.createNamedQuery("History.deleteOpen");
         q.setParameter("incident", incident);
-        q.setParameter("arcincident", arcincident);
         q.executeUpdate();
-        q = em.createNamedQuery("Comments.updateClosed");
+        
+        List<Docs> docs = gb.getDocs(incident);
+        for (Docs doc : docs) {
+            Arcdocs arcdoc = new Arcdocs();
+            arcdoc.setCause(doc.getCause());
+            arcdoc.setDateDoc(doc.getDateDocD());
+            arcdoc.setTimeDoc(doc.getTimeDocD());
+            arcdoc.setKomis1(doc.getKomis1());
+            arcdoc.setKomis2(doc.getKomis2());
+            arcdoc.setSpecialist(doc.getSpecialist());
+            arcdoc.setTypeDoc(doc.getTypeDoc());
+            arcdoc.setArcincident(arcincident);
+            arcdoc.setZamenaIn(doc.getZamenaIn());
+            arcdoc.setZamenaOut(doc.getZamenaOut());
+            em.persist(arcdoc);
+        }
+        q = em.createNamedQuery("Docs.deleteOpen");
         q.setParameter("incident", incident);
-        q.setParameter("arcincident", arcincident);
         q.executeUpdate();
     }
 

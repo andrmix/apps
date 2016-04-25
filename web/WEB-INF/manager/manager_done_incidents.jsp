@@ -102,6 +102,7 @@
                 <table class="incidents_tab">
                     <thead>
                         <tr>
+                            <th><a href='<c:url value="/sort_by_id_m_done"/>'>ИД</a></th>
                             <th><a href='<c:url value="/sort_by_name_m_done"/>'>Заголовок обращения</a></th>
                             <th><a href='<c:url value="/sort_by_dateo_m_done"/>'>Дата/Время создания</a></th>
                             <th><a href='<c:url value="/sort_by_zay_m_done"/>'>Заявитель</a></th>
@@ -110,10 +111,11 @@
                     </thead>
                     <tbody>
                         <c:if test="${doneIncidentsManager.isEmpty()}">
-                        <td colspan="4" style="text-align: center;">Выполненных обращений нет</td>
+                        <td colspan="5" style="text-align: center;">Выполненных обращений нет</td>
                     </c:if>
                     <c:forEach var="incident" items="${doneIncidentsManager}">
                         <tr>
+                            <td>${incident.id}</td>
                             <td><a href='<c:url value="/manager/incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
                             <td>${incident.dateIncident} ${incident.timeIncident}</td>
                             <td>${incident.zayavitel.name}</td>

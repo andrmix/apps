@@ -1,5 +1,8 @@
 package session;
 
+import entity.Arccomments;
+import entity.Arcdocs;
+import entity.Archistory;
 import entity.Arcincidents;
 import entity.Comments;
 import entity.Departs;
@@ -105,12 +108,12 @@ public class GetterBean implements GetterBeanLocal {
         Query q = em.createNamedQuery("Groupuser.findByName");
         q.setParameter("name", "manager");
         List<Groupuser> resultList = q.getResultList();
-        for (Groupuser groupuser : resultList){
+        for (Groupuser groupuser : resultList) {
             users.add(groupuser.getUsersLogin());
         }
         return users;
     }
-    
+
     @Override
     public List<Users> getUsersForEdit(Users user) {
         List resultList = em.createNamedQuery("Users.findAll").getResultList();
@@ -126,7 +129,7 @@ public class GetterBean implements GetterBeanLocal {
         resultList.add(tiB);
         return resultList;
     }
-    
+
     /* incidents ===========================================================================================================*/
     /* open ===========================================================================================================*/
     @Override
@@ -148,6 +151,9 @@ public class GetterBean implements GetterBeanLocal {
                 break;
             case "spec":
                 q = em.createNamedQuery("Incidents.findOpenByUserOrderSpec");
+                break;
+            case "id":
+                q = em.createNamedQuery("Incidents.findOpenByUserOrderId");
                 break;
         }
         q.setParameter("user", user);
@@ -187,6 +193,9 @@ public class GetterBean implements GetterBeanLocal {
                 break;
             case "zay":
                 q = em.createNamedQuery("Incidents.findBySpecialist2StatusOrderZay");
+                break;
+            case "id":
+                q = em.createNamedQuery("Incidents.findBySpecialist2StatusOrderId");
                 break;
         }
         q.setParameter("specialist", specialist);
@@ -238,6 +247,9 @@ public class GetterBean implements GetterBeanLocal {
             case "zay":
                 q = em.createNamedQuery("Incidents.findBySpecialistDoneOrderZay");
                 break;
+            case "id":
+                q = em.createNamedQuery("Incidents.findBySpecialistDoneOrderId");
+                break;
         }
         q.setParameter("specialist", specialist);
         q.setParameter("status", statuses.get(3));//4
@@ -247,7 +259,7 @@ public class GetterBean implements GetterBeanLocal {
 
     /* closed ===========================================================================================================*/
     @Override
-    public List<Incidents> getClosedIncidents(Users user, String sort) {
+    public List<Arcincidents> getClosedIncidents(Users user, String sort) {
         List statuses = getStatuses();
         Query q = null;
         switch (sort) {
@@ -269,6 +281,9 @@ public class GetterBean implements GetterBeanLocal {
             case "datec":
                 q = em.createNamedQuery("Arcincidents.findClosedByUserOrderDateClose");
                 break;
+            case "id":
+                q = em.createNamedQuery("Arcincidents.findClosedByUserOrderId");
+                break;
         }
         q.setParameter("user", user);
         q.setParameter("status1", ((Statuses) statuses.get(4)).getId());//5 - 6 - 7
@@ -278,7 +293,7 @@ public class GetterBean implements GetterBeanLocal {
     }
 
     @Override
-    public List<Incidents> getClosedIncidentsF(Users user, String sort, String dateBeg, String dateEnd, String filterParam) {
+    public List<Arcincidents> getClosedIncidentsF(Users user, String sort, String dateBeg, String dateEnd, String filterParam) {
         List statuses = getStatuses();
         Query q = null;
         Date dBeg = null;
@@ -303,6 +318,9 @@ public class GetterBean implements GetterBeanLocal {
                 case "datec":
                     q = em.createNamedQuery("Arcincidents.findClosedByUserFOrderDateClose");
                     break;
+                case "id":
+                    q = em.createNamedQuery("Arcincidents.findClosedByUserFOrderId");
+                    break;
             }
         }
         if (filterParam.equals("open")) {
@@ -325,6 +343,9 @@ public class GetterBean implements GetterBeanLocal {
                 case "datec":
                     q = em.createNamedQuery("Arcincidents.findOClosedByUserFOrderDateClose");
                     break;
+                case "id":
+                    q = em.createNamedQuery("Arcincidents.findOClosedByUserFOrderId");
+                    break;
             }
         }
         q.setParameter("user", user);
@@ -345,7 +366,7 @@ public class GetterBean implements GetterBeanLocal {
     }
 
     @Override
-    public List<Incidents> getClosedIncidentsNew(Users user) {
+    public List<Arcincidents> getClosedIncidentsNew(Users user) {
         List statuses = getStatuses();
         Query q = null;
         q = em.createNamedQuery("Arcincidents.findByUser1StatusNew");
@@ -356,7 +377,7 @@ public class GetterBean implements GetterBeanLocal {
     }
 
     @Override
-    public List<Incidents> getClosedIncidentsManager(String sort) {
+    public List<Arcincidents> getClosedIncidentsManager(String sort) {
         List statuses = getStatuses();
         Query q = null;
         switch (sort) {
@@ -381,6 +402,9 @@ public class GetterBean implements GetterBeanLocal {
             case "datec":
                 q = em.createNamedQuery("Arcincidents.findClosedManagerOrderDateClose");
                 break;
+            case "id":
+                q = em.createNamedQuery("Arcincidents.findClosedManagerOrderId");
+                break;
         }
         q.setParameter("status1", statuses.get(4));//5
         q.setParameter("status2", statuses.get(6));//7
@@ -390,7 +414,7 @@ public class GetterBean implements GetterBeanLocal {
     }
 
     @Override
-    public List<Incidents> getClosedIncidentsMF(String sort, String dateBeg, String dateEnd, String filterParam) {
+    public List<Arcincidents> getClosedIncidentsMF(String sort, String dateBeg, String dateEnd, String filterParam) {
         List statuses = getStatuses();
         Query q = null;
         Date dBeg = null;
@@ -418,6 +442,9 @@ public class GetterBean implements GetterBeanLocal {
                 case "datec":
                     q = em.createNamedQuery("Arcincidents.findClosedManagerFOrderDateClose");
                     break;
+                case "id":
+                    q = em.createNamedQuery("Arcincidents.findClosedManagerFOrderId");
+                    break;
             }
         }
         if (filterParam.equals("open")) {
@@ -443,6 +470,9 @@ public class GetterBean implements GetterBeanLocal {
                 case "datec":
                     q = em.createNamedQuery("Arcincidents.findClosedCManagerFOrderDateClose");
                     break;
+                case "id":
+                    q = em.createNamedQuery("Arcincidents.findClosedCManagerFOrderId");
+                    break;
             }
         }
         SimpleDateFormat format = new SimpleDateFormat();
@@ -463,7 +493,7 @@ public class GetterBean implements GetterBeanLocal {
     }
 
     @Override
-    public List<Incidents> getSpecialistClosedIncidents(Users specialist, String sort) {
+    public List<Arcincidents> getSpecialistClosedIncidents(Users specialist, String sort) {
         List statuses = getStatuses();
         Query q = null;
         switch (sort) {
@@ -485,6 +515,9 @@ public class GetterBean implements GetterBeanLocal {
             case "zay":
                 q = em.createNamedQuery("Arcincidents.findBySpecialist2StatusOrderZay");
                 break;
+            case "id":
+                q = em.createNamedQuery("Arcincidents.findBySpecialist2StatusOrderId");
+                break;
         }
         q.setParameter("specialist", specialist);
         q.setParameter("status1", statuses.get(4));//5
@@ -494,7 +527,7 @@ public class GetterBean implements GetterBeanLocal {
     }
 
     @Override
-    public List<Incidents> getSpecialistClosedIncidentsF(Users specialist, String sort, String dateBeg, String dateEnd, String filterParam) {
+    public List<Arcincidents> getSpecialistClosedIncidentsF(Users specialist, String sort, String dateBeg, String dateEnd, String filterParam) {
         List statuses = getStatuses();
         Query q = null;
         if (filterParam.equals("close")) {
@@ -517,6 +550,9 @@ public class GetterBean implements GetterBeanLocal {
                 case "zay":
                     q = em.createNamedQuery("Arcincidents.findBySpecialist2StatusFOrderZay");
                     break;
+                case "id":
+                    q = em.createNamedQuery("Arcincidents.findBySpecialist2StatusFOrderId");
+                    break;
             }
         }
         if (filterParam.equals("open")) {
@@ -538,6 +574,9 @@ public class GetterBean implements GetterBeanLocal {
                     break;
                 case "zay":
                     q = em.createNamedQuery("Arcincidents.findByOSpecialist2StatusFOrderZay");
+                    break;
+                case "id":
+                    q = em.createNamedQuery("Arcincidents.findByOSpecialist2StatusFOrderId");
                     break;
             }
         }
@@ -566,7 +605,7 @@ public class GetterBean implements GetterBeanLocal {
         List resList = new ArrayList();
         Porter porter = new Porter();
         boolean ne = false;
-        String queryText = "SELECT * FROM incidents.arcincidents as a WHERE a.text like '%";
+        String queryText = "SELECT * FROM incidents.arcincidents as a WHERE a.KB = 1 AND (a.text like '%";
         String queryFrag = " OR a.text like '%";
 
         String incidentText = incident.getText();
@@ -597,11 +636,37 @@ public class GetterBean implements GetterBeanLocal {
             queryText = queryText + queryFrag + zagList.get(i) + "%'";
         }
 
-        queryText = queryText + ";";
+        queryText = queryText + ");";
         Query q = em.createNativeQuery(queryText);
         resList = null;
         resList = q.getResultList();
         return resList;
+    }
+
+    @Override
+    public List<Arcincidents> getArcincidents(boolean task) {
+        Query q = null;
+        q = em.createNamedQuery("Arcincidents.findByCount");
+        if (task) {
+            q.setParameter("id", "T%");
+        } else {
+            q.setParameter("id", "A%");
+        }
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Incidents> getIncidents(boolean task) {
+        Query q = null;
+        q = em.createNamedQuery("Incidents.findByCount");
+        if (task) {
+            q.setParameter("id", "T%");
+        } else {
+            q.setParameter("id", "A%");
+        }
+        List resultList = q.getResultList();
+        return resultList;
     }
 
     /* allocated ===========================================================================================================*/
@@ -626,6 +691,9 @@ public class GetterBean implements GetterBeanLocal {
                 break;
             case "spec":
                 q = em.createNamedQuery("Incidents.findAllocatedOrderSpec");
+                break;
+            case "id":
+                q = em.createNamedQuery("Incidents.findAllocatedOrderId");
                 break;
         }
         List statuses = getStatuses();
@@ -653,6 +721,9 @@ public class GetterBean implements GetterBeanLocal {
                 break;
             case "zay":
                 q = em.createNamedQuery("Incidents.findUnallocatedOrderZay");
+                break;
+            case "id":
+                q = em.createNamedQuery("Incidents.findUnallocatedOrderId");
                 break;
         }
         List statuses = getStatuses();
@@ -693,6 +764,9 @@ public class GetterBean implements GetterBeanLocal {
                 break;
             case "spec":
                 q = em.createNamedQuery("Incidents.findAgreeOrderSpec");
+                break;
+            case "id":
+                q = em.createNamedQuery("Incidents.findAgreeOrderId");
                 break;
         }
         List statuses = getStatuses();
@@ -759,7 +833,7 @@ public class GetterBean implements GetterBeanLocal {
         resultList.add(departB);
         return resultList;
     }
-    
+
     /* dposts ===========================================================================================================*/
     @Override
     public List<Posts> getAllPosts(String sort) {
@@ -842,73 +916,93 @@ public class GetterBean implements GetterBeanLocal {
 
     /* comments ===========================================================================================================*/
     @Override
-    public List<Comments> getComments(Incidents incident, Arcincidents arcincident) {
+    public List<Comments> getComments(Incidents incident) {
         Query q = null;
-        if (incident == null) {
-            q = em.createNamedQuery("Comments.findByArcIncident");
-            q.setParameter("arcincident", arcincident);
-        } else {
-            q = em.createNamedQuery("Comments.findByIncident");
-            q.setParameter("incident", incident);
-        }
+        q = em.createNamedQuery("Comments.findByIncident");
+        q.setParameter("incident", incident);
         List resultList = q.getResultList();
         return resultList;
     }
-    
+
+    @Override
+    public List<Arccomments> getArccomments(Arcincidents arcincident) {
+        Query q = null;
+        q = em.createNamedQuery("Arccomments.findByIncident");
+        q.setParameter("incident", arcincident);
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
     /* docs ===========================================================================================================*/
     @Override
-    public List<Docs> getDocs(Incidents incident, Arcincidents arcincident) {
+    public List<Docs> getDocs(Incidents incident) {
         Query q = null;
-        if (incident == null) {
-            q = em.createNamedQuery("Docs.findByArcIncident");
-            q.setParameter("arcincident", arcincident);
-        } else {
-            q = em.createNamedQuery("Docs.findByIncident");
-            q.setParameter("incident", incident);
-        }
+        q = em.createNamedQuery("Docs.findByIncident");
+        q.setParameter("incident", incident);
         List resultList = q.getResultList();
         return resultList;
     }
-    
+
     @Override
-    public List<Docs> getReqs(Incidents incident, Arcincidents arcincident) {
+    public List<Arcdocs> getArcdocs(Arcincidents arcincident) {
         Query q = null;
-        if (incident == null) {
-            q = em.createNamedQuery("Docs.findByArcIncidentReq");
-            q.setParameter("arcincident", arcincident);
-        } else {
-            q = em.createNamedQuery("Docs.findByIncidentReq");
-            q.setParameter("incident", incident);
-        }
+        q = em.createNamedQuery("Arcdocs.findByIncident");
+        q.setParameter("incident", arcincident);
         List resultList = q.getResultList();
         return resultList;
     }
-    
+
     @Override
-    public List<Docs> getActDone(Incidents incident, Arcincidents arcincident) {
+    public List<Docs> getReqs(Incidents incident) {
         Query q = null;
-        if (incident == null) {
-            q = em.createNamedQuery("Docs.findByArcIncidentAD");
-            q.setParameter("arcincident", arcincident);
-        } else {
-            q = em.createNamedQuery("Docs.findByIncidentAD");
-            q.setParameter("incident", incident);
-        }
+        q = em.createNamedQuery("Docs.findByIncidentReq");
+        q.setParameter("incident", incident);
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Arcdocs> getArcReqs(Arcincidents arcincident) {
+        Query q = null;
+        q = em.createNamedQuery("Arcdocs.findByArcIncidentReq");
+        q.setParameter("arcincident", arcincident);
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Docs> getActDone(Incidents incident) {
+        Query q = null;
+        q = em.createNamedQuery("Docs.findByIncidentAD");
+        q.setParameter("incident", incident);
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Arcdocs> getArcActDone(Arcincidents arcincident) {
+        Query q = null;
+        q = em.createNamedQuery("Arcdocs.findByArcIncidentAD");
+        q.setParameter("arcincident", arcincident);
         List resultList = q.getResultList();
         return resultList;
     }
 
     /* history ===========================================================================================================*/
     @Override
-    public List<History> getHistory(Incidents incident, Arcincidents arcincident) {
+    public List<History> getHistory(Incidents incident) {
         Query q = null;
-        if (incident == null) {
-            q = em.createNamedQuery("History.findByArcIncident");
-            q.setParameter("arcincident", arcincident);
-        } else {
-            q = em.createNamedQuery("History.findByIncident");
-            q.setParameter("incident", incident);
-        }
+        q = em.createNamedQuery("History.findByIncident");
+        q.setParameter("incident", incident);
+        List resultList = q.getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Archistory> getArchistory(Arcincidents arcincident) {
+        Query q = null;
+        q = em.createNamedQuery("Archistory.findByIncident");
+        q.setParameter("incident", arcincident);
         List resultList = q.getResultList();
         return resultList;
     }

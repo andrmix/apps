@@ -139,12 +139,12 @@ public class upload_controller extends HttpServlet {
 
                     //добавить
                     if (name.equals("Add")) {
-                        ms.addIncident(title, texti, user, ti, true, 0, fName);
+                        ms.addIncident(title, texti, user, ti, true, null, fName);
                     }
 
                     //редактировать
                     if (name.equals("Edit")) {
-                        ms.addIncident(title, texti, user, ti, false, Integer.parseInt(id), fName);
+                        ms.addIncident(title, texti, user, ti, false, id, fName);
                     }
 
                     getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "none"));

@@ -52,6 +52,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Arcincidents.findClosedByUserOrderStatus", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 ORDER BY a.status"),
     @NamedQuery(name = "Arcincidents.findClosedByUserOrderSpec", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 ORDER BY a.specialist"),
     @NamedQuery(name = "Arcincidents.findClosedByUserOrderDateClose", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 ORDER BY a.dateClose"),
+    @NamedQuery(name = "Arcincidents.findClosedByUserOrderId", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 ORDER BY a.id"),
     @NamedQuery(name = "Arcincidents.findByUser1StatusNew", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status = :status AND a.new1 = 1"),
     @NamedQuery(name = "Arcincidents.findClosedManager", query = "SELECT a FROM Arcincidents a WHERE a.status = :status1 OR a.status = :status2 OR a.status = :status3"),
     @NamedQuery(name = "Arcincidents.findClosedManagerOrderName", query = "SELECT a FROM Arcincidents a WHERE a.status = :status1 OR a.status = :status2 OR a.status = :status3 ORDER BY a.title"),
@@ -60,6 +61,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Arcincidents.findClosedManagerOrderZay", query = "SELECT a FROM Arcincidents a WHERE a.status = :status1 OR a.status = :status2 OR a.status = :status3 ORDER BY a.zayavitel"),
     @NamedQuery(name = "Arcincidents.findClosedManagerOrderSpec", query = "SELECT a FROM Arcincidents a WHERE a.status = :status1 OR a.status = :status2 OR a.status = :status3 ORDER BY a.specialist"),
     @NamedQuery(name = "Arcincidents.findClosedManagerOrderDateClose", query = "SELECT a FROM Arcincidents a WHERE a.status = :status1 OR a.status = :status2 OR a.status = :status3 ORDER BY a.dateClose"),
+    @NamedQuery(name = "Arcincidents.findClosedManagerOrderId", query = "SELECT a FROM Arcincidents a WHERE a.status = :status1 OR a.status = :status2 OR a.status = :status3 ORDER BY a.id"),
     @NamedQuery(name = "Arcincidents.findClosedManagerF", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend"),
     @NamedQuery(name = "Arcincidents.findClosedManagerFOrderName", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.title"),
     @NamedQuery(name = "Arcincidents.findClosedManagerFOrderDate", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.dateIncident"),
@@ -67,6 +69,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Arcincidents.findClosedManagerFOrderZay", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.zayavitel"),
     @NamedQuery(name = "Arcincidents.findClosedManagerFOrderSpec", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.specialist"),
     @NamedQuery(name = "Arcincidents.findClosedManagerFOrderDateClose", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.dateClose"),
+    @NamedQuery(name = "Arcincidents.findClosedManagerFOrderId", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.id"),
     @NamedQuery(name = "Arcincidents.findClosedCManagerF", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend"),
     @NamedQuery(name = "Arcincidents.findClosedCManagerFOrderName", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.title"),
     @NamedQuery(name = "Arcincidents.findClosedCManagerFOrderDate", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.dateIncident"),
@@ -74,44 +77,53 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Arcincidents.findClosedCManagerFOrderZay", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.zayavitel"),
     @NamedQuery(name = "Arcincidents.findClosedCManagerFOrderSpec", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.specialist"),
     @NamedQuery(name = "Arcincidents.findClosedCManagerFOrderDateClose", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.dateClose"),
+    @NamedQuery(name = "Arcincidents.findClosedCManagerFOrderId", query = "SELECT a FROM Arcincidents a WHERE (a.status = :status1 OR a.status = :status2 OR a.status = :status3) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.id"),
     @NamedQuery(name = "Arcincidents.findClosedByUserF", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateClose >= :datebeg AND a.dateClose <= :dateend"),
     @NamedQuery(name = "Arcincidents.findClosedByUserFOrderName", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.title"),
     @NamedQuery(name = "Arcincidents.findClosedByUserFOrderDate", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.dateIncident"),
     @NamedQuery(name = "Arcincidents.findClosedByUserFOrderStatus", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.status"),
     @NamedQuery(name = "Arcincidents.findClosedByUserFOrderSpec", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.specialist"),
     @NamedQuery(name = "Arcincidents.findClosedByUserFOrderDateClose", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.dateClose"),
+    @NamedQuery(name = "Arcincidents.findClosedByUserFOrderId", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.id"),
     @NamedQuery(name = "Arcincidents.findOClosedByUserF", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend"),
     @NamedQuery(name = "Arcincidents.findOClosedByUserFOrderName", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.title"),
     @NamedQuery(name = "Arcincidents.findOClosedByUserFOrderDate", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.dateIncident"),
     @NamedQuery(name = "Arcincidents.findOClosedByUserFOrderStatus", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.status"),
     @NamedQuery(name = "Arcincidents.findOClosedByUserFOrderSpec", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.specialist"),
     @NamedQuery(name = "Arcincidents.findOClosedByUserFOrderDateClose", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.dateClose"),
+    @NamedQuery(name = "Arcincidents.findOClosedByUserFOrderId", query = "SELECT a FROM Arcincidents a WHERE a.zayavitel = :user AND a.status.id >= :status1 AND a.status.id <= :status2 AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.id"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2Status", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2)"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusOrderName", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) ORDER BY a.title"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusOrderDate", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) ORDER BY a.dateIncident"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusOrderStatus", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) ORDER BY a.status"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusOrderDatec", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) ORDER BY a.dateClose"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusOrderZay", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) ORDER BY a.zayavitel"),
+    @NamedQuery(name = "Arcincidents.findBySpecialist2StatusOrderId", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) ORDER BY a.id"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusF", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusFOrderName", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.title"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusFOrderDate", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.dateIncident"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusFOrderStatus", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.status"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusFOrderDatec", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.dateClose"),
     @NamedQuery(name = "Arcincidents.findBySpecialist2StatusFOrderZay", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.zayavitel"),
+    @NamedQuery(name = "Arcincidents.findBySpecialist2StatusFOrderId", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateClose >= :datebeg AND a.dateClose <= :dateend ORDER BY a.id"),
     @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusF", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend"),
     @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderName", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.title"),
     @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderDate", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.dateIncident"),
     @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderStatus", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.status"),
     @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderDatec", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.dateClose"),
-    @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderZay", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.zayavitel")
+    @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderZay", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.zayavitel"),
+    @NamedQuery(name = "Arcincidents.findByOSpecialist2StatusFOrderId", query = "SELECT a FROM Arcincidents a WHERE a.specialist = :specialist AND (a.status = :status1 OR a.status = :status2) AND a.dateIncident >= :datebeg AND a.dateIncident <= :dateend ORDER BY a.id"),
+    @NamedQuery(name = "Arcincidents.findByCount", query = "SELECT a FROM Arcincidents a WHERE a.id like :id")
 })
 public class Arcincidents implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "id")
-    private Integer id;
+    private String id;
     @Column(name = "dateIncident")
     @Temporal(TemporalType.DATE)
     private Date dateIncident;
@@ -152,9 +164,7 @@ public class Arcincidents implements Serializable {
     @Column(name = "KB")
     private Integer kb;
     @OneToMany(mappedBy = "arcincident")
-    private Collection<Comments> commentsCollection;
-    @OneToMany(mappedBy = "arcincident")
-    private Collection<Docs> docsCollection;
+    private Collection<Archistory> archistoryCollection;
     @JoinColumn(name = "status", referencedColumnName = "id")
     @ManyToOne
     private Statuses status;
@@ -171,27 +181,29 @@ public class Arcincidents implements Serializable {
     @ManyToOne
     private Users manager;
     @OneToMany(mappedBy = "arcincident")
-    private Collection<History> historyCollection;
+    private Collection<Arcdocs> arcdocsCollection;
+    @OneToMany(mappedBy = "arcincident")
+    private Collection<Arccomments> arccommentsCollection;
 
     public Arcincidents() {
     }
 
-    public Arcincidents(Integer id) {
+    public Arcincidents(String id) {
         this.id = id;
     }
 
-    public Arcincidents(Integer id, String title, String text, String decision) {
+    public Arcincidents(String id, String title, String text, String decision) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.decision = decision;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -300,21 +312,12 @@ public class Arcincidents implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Comments> getCommentsCollection() {
-        return commentsCollection;
+    public Collection<Archistory> getArchistoryCollection() {
+        return archistoryCollection;
     }
 
-    public void setCommentsCollection(Collection<Comments> commentsCollection) {
-        this.commentsCollection = commentsCollection;
-    }
-
-    @XmlTransient
-    public Collection<Docs> getDocsCollection() {
-        return docsCollection;
-    }
-
-    public void setDocsCollection(Collection<Docs> docsCollection) {
-        this.docsCollection = docsCollection;
+    public void setArchistoryCollection(Collection<Archistory> archistoryCollection) {
+        this.archistoryCollection = archistoryCollection;
     }
 
     public Statuses getStatus() {
@@ -358,12 +361,21 @@ public class Arcincidents implements Serializable {
     }
 
     @XmlTransient
-    public Collection<History> getHistoryCollection() {
-        return historyCollection;
+    public Collection<Arcdocs> getArcdocsCollection() {
+        return arcdocsCollection;
     }
 
-    public void setHistoryCollection(Collection<History> historyCollection) {
-        this.historyCollection = historyCollection;
+    public void setArcdocsCollection(Collection<Arcdocs> arcdocsCollection) {
+        this.arcdocsCollection = arcdocsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Arccomments> getArccommentsCollection() {
+        return arccommentsCollection;
+    }
+
+    public void setArccommentsCollection(Collection<Arccomments> arccommentsCollection) {
+        this.arccommentsCollection = arccommentsCollection;
     }
 
     @Override
@@ -390,5 +402,5 @@ public class Arcincidents implements Serializable {
     public String toString() {
         return "entity.Arcincidents[ id=" + id + " ]";
     }
-    
+
 }

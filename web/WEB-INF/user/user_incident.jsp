@@ -120,8 +120,8 @@
                         </c:choose>
 
                         <c:if test="${incident.status.id > 1}">
-                            <div class="nazn">${incident.specialist.name} (${incident.specialist.dpost.name})</div>
-                        </c:if>
+                            <div class="nazn"><img class="img_nazn" src='<c:url value="/css/img/appoint.png"/>'><div class="ztext">${incident.specialist.name} (${incident.specialist.dpost.name})</div></div>
+                            </c:if>
 
                         <c:choose>
                             <c:when test="${incident.status.id == 4}">       
@@ -165,7 +165,7 @@
                             <c:when test="${commenta == 1}">
                                 <div class="commentar">
                                     <textarea placeholder="Укажите причину" name="textc" class="commEdit"/></textarea>
-                                    <button type="submit" name="Done" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отменить</button>
+                                    <button type="submit" name="Done" class="ibutt" onclick="return CancelInc(this.form)"/><img class="img_butt" src='<c:url value="/css/img/cancel.png"/>'>Отменить</button>
                                     <input type="hidden" name="status" value="${incident.status.id}"/>
                                 </div>
                             </c:when>
@@ -196,20 +196,27 @@
                                         <input type="submit" value="" name="bHist" class="pan_mod_h"/>
                                     </div>
                                     <div class="comm_inc_mod">
-                                        <c:forEach var="comment" items="${comments}">
-                                            <div class="comm_inc">
-                                                <div class="man_comm">${comment.usersLogin.name}</div>
-                                                <div class="man_otd_comm">${comment.usersLogin.depart.name} / ${comment.usersLogin.dpost.name}</div>
-                                                <div class="dat_comm">${comment.dateComment} ${comment.timeComment}</div>
-                                                ${comment.text}
-                                            </div>
-                                            <div class="liniya_kor"></div>
-                                        </c:forEach>
+                                        <c:choose>
+                                            <c:when test="${comments.size() > 0}">
+                                                <c:forEach var="comment" items="${comments}">
+                                                    <div class="comm_inc">
+                                                        <div class="man_comm">${comment.usersLogin.name}</div>
+                                                        <div class="man_otd_comm">${comment.usersLogin.depart.name} / ${comment.usersLogin.dpost.name}</div>
+                                                        <div class="dat_comm">${comment.dateComment} ${comment.timeComment}</div>
+                                                        ${comment.text}
+                                                    </div>
+                                                    <div class="liniya_kor"></div>
+                                                </c:forEach>
 
-                                        <c:if test="${incident.status.id == 3}">
-                                            <textarea placeholder="Комментировать..." name="textcomm" class="commEdit_comm"/></textarea>
-                                            <button type="submit" name="bCommGo" class="ibutt" onclick="return Comment(this.form)"/><img class="img_butt" src='<c:url value="/css/img/comm_2.png"/>'>Отправить</button>
-                                        </c:if>    
+                                                <c:if test="${incident.status.id == 3}">
+                                                    <textarea placeholder="Комментировать..." name="textcomm" class="commEdit_comm"/></textarea>
+                                                    <button type="submit" name="bCommGo" class="ibutt" onclick="return Comment(this.form)"/><img class="img_butt" src='<c:url value="/css/img/comm_2.png"/>'>Отправить</button>
+                                                </c:if>    
+                                            </c:when>
+                                            <c:otherwise>
+                                                Сообщений нет
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                 </c:when>
 

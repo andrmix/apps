@@ -33,7 +33,7 @@
                             <div class="sidebar_el_m">
                                 <a class="a_unnal" href='<c:url value="/manager"/>'><div class="u_icon_unnal">Нераспределенные обращения
                                         <c:if test="${unallocatedIncidentsNew.size() gt 0}">
-                                            <span class="videlc">${unallocatedIncidentsNew.size()}</span>
+                                            <span class="count">${unallocatedIncidentsNew.size()}</span>
                                         </c:if>
                                     </div>
                                 </a>
@@ -81,7 +81,7 @@
                                 <a class="a_act_inc_m" href='<c:url value="/manager/manager_incidents"/>'>
                                     <div class="u_icon_act_inc_m_v"><span class="videl">Активные обращения 
                                             <c:if test="${openIncidentsManagerNew.size() gt 0}">
-                                                <span class="count">${openIncidentsManagerNew.size()}</span>
+                                                <span class="videlc">${openIncidentsManagerNew.size()}</span>
                                             </c:if>
                                         </span>
                                     </div> 
@@ -103,6 +103,7 @@
                 <table class="incidents_tab">
                     <thead>
                         <tr>
+                            <th><a href='<c:url value="/sort_by_id_m_act"/>'>ИД</a></th>
                             <th><a href='<c:url value="/sort_by_name_m_act"/>'>Заголовок обращения</a></th>
                             <th><a href='<c:url value="/sort_by_date_m_act"/>'>Дата/Время создания</a></th>
                             <th><a href='<c:url value="/sort_by_status_m_act"/>'>Статус</a></th>
@@ -111,7 +112,7 @@
                     </thead>
                     <tbody>
                         <c:if test="${openIncidentsManager.isEmpty()}">
-                        <td colspan="4" style="text-align: center;">Активных обращений нет</td>
+                        <td colspan="5" style="text-align: center;">Активных обращений нет</td>
                     </c:if>
                     <c:forEach var="incident" items="${openIncidentsManager}">
                         <c:choose>
@@ -122,6 +123,7 @@
                                 <tr> 
                                 </c:otherwise>
                             </c:choose>
+                            <td>${incident.id}</td>
                             <td><a href='<c:url value="/manager/incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
                             <td>${incident.dateIncident} ${incident.timeIncident}</td>
                             <td>${incident.status.name}</td>

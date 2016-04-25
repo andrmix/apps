@@ -103,6 +103,7 @@
                 <table class="incidents_tab">
                     <thead>
                         <tr>
+                            <th><a href='<c:url value="/sort_by_id_m_agr"/>'>ИД</a></th>
                             <th><a href='<c:url value="/sort_by_name_m_agr"/>'>Заголовок обращения</a></th>
                             <th><a href='<c:url value="/sort_by_date_m_agr"/>'>Дата/Время создания</a></th>
                             <th><a href='<c:url value="/sort_by_status_m_agr"/>'>Статус</a></th>
@@ -112,7 +113,7 @@
                     </thead>
                     <tbody>
                         <c:if test="${agreeIncidents.isEmpty()}">
-                        <td colspan="5" style="text-align: center;">Обращений на согласование нет</td>
+                        <td colspan="6" style="text-align: center;">Обращений на согласование нет</td>
                     </c:if>
                     <c:forEach var="incident" items="${agreeIncidents}">
                         <c:choose>
@@ -123,6 +124,7 @@
                                 <tr> 
                                 </c:otherwise>
                             </c:choose>
+                            <td>${incident.id}</td>
                             <td><a href='<c:url value="/manager/incident_data?id=${incident.id}"/>'>${incident.title}</a></td>
                             <td>${incident.dateIncident} ${incident.timeIncident}</td>
                             <td>${incident.status.name}</td>

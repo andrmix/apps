@@ -50,11 +50,13 @@ public class Statuses implements Serializable {
     @Column(name = "name")
     private String name;
     @OneToMany(mappedBy = "status")
+    private Collection<Archistory> archistoryCollection;
+    @OneToMany(mappedBy = "status")
     private Collection<Arcincidents> arcincidentsCollection;
     @OneToMany(mappedBy = "status")
-    private Collection<Incidents> incidentsCollection;
-    @OneToMany(mappedBy = "status")
     private Collection<History> historyCollection;
+    @OneToMany(mappedBy = "status")
+    private Collection<Incidents> incidentsCollection;
 
     public Statuses() {
     }
@@ -85,6 +87,15 @@ public class Statuses implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Archistory> getArchistoryCollection() {
+        return archistoryCollection;
+    }
+
+    public void setArchistoryCollection(Collection<Archistory> archistoryCollection) {
+        this.archistoryCollection = archistoryCollection;
+    }
+
+    @XmlTransient
     public Collection<Arcincidents> getArcincidentsCollection() {
         return arcincidentsCollection;
     }
@@ -94,21 +105,21 @@ public class Statuses implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Incidents> getIncidentsCollection() {
-        return incidentsCollection;
-    }
-
-    public void setIncidentsCollection(Collection<Incidents> incidentsCollection) {
-        this.incidentsCollection = incidentsCollection;
-    }
-
-    @XmlTransient
     public Collection<History> getHistoryCollection() {
         return historyCollection;
     }
 
     public void setHistoryCollection(Collection<History> historyCollection) {
         this.historyCollection = historyCollection;
+    }
+
+    @XmlTransient
+    public Collection<Incidents> getIncidentsCollection() {
+        return incidentsCollection;
+    }
+
+    public void setIncidentsCollection(Collection<Incidents> incidentsCollection) {
+        this.incidentsCollection = incidentsCollection;
     }
 
     @Override

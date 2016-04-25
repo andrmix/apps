@@ -1,7 +1,7 @@
 .incidents_tab{
     margin: 0;
     font-family: '9369';
-    font-size: 20px;
+    font-size: 17px;
     border-collapse: collapse;
     text-align: center;
     width: 100%;
@@ -41,7 +41,7 @@
     background: #F0F8FF;
 }
 
-.incidents_tab th:first-child, .incidents_tab td:first-child {
+.incidents_tab th:nth-child(2), .incidents_tab td:nth-child(2) {
     text-align: left;
 }
 

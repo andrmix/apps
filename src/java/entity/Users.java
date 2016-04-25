@@ -78,8 +78,32 @@ public class Users implements Serializable {
     private Integer changePassword;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin", orphanRemoval = true)
     private Collection<Groupuser> groupuserCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "actioner")
+    private Collection<Archistory> archistoryCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin")
     private Collection<Comments> commentsCollection;
+    @OneToMany(mappedBy = "zayavitel")
+    private Collection<Arcincidents> arcincidentsCollection;
+    @OneToMany(mappedBy = "specialist")
+    private Collection<Arcincidents> arcincidentsCollection1;
+    @OneToMany(mappedBy = "manager")
+    private Collection<Arcincidents> arcincidentsCollection2;
+    @OneToMany(mappedBy = "specialist")
+    private Collection<Arcdocs> arcdocsCollection;
+    @OneToMany(mappedBy = "komis1")
+    private Collection<Arcdocs> arcdocsCollection1;
+    @OneToMany(mappedBy = "komis2")
+    private Collection<Arcdocs> arcdocsCollection2;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "actioner")
+    private Collection<History> historyCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usersLogin")
+    private Collection<Arccomments> arccommentsCollection;
+    @JoinColumn(name = "depart", referencedColumnName = "id")
+    @ManyToOne
+    private Departs depart;
+    @JoinColumn(name = "dpost", referencedColumnName = "id")
+    @ManyToOne
+    private Posts dpost;
     @OneToMany(mappedBy = "specialist")
     private Collection<Docs> docsCollection;
     @OneToMany(mappedBy = "komis1")
@@ -87,25 +111,11 @@ public class Users implements Serializable {
     @OneToMany(mappedBy = "komis2")
     private Collection<Docs> docsCollection2;
     @OneToMany(mappedBy = "zayavitel")
-    private Collection<Arcincidents> arcincidentsCollection;
-    @OneToMany(mappedBy = "specialist")
-    private Collection<Arcincidents> arcincidentsCollection1;
-    @OneToMany(mappedBy = "manager")
-    private Collection<Arcincidents> arcincidentsCollection2;
-    @OneToMany(mappedBy = "zayavitel")
     private Collection<Incidents> incidentsCollection;
     @OneToMany(mappedBy = "specialist")
     private Collection<Incidents> incidentsCollection1;
     @OneToMany(mappedBy = "manager")
     private Collection<Incidents> incidentsCollection2;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "actioner")
-    private Collection<History> historyCollection;
-    @JoinColumn(name = "depart", referencedColumnName = "id")
-    @ManyToOne
-    private Departs depart;
-    @JoinColumn(name = "dpost", referencedColumnName = "id")
-    @ManyToOne
-    private Posts dpost;
 
     public Users() {
     }
@@ -171,39 +181,21 @@ public class Users implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Archistory> getArchistoryCollection() {
+        return archistoryCollection;
+    }
+
+    public void setArchistoryCollection(Collection<Archistory> archistoryCollection) {
+        this.archistoryCollection = archistoryCollection;
+    }
+
+    @XmlTransient
     public Collection<Comments> getCommentsCollection() {
         return commentsCollection;
     }
 
     public void setCommentsCollection(Collection<Comments> commentsCollection) {
         this.commentsCollection = commentsCollection;
-    }
-
-    @XmlTransient
-    public Collection<Docs> getDocsCollection() {
-        return docsCollection;
-    }
-
-    public void setDocsCollection(Collection<Docs> docsCollection) {
-        this.docsCollection = docsCollection;
-    }
-
-    @XmlTransient
-    public Collection<Docs> getDocsCollection1() {
-        return docsCollection1;
-    }
-
-    public void setDocsCollection1(Collection<Docs> docsCollection1) {
-        this.docsCollection1 = docsCollection1;
-    }
-
-    @XmlTransient
-    public Collection<Docs> getDocsCollection2() {
-        return docsCollection2;
-    }
-
-    public void setDocsCollection2(Collection<Docs> docsCollection2) {
-        this.docsCollection2 = docsCollection2;
     }
 
     @XmlTransient
@@ -234,6 +226,94 @@ public class Users implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Arcdocs> getArcdocsCollection() {
+        return arcdocsCollection;
+    }
+
+    public void setArcdocsCollection(Collection<Arcdocs> arcdocsCollection) {
+        this.arcdocsCollection = arcdocsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Arcdocs> getArcdocsCollection1() {
+        return arcdocsCollection1;
+    }
+
+    public void setArcdocsCollection1(Collection<Arcdocs> arcdocsCollection1) {
+        this.arcdocsCollection1 = arcdocsCollection1;
+    }
+
+    @XmlTransient
+    public Collection<Arcdocs> getArcdocsCollection2() {
+        return arcdocsCollection2;
+    }
+
+    public void setArcdocsCollection2(Collection<Arcdocs> arcdocsCollection2) {
+        this.arcdocsCollection2 = arcdocsCollection2;
+    }
+
+    @XmlTransient
+    public Collection<History> getHistoryCollection() {
+        return historyCollection;
+    }
+
+    public void setHistoryCollection(Collection<History> historyCollection) {
+        this.historyCollection = historyCollection;
+    }
+
+    @XmlTransient
+    public Collection<Arccomments> getArccommentsCollection() {
+        return arccommentsCollection;
+    }
+
+    public void setArccommentsCollection(Collection<Arccomments> arccommentsCollection) {
+        this.arccommentsCollection = arccommentsCollection;
+    }
+
+    public Departs getDepart() {
+        return depart;
+    }
+
+    public void setDepart(Departs depart) {
+        this.depart = depart;
+    }
+
+    public Posts getDpost() {
+        return dpost;
+    }
+
+    public void setDpost(Posts dpost) {
+        this.dpost = dpost;
+    }
+
+    @XmlTransient
+    public Collection<Docs> getDocsCollection() {
+        return docsCollection;
+    }
+
+    public void setDocsCollection(Collection<Docs> docsCollection) {
+        this.docsCollection = docsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Docs> getDocsCollection1() {
+        return docsCollection1;
+    }
+
+    public void setDocsCollection1(Collection<Docs> docsCollection1) {
+        this.docsCollection1 = docsCollection1;
+    }
+
+    @XmlTransient
+    public Collection<Docs> getDocsCollection2() {
+        return docsCollection2;
+    }
+
+    public void setDocsCollection2(Collection<Docs> docsCollection2) {
+        this.docsCollection2 = docsCollection2;
+    }
+
+    @XmlTransient
     public Collection<Incidents> getIncidentsCollection() {
         return incidentsCollection;
     }
@@ -258,31 +338,6 @@ public class Users implements Serializable {
 
     public void setIncidentsCollection2(Collection<Incidents> incidentsCollection2) {
         this.incidentsCollection2 = incidentsCollection2;
-    }
-
-    @XmlTransient
-    public Collection<History> getHistoryCollection() {
-        return historyCollection;
-    }
-
-    public void setHistoryCollection(Collection<History> historyCollection) {
-        this.historyCollection = historyCollection;
-    }
-
-    public Departs getDepart() {
-        return depart;
-    }
-
-    public void setDepart(Departs depart) {
-        this.depart = depart;
-    }
-
-    public Posts getDpost() {
-        return dpost;
-    }
-
-    public void setDpost(Posts dpost) {
-        this.dpost = dpost;
     }
 
     @Override
