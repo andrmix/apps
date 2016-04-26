@@ -77,7 +77,7 @@
                     </c:otherwise>
                 </c:choose>
 
-                <table class="incidents_tab">
+                <table class="incidents_tab_d">
                     <thead>
                         <tr>
                             <th><a href='<c:url value="/sort_by_name_typeincident"/>'>Название типа инцидента</a></th>

@@ -94,7 +94,7 @@
                     </c:otherwise>
                 </c:choose>
 
-                <table class="incidents_tab">
+                <table class="incidents_tab_d">
                     <thead>
                         <tr>
                             <th><a href='<c:url value="/sort_by_fio"/>'>ФИО сотрудника</a></th>

@@ -100,7 +100,7 @@
                 </c:choose>
             </div>
             <div id="content">
-                <table class="incidents_tab">
+                <table class="incidents_tab_d">
                     <thead>
                         <tr>
                             <th rowspan="2"><a href='<c:url value="/sort_by_fio_spec"/>'>ФИО специалиста</a></th>
