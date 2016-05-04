@@ -12,6 +12,7 @@ import entity.Arcincidents;
 import entity.Comments;
 import entity.Departs;
 import entity.Docs;
+import entity.Groupuser;
 import entity.History;
 import entity.Incidents;
 import entity.Posts;
@@ -63,7 +64,7 @@ public interface GetterBeanLocal {
     public List<Arcincidents> getSpecialistClosedIncidentsF(Users specialist, String sort, String dateBeg, String dateEnd, String filterParam);
     public List<Incidents> getNotManagedIncidents();
     public List getSimilarIncidents(Incidents incident);
-    public List<Users> whoIsManager();
+    public Users whoIsManager();
     public List<Posts> getAllPosts(String sort);
     public List<Posts> getPostsSearch(String searchText);
     public List<Posts> getPostsForEdit(Posts dpost);
@@ -78,4 +79,5 @@ public interface GetterBeanLocal {
     public List<Arcdocs> getArcReqs(Arcincidents arcincident);
     public List<Arcdocs> getArcActDone(Arcincidents arcincident);
     public List<Incidents> getIncidents(boolean task);
+    public List getIncidentsStatistics();
 }

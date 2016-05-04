@@ -165,6 +165,7 @@ public class manager_controller extends HttpServlet {
         //список специалистов =============================================================================================================
         if ("/manager/specialists".equals(request.getServletPath())) {
             getServletContext().setAttribute("specialistList", gb.getSpecialistsStatistics());
+            getServletContext().setAttribute("typiList", gb.getIncidentsStatistics());
             request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
         }
 
@@ -341,7 +342,7 @@ public class manager_controller extends HttpServlet {
                     if (ms.isTask(manager, incident)) {
                         ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), false, manager);
                     } else {
-                        ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), true, manager);
+                        ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), true, manager);                        
                     }
                     response.sendRedirect(request.getContextPath() + "/manager");
                     return;

@@ -126,6 +126,9 @@
                                 <li>
                                     <button type="submit" name="Done" class="ibutt"/><img class="img_butt" src='<c:url value="/css/img/done.png"/>'>Назначить</button>
                                 </li>
+                                <li>
+                                    <input type="checkbox">Учитывать меня при автораспределении
+                                </li>
                             </ul>
                         </div>
                     </c:otherwise>

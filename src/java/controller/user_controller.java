@@ -97,6 +97,7 @@ public class user_controller extends HttpServlet {
                 response.sendRedirect("change_password");
             } else {
                 request.setAttribute("user", user);
+                getServletContext().setAttribute("mana", gb.whoIsManager());
                 getServletContext().setAttribute("openIncidents", gb.getOpenIncidents(user, "none"));
                 getServletContext().setAttribute("openIncidentsNew", gb.getOpenIncidentsNew(user));
                 getServletContext().setAttribute("closedIncidentsNew", gb.getClosedIncidentsNew(user));

@@ -214,7 +214,15 @@
                                                 </c:if>    
                                             </c:when>
                                             <c:otherwise>
-                                                Сообщений нет
+                                                <c:choose>
+                                                    <c:when test="${incident.status.id == 3}">
+                                                        <textarea placeholder="Комментировать..." name="textcomm" class="commEdit_comm"/></textarea>
+                                                        <button type="submit" name="bCommGo" class="ibutt" onclick="return Comment(this.form)"/><img class="img_butt" src='<c:url value="/css/img/comm_2.png"/>'>Отправить</button>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        Сообщений нет
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>

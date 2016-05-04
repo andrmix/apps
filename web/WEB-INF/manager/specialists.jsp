@@ -11,6 +11,42 @@
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/toolbar.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
+        <script src="https://www.google.com/jsapi"></script>
+        <script>
+            google.load("visualization", "1", {packages: ["corechart"]});
+            google.setOnLoadCallback(drawChart);
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                    ['Тип обращения', 'Количество'],
+            <c:forEach var="typi" items="${typiList}">
+                    ['${typi[1]}', ${typi[2]}],
+            </c:forEach>
+                ]);
+                var options = {
+                    title: 'Обращения (за все время)',
+                    is3D: true,
+                    pieResidueSliceLabel: 'Остальное'
+                };
+                var chart = new google.visualization.PieChart(document.getElementById('air'));
+                chart.draw(data, options);
+            }
+            google.setOnLoadCallback(drawChartV);
+            function drawChartV() {
+    var data = google.visualization.arrayToDataTable([
+     ['Специалист', 'Показатель'],
+     <c:forEach var="useri" items="${specialistList}">
+                    ['${useri[0]}', ${useri[4]}],
+            </c:forEach>
+    ]);
+    var options = {
+     title: 'Обращения (за все время)',
+     hAxis: {title: 'Специалист'},
+     vAxis: {title: 'Показатель'}
+    };
+    var chart = new google.visualization.ColumnChart(document.getElementById('oil'));
+    chart.draw(data, options);
+   }
+        </script>
     </head>
     <body>
         <form action='<c:url value="/manager/specialists"/>' method="POST">
@@ -46,9 +82,9 @@
                             </div> 
                             <div class="sidebar_el_m">
                                 <a class="a_vyp" href='<c:url value="/manager/on_agreement"/>'><div class="u_icon_vyp">Выполненные задания
-                                            <c:if test="${agreeIncidentsNew.size() gt 0}">
-                                                <span class="count">${agreeIncidentsNew.size()}</span>
-                                            </c:if>
+                                        <c:if test="${agreeIncidentsNew.size() gt 0}">
+                                            <span class="count">${agreeIncidentsNew.size()}</span>
+                                        </c:if>
                                     </div>
                                 </a>
                             </div>
@@ -153,6 +189,8 @@
                         </c:forEach>
                     </tbody>
                 </table>
+                <div id="air" style="width: 550px; height: 400px;"></div>
+                <div id="oil" style="width: 450px; height: 400px;"></div>
             </div>
         </form>
     </body>

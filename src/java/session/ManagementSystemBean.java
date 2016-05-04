@@ -19,11 +19,14 @@ import entity.Posts;
 import entity.Statuses;
 import entity.Typeincident;
 import entity.Users;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
@@ -40,6 +43,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -71,7 +75,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         int countClose = gb.getArcincidents(false).size();
         int count = countClose + countOpen;
         count = count + 1;
-        incident.setId("A" + count);
+        String ida = "A" + count;
+        incident.setId(ida);
         incident.setDateIncident(new Date());
         incident.setTimeIncident(new Date());
         Statuses status = em.find(Statuses.class, 1);
@@ -90,12 +95,14 @@ public class ManagementSystemBean implements ManagementSystemLocal {
             if (isAuto()) {
                 autoAppoint(incident);
             }
+            Incidents inca = findIncident(ida);
+            sendMail(inca, null, "user_new", "");
+            sendMail(inca, null, "manager_new", "");
         } else {
             ret = incident.getId();
             em.merge(incident);
             addHistory(incident, zayavitel, "Исправление");
         }
-
         return ret;
     }
 
@@ -167,42 +174,61 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void addUser(String login, String fio, String email,
             Departs depart, String role, boolean addUser, Posts dpost) {
-        try {
-            Users user;
-            if (addUser) {
-                user = new Users();
-            } else {
-                user = findUser(login);
-            }
-            user.setDepart(depart);
-            user.setDpost(dpost);
-            user.setEmail(email);
-            user.setLogin(login);
-            user.setName(fio);
-            if (addUser) {
-                user.setPass("12345678");
-                user.setChangePassword(1);
-                em.persist(user);
-            } else {
-                em.merge(user);
-            }
-            Groupuser groupuser;
-            if (addUser) {
-                groupuser = new Groupuser();
-            } else {
-                groupuser = findGroupuser(user);
-            }
-            groupuser.setName(role);
-            groupuser.setUsersLogin(user);
-            if (addUser) {
-                em.persist(groupuser);
-            } else {
-                em.merge(groupuser);
-            }
-        } catch (Exception e) {
-            context.setRollbackOnly();
-            e.printStackTrace();
-        }
+        Query q = null;
+        q = em.createNativeQuery(""
+                + "INSERT INTO users (login, pass, name, email, depart, dpost, changePassword)"
+                + "VALUES (?, SHA2(?, 256), ?, ?, ?, ?, 0);");
+        q.setParameter("1", login);
+        q.setParameter("2", "123");
+        q.setParameter("3", fio);
+        q.setParameter("4", email);
+        q.setParameter("5", depart.getId());
+        q.setParameter("6", dpost.getId());
+        q.executeUpdate();
+        Users user;
+        user = findUser(login);
+        Groupuser groupuser;
+        groupuser = new Groupuser();
+        groupuser.setName(role);
+        groupuser.setUsersLogin(user);
+        em.persist(groupuser);
+        /*try {
+         Users user;
+         if (addUser) {
+         user = new Users();
+         } else {
+         user = findUser(login);
+         }
+         user.setDepart(depart);
+         user.setDpost(dpost);
+         user.setEmail(email);
+         user.setLogin(login);
+         user.setName(fio);
+         if (addUser) {
+         user.setPass("12345678");
+         user.setChangePassword(1);
+         em.persist(user);
+         } else {
+         em.merge(user);
+         }
+         Groupuser groupuser;
+         if (addUser) {
+         groupuser = new Groupuser();
+         } else {
+         groupuser = findGroupuser(user);
+         }
+         groupuser.setName(role);
+         groupuser.setUsersLogin(user);
+         if (addUser) {
+         em.persist(groupuser);
+         } else {
+         em.merge(groupuser);
+         }
+         } catch (Exception e) {
+         context.setRollbackOnly();
+         e.printStackTrace();
+         }*/
+
     }
 
     @Override
@@ -261,6 +287,8 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setNew1(1);
         em.merge(incident);
         addHistory(incident, manager, specialist.getName());
+        sendMail(incident, null, "user_appoint", "");
+        sendMail(incident, null, "spec_appoint", "");
     }
 
     @Override
@@ -439,7 +467,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
     public Docs findDoc(Object id) {
         return em.find(Docs.class, id);
     }
-    
+
     @Override
     public Arcdocs findArcDoc(Object id) {
         return em.find(Arcdocs.class, id);
@@ -491,6 +519,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         //История
         if (tstatus.equals("1") && it) {
             addHistory(incident, manager, "Перенесен в архив");
+            sendMail(incident, null, "user_otkl", "");
         }
         if (tstatus.equals("1") && !it) {
             addHistory(incident, incident.getZayavitel(), null);
@@ -498,12 +527,14 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         if (tstatus.equals("2") || tstatus.equals("3")) {
             if (it) {
                 addHistory(incident, incident.getSpecialist(), "Перенесен в архив");
+                sendMail(incident, null, "user_otkl", "");
             } else {
                 addHistory(incident, incident.getZayavitel(), null);
             }
         }
         if (tstatus.equals("4")) {
             addHistory(incident, incident.getZayavitel(), "На доработку");
+            sendMail(incident, null, "spec_otkl", textp);
         }
 
         if (inArc) {
@@ -525,11 +556,12 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         incident.setStatus(gb.getStatuses().get(3));//4
         incident.setDecision(decision);
         incident.setNew1(1);
-        if (kb){
+        if (kb) {
             incident.setKb(1);
         }
         em.merge(incident);
         addHistory(incident, incident.getSpecialist(), null);
+        sendMail(incident, null, "done", "");
     }
 
     @Override
@@ -538,6 +570,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         em.merge(incident);
         addActDone(incident);
         addHistory(incident, incident.getManager(), "Перенесен в архив");
+        sendMail(incident, null, "close", "");
         addIncidentInArc(incident);
     }
 
@@ -600,7 +633,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         q = em.createNamedQuery("Comments.deleteOpen");
         q.setParameter("incident", incident);
         q.executeUpdate();
-        
+
         List<History> historys = gb.getHistory(incident);
         for (History history : historys) {
             Archistory archistory = new Archistory();
@@ -615,7 +648,7 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         q = em.createNamedQuery("History.deleteOpen");
         q.setParameter("incident", incident);
         q.executeUpdate();
-        
+
         List<Docs> docs = gb.getDocs(incident);
         for (Docs doc : docs) {
             Arcdocs arcdoc = new Arcdocs();
@@ -641,11 +674,10 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         Properties props;
         props = new Properties();
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.host", "10.20.30.1");
+        props.put("mail.smtp.host", "app");
         props.put("mail.smtp.port", "25");
 
         String toMail = null;
-        int recipCount = 0;
         List<Users> recipList = null;
 
         Session session = Session.getInstance(props, new Authenticator() {
@@ -655,90 +687,82 @@ public class ManagementSystemBean implements ManagementSystemLocal {
         });
 
         try {
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
+            message.setHeader("Content-Type", "text/plain; charset=UTF-8");
             message.setFrom(new InternetAddress("help@bank.ru"));
             //Заголовок письма
-            message.setSubject("Обращение ID " + incident.getId() + " - " + incident.getTitle());
+            message.setSubject("Обращение ИД " + incident.getId() + " - " + incident.getTitle(), "UTF-8");
             //Содержимое
+            String texa = null;
             switch (code) {
                 case "user_new":
-                    message.setText("Ваше обращение (ID " + incident.getId()
+                    texa = "Ваше обращение (ИД " + incident.getId()
                             + " - " + incident.getTitle() + ")"
                             + " зарегистрировано (" + incident.getDateIncident()
-                            + " " + incident.getTimeIncident() + ")");
+                            + " " + incident.getTimeIncident() + ")";
+
                     toMail = incident.getZayavitel().getEmail();
-                    recipCount = 1;
                     break;
                 case "manager_new":
-                    message.setText("Поступило новое обращение (ID " + incident.getId()
+                    texa = "Поступило новое обращение (ИД " + incident.getId()
                             + " - " + incident.getTitle() + " - " + incident.getZayavitel().getName() + ")"
                             + " (" + incident.getDateIncident()
-                            + " " + incident.getTimeIncident() + ")");
-                    recipList = gb.whoIsManager();
-                    recipCount = 2;
+                            + " " + incident.getTimeIncident() + ")"
+                            + " Для перехода пройдите по ссылке: http://app:8080/help/manager/incident_data?id=" + incident.getId();
+                    toMail = gb.whoIsManager().getEmail();
                     break;
                 case "user_appoint":
-                    message.setText("Ваше обращение (ID " + incident.getId()
+                    texa = "Ваше обращение (ИД " + incident.getId()
                             + " - " + incident.getTitle() + ")"
                             + " назначено (" + dateInStr(new Date())
                             + " " + timeInStr(new Date()) + "). "
-                            + "Специалист: " + incident.getSpecialist().getName());
+                            + "Специалист: " + incident.getSpecialist().getName();
                     toMail = incident.getZayavitel().getEmail();
-                    recipCount = 1;
                     break;
                 case "spec_appoint":
-                    message.setText("Вам назначено обращение (ID " + incident.getId()
+                    texa = "Вам назначено обращение (ИД " + incident.getId()
                             + " - " + incident.getTitle() + ")"
                             + " (" + dateInStr(new Date())
-                            + " " + timeInStr(new Date()) + ")");
+                            + " " + timeInStr(new Date()) + ")"
+                            + " Для перехода пройдите по ссылке: http://app:8080/help/specialist/spec_incident_data?id=" + incident.getId();
                     toMail = incident.getSpecialist().getEmail();
-                    recipCount = 1;
                     break;
                 case "done":
-                    message.setText("Ваше обращение (ID " + incident.getId()
+                    texa = "Ваше обращение (ИД " + incident.getId()
                             + " - " + incident.getTitle() + ")"
                             + " выполнено (" + incident.getDateDone()
-                            + " " + incident.getTimeDone() + "). ");
+                            + " " + incident.getTimeDone() + ")."
+                            + " Для перехода пройдите по ссылке: http://app:8080/help/user/user_incident?id=" + incident.getId();
                     toMail = incident.getZayavitel().getEmail();
-                    recipCount = 1;
                     break;
                 case "user_otkl":
-                    message.setText("Ваше обращение (ID " + arcincident.getId()
-                            + " - " + arcincident.getTitle() + ")"
-                            + " отклонено (" + arcincident.getDateClose()
-                            + " " + arcincident.getTimeClose() + ")"
-                            + " по причине: " + arcincident.getDecision());
-                    toMail = arcincident.getZayavitel().getEmail();
-                    recipCount = 1;
+                    texa = "Ваше обращение (ИД " + incident.getId()
+                            + " - " + incident.getTitle() + ")"
+                            + " отклонено "
+                            + " по причине: " + incident.getDecision()
+                            + " Для перехода пройдите по ссылке: http://app:8080/help/user/user_incident?id=" + incident.getId();
+                    toMail = incident.getZayavitel().getEmail();
                     break;
                 case "spec_otkl":
-                    message.setText("Обращение (ID " + incident.getId()
+                    texa = "Обращение (ИД " + incident.getId()
                             + " - " + incident.getTitle() + ")"
                             + " возвращено на доработку (" + dateInStr(new Date())
                             + " " + timeInStr(new Date()) + ")"
-                            + " по причине: " + prich);
+                            + " по причине: " + prich
+                            + " Для перехода пройдите по ссылке: http://app:8080/help/specialist/spec_incident_data?id=" + incident.getId();
                     toMail = incident.getSpecialist().getEmail();
-                    recipCount = 1;
                     break;
                 case "close":
-                    message.setText("Обращение (ID " + arcincident.getId()
-                            + " - " + arcincident.getTitle() + ")"
-                            + " закрыто (" + arcincident.getDateClose()
-                            + " " + arcincident.getTimeClose() + ")");
-                    toMail = arcincident.getSpecialist().getEmail();
-                    recipCount = 1;
+                    texa = "Обращение (ИД " + incident.getId()
+                            + " - " + incident.getTitle() + ")"
+                            + " закрыто "
+                            + " Для перехода пройдите по ссылке: http://app:8080/help/specialist/spec_incident_data?id=" + incident.getId();
+                    toMail = incident.getSpecialist().getEmail();
                     break;
             }
-            if (recipCount == 1) {
-                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toMail));
-                Transport.send(message);
-            }
-            if (recipCount > 1) {
-                for (Users recipManager : recipList) {
-                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipManager.getEmail()));
-                    Transport.send(message);
-                }
-            }
+            message.setText(texa, "UTF-8");
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toMail));
+            Transport.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }

@@ -19,7 +19,7 @@
                     <div class="heada">${user.name}
                         (<a href='<c:url value="/logout"/>'>Выйти</a>)
                         / ${user.depart.name} / ${user.dpost.name}
-                    </div><div class="headb">/ Нераспределенные обращения</div>
+                    </div><div class="headb">/ Распределенные обращения</div>
                 </div>
             </div>
             <div id="sidebar">

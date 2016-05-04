@@ -87,3 +87,7 @@ img[tabindex="0"]:focus ~ * {
   pointer-events: none;
   cursor: zoom-out;
 }
+
+#air, #oil{
+    display: inline-block;
+}

@@ -103,15 +103,13 @@ public class GetterBean implements GetterBeanLocal {
     }
 
     @Override
-    public List<Users> whoIsManager() {
+    public Users whoIsManager() {
         List<Users> users = null;
         Query q = em.createNamedQuery("Groupuser.findByName");
         q.setParameter("name", "manager");
         List<Groupuser> resultList = q.getResultList();
-        for (Groupuser groupuser : resultList) {
-            users.add(groupuser.getUsersLogin());
-        }
-        return users;
+        Users manager = resultList.get(0).getUsersLogin();
+        return manager;
     }
 
     @Override
@@ -1175,6 +1173,22 @@ public class GetterBean implements GetterBeanLocal {
             }
         }
         return resList;
+    }
+
+    @Override
+    public List getIncidentsStatistics() {
+        Query q = em.createNativeQuery("SELECT u.id, u.name, tab_end_all.cnt AS cnt_end_all "
+                + "FROM typeincident AS u "
+                + "LEFT OUTER JOIN ("
+                + "SELECT a.typeIncident AS ti, COUNT(a.typeIncident) AS cnt "
+                + "FROM arcincidents AS a "
+                + "WHERE (a.status = 5) "
+                + "AND a.typeIncident IS NOT NULL "
+                + "GROUP BY a.typeIncident"
+                + ") AS tab_end_all ON u.id = tab_end_all.ti "
+                + "GROUP BY u.name;");
+        List resultList = q.getResultList();
+        return resultList;
     }
 
 }
