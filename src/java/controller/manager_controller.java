@@ -166,6 +166,19 @@ public class manager_controller extends HttpServlet {
         if ("/manager/specialists".equals(request.getServletPath())) {
             getServletContext().setAttribute("specialistList", gb.getSpecialistsStatistics());
             getServletContext().setAttribute("typiList", gb.getIncidentsStatistics());
+            getServletContext().setAttribute("specialistmList", gb.getSpecialistsStatisticsMonth("2016", "1"));
+            getServletContext().setAttribute("typimList", gb.getIncidentsStatisticsMonth("2016", "1"));
+            
+            String answer = null;
+            answer = checkAction(request);
+
+            if (answer.equals("Showc")) {
+                String yearc = request.getParameter("years");
+                String monc = request.getParameter("monId");
+                getServletContext().setAttribute("specialistmList", gb.getSpecialistsStatisticsMonth(yearc, monc));
+                getServletContext().setAttribute("typimList", gb.getIncidentsStatisticsMonth(yearc, monc));
+            }
+            
             request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
         }
 
@@ -342,7 +355,7 @@ public class manager_controller extends HttpServlet {
                     if (ms.isTask(manager, incident)) {
                         ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), false, manager);
                     } else {
-                        ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), true, manager);                        
+                        ms.cancelIncident(incident, request.getParameter("textc"), request.getParameter("status"), true, manager);
                     }
                     response.sendRedirect(request.getContextPath() + "/manager");
                     return;
@@ -774,6 +787,9 @@ public class manager_controller extends HttpServlet {
         }
         if (req.getParameter("Zamena") != null) {
             return "Zamena";
+        }
+        if (req.getParameter("Showc") != null) {
+            return "Showc";
         }
         return "none";
     }

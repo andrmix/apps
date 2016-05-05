@@ -333,6 +333,17 @@
     position: relative;
 }
 
+.naznac{
+    margin-top: 20px;
+    width: 1000px;
+    font-size: 15px;
+    padding: 10px;
+    background: #CEE3F6;
+    position: relative;
+    border: 0;
+    border-radius: 0px 5px 5px 0px;
+}
+
 .img_butt{
     position: absolute;
     height: 20px;
@@ -376,6 +387,23 @@
     margin-bottom: 10px;
 }
 
+.sel_komisc{
+    width: 150px;
+    height: 30px;
+    font-size: 15px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+}
+
+.pyear{
+    width: 50px;
+    height: 25px;
+    font-size: 15px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    text-align: center;
+}
+
 .ztext{
     display: inline-block;
     height: 30px;
@@ -403,7 +431,27 @@
     padding-left: 35px;
 }
 
+.ibuttzc{
+    font-family: '9369';
+    cursor: pointer;
+    background: #483D8B;
+    width: 140px;
+    height: 30px;
+    font-size: 13px;
+    color: #Ffffff;
+    border: 0;
+    line-height: 30px;
+    position: relative;
+    text-align: left;
+    padding-left: 35px;
+    margin-left: 20px;
+}
+
 .ibuttz:hover{
+    background: #6A5ACD;
+}
+
+.ibuttzc:hover{
     background: #6A5ACD;
 }
 

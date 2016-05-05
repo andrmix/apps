@@ -88,6 +88,6 @@ img[tabindex="0"]:focus ~ * {
   cursor: zoom-out;
 }
 
-#air, #oil{
+#air, #oil, #airm, #oilm{
     display: inline-block;
 }

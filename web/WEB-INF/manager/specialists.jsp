@@ -9,6 +9,7 @@
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/sidebar.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/tables.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/toolbar.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/incident_data.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
         <script src="https://www.google.com/jsapi"></script>
@@ -23,7 +24,7 @@
             </c:forEach>
                 ]);
                 var options = {
-                    title: 'Обращения (за все время)',
+                    title: 'Типы обращения',
                     is3D: true,
                     pieResidueSliceLabel: 'Остальное'
                 };
@@ -32,20 +33,56 @@
             }
             google.setOnLoadCallback(drawChartV);
             function drawChartV() {
-    var data = google.visualization.arrayToDataTable([
-     ['Специалист', 'Показатель'],
-     <c:forEach var="useri" items="${specialistList}">
+                var data = google.visualization.arrayToDataTable([
+                    ['Специалист', 'Показатель'],
+            <c:forEach var="useri" items="${specialistList}">
                     ['${useri[0]}', ${useri[4]}],
             </c:forEach>
-    ]);
-    var options = {
-     title: 'Обращения (за все время)',
-     hAxis: {title: 'Специалист'},
-     vAxis: {title: 'Показатель'}
-    };
-    var chart = new google.visualization.ColumnChart(document.getElementById('oil'));
-    chart.draw(data, options);
-   }
+                ]);
+                var options = {
+                    title: 'Специалисты',
+                    is3D: true,
+                    hAxis: {title: 'Специалисты'},
+                    vAxis: {title: 'Показатель'}
+                };
+                var chart = new google.visualization.ColumnChart(document.getElementById('oil'));
+                chart.draw(data, options);
+            }
+
+            google.load("visualization", "1", {packages: ["corechart"]});
+            google.setOnLoadCallback(drawChartM);
+            function drawChartM() {
+                var data = google.visualization.arrayToDataTable([
+                    ['Тип обращения', 'Количество'],
+            <c:forEach var="typim" items="${typimList}">
+                    ['${typim[1]}', ${typim[2]}],
+            </c:forEach>
+                ]);
+                var options = {
+                    title: 'Типы обращения',
+                    is3D: true,
+                    pieResidueSliceLabel: 'Остальное'
+                };
+                var chart = new google.visualization.PieChart(document.getElementById('airm'));
+                chart.draw(data, options);
+            }
+            google.setOnLoadCallback(drawChartVM);
+            function drawChartVM() {
+                var data = google.visualization.arrayToDataTable([
+                    ['Специалист', 'Показатель'],
+            <c:forEach var="userim" items="${specialistmList}">
+                    ['${userim[0]}', ${userim[1]}],
+            </c:forEach>
+                ]);
+                var options = {
+                    title: 'Специалисты',
+                    is3D: true,
+                    hAxis: {title: 'Специалисты'},
+                    vAxis: {title: 'Показатель'}
+                };
+                var chart = new google.visualization.ColumnChart(document.getElementById('oilm'));
+                chart.draw(data, options);
+            }
         </script>
     </head>
     <body>
@@ -189,6 +226,29 @@
                         </c:forEach>
                     </tbody>
                 </table>
+                <div class="naznac"><img class="img_nazn" src='<c:url value="/css/img/docs.png"/>'><div class="ztext">За месяц
+                        <select name="monId" class="sel_komisc">
+                            <option value="1" selected>Январь</option>
+                            <option value="2">Февраль</option>
+                            <option value="3">Март</option>
+                            <option value="4">Апрель</option>
+                            <option value="5">Май</option>
+                            <option value="6">Июнь</option>
+                            <option value="7">Июль</option>
+                            <option value="8">Август</option>
+                            <option value="9">Сентябрь</option>
+                            <option value="10">Октябрь</option>
+                            <option value="11">Ноябрь</option>
+                            <option value="12">Декабрь</option>
+                        </select>
+                        <input type="text" name="years" class="pyear" value="2016"/> года
+                        <button type="submit" name="Showc" class="ibuttzc"/><img class="img_buttz" src='<c:url value="/css/img/done.png"/>'>Показать</button>
+                    </div></div>
+                <div>
+                    <div id="airm" style="width: 550px; height: 400px;"></div>
+                    <div id="oilm" style="width: 450px; height: 400px;"></div>
+                </div>
+                <div class="naznac"><img class="img_nazn" src='<c:url value="/css/img/docs.png"/>'><div class="ztext">За все время</div></div>
                 <div id="air" style="width: 550px; height: 400px;"></div>
                 <div id="oil" style="width: 450px; height: 400px;"></div>
             </div>

@@ -80,4 +80,6 @@ public interface GetterBeanLocal {
     public List<Arcdocs> getArcActDone(Arcincidents arcincident);
     public List<Incidents> getIncidents(boolean task);
     public List getIncidentsStatistics();
+    public List getIncidentsStatisticsMonth(String year, String month);
+    public List getSpecialistsStatisticsMonth(String year, String month);
 }
