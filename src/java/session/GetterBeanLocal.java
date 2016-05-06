@@ -82,4 +82,6 @@ public interface GetterBeanLocal {
     public List getIncidentsStatistics();
     public List getIncidentsStatisticsMonth(String year, String month);
     public List getSpecialistsStatisticsMonth(String year, String month);
+    public List getSpecIncidentsStatisticsMonth(String year, String month, Users specialist);
+    public List getSpecIncidentsStatistics(Users specialist);
 }

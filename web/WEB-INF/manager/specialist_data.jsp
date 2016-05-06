@@ -8,8 +8,46 @@
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/header.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/sidebar.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/css/tables.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/incident_data.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/css/toolbar.css"/>'>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Решение</title>
+        <script src="https://www.google.com/jsapi"></script>
+        <script>
+            google.load("visualization", "1", {packages: ["corechart"]});
+            google.setOnLoadCallback(drawChart);
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                    ['Тип обращения', 'Количество'],
+            <c:forEach var="typis" items="${typisList}">
+                    ['${typis[1]}', ${typis[2]}],
+            </c:forEach>
+                ]);
+                var options = {
+                    title: 'Типы обращения',
+                    is3D: true,
+                    pieResidueSliceLabel: 'Остальное'
+                };
+                var chart = new google.visualization.PieChart(document.getElementById('aira'));
+                chart.draw(data, options);
+            }
+            google.setOnLoadCallback(drawChartV);
+            function drawChartV() {
+                var data = google.visualization.arrayToDataTable([
+                    ['Тип обращения', 'Количество'],
+            <c:forEach var="typisc" items="${typiscList}">
+                    ['${typisc[1]}', ${typisc[2]}],
+            </c:forEach>
+                ]);
+                var options = {
+                    title: 'Типы обращения',
+                    is3D: true,
+                    pieResidueSliceLabel: 'Остальное'
+                };
+                var chart = new google.visualization.PieChart(document.getElementById('airb'));
+                chart.draw(data, options);
+            }
+        </script>
     </head>
     <body>
         <div id="header">
@@ -28,11 +66,13 @@
         </div>
         <form action='<c:url value="/manager/specialist_data"/>' method="POST">
             <div id="content">
+                <input type="hidden" name="id" value="${speclogin}"/>
                 <div class="incident_data">
+                    <button type="submit" name="bPrintOne" class="plashka_print"/><img class="img_buttp" src='<c:url value="/css/img/print.png"/>'>Печать</button>
                     <table class="table_statistic">
                         <thead>
                             <tr>
-                                <th colspan="4">Статистика</th>
+                                <th colspan="4">Статистика - ${specname}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,7 +80,7 @@
                                 <tr>
                                     <td style="width: 30%" class="tab_title">Активные обращения</td>
                                     <td class="tab_title">Всего</td>
-                                    <td><c:choose>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[1] == null}">
                                                 0
                                             </c:when>
@@ -52,7 +92,7 @@
                                 <tr>
                                     <td rowspan="3" class="tab_title">Завершенные обращения</td>
                                     <td class="tab_title">За сегодня</td>
-                                    <td><c:choose>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[2] == null}">
                                                 0
                                             </c:when>
@@ -63,7 +103,7 @@
                                 </tr>
                                 <tr>
                                     <td class="tab_title">За месяц</td>
-                                    <td><c:choose>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[3] == null}">
                                                 0
                                             </c:when>
@@ -74,7 +114,7 @@
                                 </tr>
                                 <tr>
                                     <td class="tab_title">Всего</td>
-                                    <td><c:choose>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[4] == null}">
                                                 0
                                             </c:when>
@@ -86,7 +126,7 @@
                                 <tr>
                                     <td rowspan="3" class="tab_title">Отклоненные обращения</td>
                                     <td class="tab_title">За сегодня</td>
-                                    <td><c:choose>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[5] == null}">
                                                 0
                                             </c:when>
@@ -97,7 +137,7 @@
                                 </tr>
                                 <tr>
                                     <td class="tab_title">За месяц</td>
-                                    <td><c:choose>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[6] == null}">
                                                 0
                                             </c:when>
@@ -108,7 +148,7 @@
                                 </tr>
                                 <tr>
                                     <td class="tab_title">Всего</td>
-                                    <td><c:choose>
+                                    <td class="tab_pole"><c:choose>
                                             <c:when test="${stat[7] == null}">
                                                 0
                                             </c:when>
@@ -120,51 +160,27 @@
                             </c:forEach>
                         </tbody>
                     </table>
-                    <table class="table_statistic">
-                        <thead>
-                            <tr>
-                                <th colspan="12"  class="podzag">Завершенные за год</th>
-                            </tr>
-                            <tr>
-                                <th style="width: 17%">Январь</th>
-                                <th style="width: 17%">Февраль</th>
-                                <th style="width: 17%">Март</th>
-                                <th style="width: 17%">Апрель</th>
-                                <th style="width: 17%">Май</th>
-                                <th style="width: 15%">Июнь</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <c:forEach var="stata" items="${statYearList1}">
-                                    <td class="cell_center">
-                                        ${stata}
-                                    </td>
-                                </c:forEach>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table_statistic">
-                        <thead>
-                            <tr>
-                                <th style="width: 17%">Июль</th>
-                                <th style="width: 17%">Август</th>
-                                <th style="width: 17%">Сентябрь</th>
-                                <th style="width: 17%">Октябрь</th>
-                                <th style="width: 17%">Ноябрь</th>
-                                <th style="width: 15%">Декабрь</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <c:forEach var="stata" items="${statYearList2}">
-                                    <td class="cell_center">
-                                        ${stata}
-                                    </td>
-                                </c:forEach>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="naznac"><img class="img_nazn" src='<c:url value="/css/img/chart_w.png"/>'><div class="ztext">За месяц
+                            <select name="monc" class="sel_komisc">
+                                <option value="1" selected>Январь</option>
+                                <option value="2">Февраль</option>
+                                <option value="3">Март</option>
+                                <option value="4">Апрель</option>
+                                <option value="5">Май</option>
+                                <option value="6">Июнь</option>
+                                <option value="7">Июль</option>
+                                <option value="8">Август</option>
+                                <option value="9">Сентябрь</option>
+                                <option value="10">Октябрь</option>
+                                <option value="11">Ноябрь</option>
+                                <option value="12">Декабрь</option>
+                            </select>
+                            <input type="text" name="yearc" class="pyear" value="2016"/> года
+                            <button type="submit" name="bcharts" class="ibuttzc"/><img class="img_buttz" src='<c:url value="/css/img/done.png"/>'>Показать</button>
+                        </div></div>
+                    <div id="aira" style="width: 550px; height: 400px;"></div>
+                    <div class="naznac"><img class="img_nazn" src='<c:url value="/css/img/chart_w.png"/>'><div class="ztext">За все время</div></div>
+                    <div id="airb" style="width: 550px; height: 400px;"></div>
                 </div>
             </div>
         </form>

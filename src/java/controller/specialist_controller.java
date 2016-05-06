@@ -402,10 +402,24 @@ public class specialist_controller extends HttpServlet {
         if ("/specialist/statistic".equals(request.getServletPath())) {
             List stats = gb.getOneSpecialistsStatistics(specialist.getLogin());
             request.setAttribute("statList", stats);
-            List statsYear1 = gb.getYearStatistic("2016", specialist.getLogin(), 1);
-            List statsYear2 = gb.getYearStatistic("2016", specialist.getLogin(), 7);
-            request.setAttribute("statYearList1", statsYear1);
-            request.setAttribute("statYearList2", statsYear2);
+            
+            List statsInc = gb.getSpecIncidentsStatistics(specialist);
+            request.setAttribute("typiscList", statsInc);
+            
+            String answer = null;
+            answer = checkAction(request);
+
+            if (answer.equals("bcharts")) {
+                String yearc = request.getParameter("yearc");
+                String monc = request.getParameter("monc");
+                getServletContext().setAttribute("typisList", gb.getSpecIncidentsStatisticsMonth(yearc, monc, specialist));
+                request.getRequestDispatcher("/WEB-INF/specialist/statistic.jsp").forward(request, response);
+            }
+            
+            List statsIncMon = gb.getSpecIncidentsStatisticsMonth("2016", "1", specialist);
+            request.setAttribute("typisList", statsIncMon);
+            
+            
             request.getRequestDispatcher("/WEB-INF/specialist/statistic.jsp").forward(request, response);
         }
     }
@@ -506,6 +520,9 @@ public class specialist_controller extends HttpServlet {
         }
         if (req.getParameter("zDel") != null) {
             return "zDel";
+        }
+        if (req.getParameter("bcharts") != null) {
+            return "bcharts";
         }
         return "none";
     }

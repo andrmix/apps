@@ -1232,5 +1232,44 @@ public class GetterBean implements GetterBeanLocal {
         List resultList = q.getResultList();
         return resultList;
     }
+    
+    @Override
+    public List getSpecIncidentsStatisticsMonth(String year, String month, Users specialist) {
+        Query q = em.createNativeQuery("SELECT u.id, u.name, IFNULL(tab_end_all.cnt,0) AS cnt_end_all "
+                + "FROM typeincident AS u "
+                + "LEFT OUTER JOIN ("
+                + "SELECT a.typeIncident AS ti, COUNT(a.typeIncident) AS cnt "
+                + "FROM arcincidents AS a "
+                + "WHERE (a.status = 5) AND year(a.dateClose) = ? "
+                + "AND month(a.dateClose) = ? "
+                + "AND a.typeIncident IS NOT NULL "
+                + "AND a.specialist = ? "
+                + "GROUP BY a.typeIncident"
+                + ") AS tab_end_all ON u.id = tab_end_all.ti "
+                + "GROUP BY u.name;");
+        q.setParameter(1, year);
+        q.setParameter(2, month);
+        q.setParameter(3, specialist.getLogin());
+        List resultList = q.getResultList();
+        return resultList;
+    }
+    
+    @Override
+    public List getSpecIncidentsStatistics(Users specialist) {
+        Query q = em.createNativeQuery("SELECT u.id, u.name, IFNULL(tab_end_all.cnt,0) AS cnt_end_all "
+                + "FROM typeincident AS u "
+                + "LEFT OUTER JOIN ("
+                + "SELECT a.typeIncident AS ti, COUNT(a.typeIncident) AS cnt "
+                + "FROM arcincidents AS a "
+                + "WHERE (a.status = 5) "
+                + "AND a.typeIncident IS NOT NULL "
+                + "AND a.specialist = ? "
+                + "GROUP BY a.typeIncident"
+                + ") AS tab_end_all ON u.id = tab_end_all.ti "
+                + "GROUP BY u.name;");
+        q.setParameter(1, specialist.getLogin());
+        List resultList = q.getResultList();
+        return resultList;
+    }
 
 }

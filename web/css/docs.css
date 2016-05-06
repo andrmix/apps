@@ -95,3 +95,13 @@ a{
 .abutt:hover{
     background: #6A5ACD;
 }
+
+#air, #oil, #airm, #oilm, #aira, #airb{
+    margin-left: -60px;
+    display: inline-block;
+}
+
+.blo_cha{
+    display: inline-block;
+    width: 440px;
+}

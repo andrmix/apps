@@ -171,3 +171,56 @@
 .cell_center{
     text-align: center;
 }
+
+
+
+.table_statistic_p{
+    margin: 0;
+    font-size: 20px;
+    border-collapse: collapse;
+    width: 842px;
+    text-align: center;
+}
+
+.tab_title_p {
+    text-align: left;
+    width: 30%;
+}
+
+.table_statistic_p td {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #483D8B;
+    padding: 10px;
+}
+
+
+
+
+.incidents_tab_p{
+    margin: 0;
+    font-size: 17px;
+    border-collapse: collapse;
+    text-align: center;
+    width: 842px;
+}
+
+.incidents_tab_p th{
+    background: #483D8B;
+    color: white;
+    padding: 10px 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #483D8B;
+}
+
+.incidents_tab_p td {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #483D8B;
+    padding: 10px;
+}
+
+.incidents_tab_p th:nth-child(1), .incidents_tab_p td:nth-child(1) {
+    text-align: left;
+}

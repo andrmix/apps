@@ -344,10 +344,35 @@
     border-radius: 0px 5px 5px 0px;
 }
 
+.naznacp{
+    margin-top: 20px;
+    width: 825px;
+    font-size: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #483D8B;
+    position: relative;
+}
+
+.naznacpo{
+    margin-top: 20px;
+    width: 380px;
+    font-size: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #483D8B;
+    position: relative;
+}
+
 .img_butt{
     position: absolute;
     height: 20px;
     left: 15px;
+    top: 10px;
+}
+
+.img_buttp{
+    position: absolute;
+    height: 20px;
+    left: 475px;
     top: 10px;
 }
 
@@ -487,6 +512,10 @@
 
 .table_incident_data tbody td:nth-child(odd) {
     background: #FFA500;
+}
+
+.table_incident_data tbody td:nth-child(even) {
+    background: #F0F8FF;
 }
 
 .table_incident_data thead {

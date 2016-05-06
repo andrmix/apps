@@ -38,7 +38,8 @@ import session.ManagementSystemLocal;
             "/sort_by_dateo_m_done", "/sort_by_zay_m_done", "/sort_by_dated_m_done",
             "/manager/manager_tools", "/manager/spec_act_zamena", "/manager/spec_act_done",
             "/sort_by_id_allo", "/sort_by_id_m_closed", "/sort_by_id_m_done",
-            "/sort_by_id_m_act", "/sort_by_id_m_agr", "/sort_by_id_un"})
+            "/sort_by_id_m_act", "/sort_by_id_m_agr", "/sort_by_id_un", "/manager/stat_all_print",
+            "/manager/stat_one_print"})
 public class manager_controller extends HttpServlet {
 
     @EJB
@@ -168,18 +169,43 @@ public class manager_controller extends HttpServlet {
             getServletContext().setAttribute("typiList", gb.getIncidentsStatistics());
             getServletContext().setAttribute("specialistmList", gb.getSpecialistsStatisticsMonth("2016", "1"));
             getServletContext().setAttribute("typimList", gb.getIncidentsStatisticsMonth("2016", "1"));
-            
+
             String answer = null;
             answer = checkAction(request);
+            String yearc = null;
+            String monc = null;
 
             if (answer.equals("Showc")) {
-                String yearc = request.getParameter("years");
-                String monc = request.getParameter("monId");
+                yearc = request.getParameter("years");
+                monc = request.getParameter("monId");
                 getServletContext().setAttribute("specialistmList", gb.getSpecialistsStatisticsMonth(yearc, monc));
                 getServletContext().setAttribute("typimList", gb.getIncidentsStatisticsMonth(yearc, monc));
             }
-            
+
+            if (answer.equals("bPrint")) {
+                yearc = request.getParameter("years");
+                monc = request.getParameter("monId");
+                response.sendRedirect(request.getContextPath() + "/manager/stat_all_print?y=" + yearc + "&m=" + monc);
+                return;
+            }
+
             request.getRequestDispatcher("/WEB-INF/manager/specialists.jsp").forward(request, response);
+        }
+
+        //печать по всем =============================================================================================================
+        if ("/manager/stat_all_print".equals(request.getServletPath())) {
+            getServletContext().setAttribute("specialistList", gb.getSpecialistsStatistics());
+            getServletContext().setAttribute("typiList", gb.getIncidentsStatistics());
+
+            String yearc = request.getParameter("y");
+            String monc = request.getParameter("m");
+            getServletContext().setAttribute("dToday", new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+            getServletContext().setAttribute("mon", monc);
+            getServletContext().setAttribute("syear", yearc);
+            getServletContext().setAttribute("specialistmList", gb.getSpecialistsStatisticsMonth(yearc, monc));
+            getServletContext().setAttribute("typimList", gb.getIncidentsStatisticsMonth(yearc, monc));
+
+            request.getRequestDispatcher("/WEB-INF/manager/stat_all_print.jsp").forward(request, response);
         }
 
         //данные специалиста =============================================================================================================
@@ -187,11 +213,53 @@ public class manager_controller extends HttpServlet {
             Users specialist = ms.findUser(request.getParameter("id"));
             List stats = gb.getOneSpecialistsStatistics(specialist.getLogin());
             request.setAttribute("statList", stats);
-            List statsYear1 = gb.getYearStatistic("2016", specialist.getLogin(), 1);
-            List statsYear2 = gb.getYearStatistic("2016", specialist.getLogin(), 7);
-            request.setAttribute("statYearList1", statsYear1);
-            request.setAttribute("statYearList2", statsYear2);
+            List statsInc = gb.getSpecIncidentsStatistics(specialist);
+            request.setAttribute("typiscList", statsInc);
+            request.setAttribute("speclogin", specialist.getLogin());
+            request.setAttribute("specname", specialist.getName());
+
+            String answer = null;
+            answer = checkAction(request);
+
+            String yearc = null;
+            String monc = null;
+
+            if (answer.equals("bcharts")) {
+                yearc = request.getParameter("yearc");
+                monc = request.getParameter("monc");
+                getServletContext().setAttribute("typisList", gb.getSpecIncidentsStatisticsMonth(yearc, monc, specialist));
+                request.getRequestDispatcher("/WEB-INF/manager/specialist_data.jsp").forward(request, response);
+            }
+
+            if (answer.equals("bPrintOne")) {
+                yearc = request.getParameter("yearc");
+                monc = request.getParameter("monc");
+                response.sendRedirect(request.getContextPath() + "/manager/stat_one_print?user=" + specialist.getLogin() + "&ye=" + yearc + "&mo=" + monc);
+                return;
+            }
+
+            List statsIncMon = gb.getSpecIncidentsStatisticsMonth("2016", "1", specialist);
+            request.setAttribute("typisList", statsIncMon);
+
             request.getRequestDispatcher("/WEB-INF/manager/specialist_data.jsp").forward(request, response);
+        }
+
+        //печать по специалисту =============================================================================================================
+        if ("/manager/stat_one_print".equals(request.getServletPath())) {
+            Users specialist = ms.findUser(request.getParameter("user"));
+            List stats = gb.getOneSpecialistsStatistics(specialist.getLogin());
+            request.setAttribute("statList", stats);
+            List statsInc = gb.getSpecIncidentsStatistics(specialist);
+            request.setAttribute("typiscList", statsInc);
+            request.setAttribute("speclogin", specialist.getLogin());
+            request.setAttribute("specname", specialist.getName());
+            getServletContext().setAttribute("dToday", new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+            getServletContext().setAttribute("mon", request.getParameter("mo"));
+            getServletContext().setAttribute("syear", request.getParameter("ye"));            
+            
+            getServletContext().setAttribute("typisList", gb.getSpecIncidentsStatisticsMonth(request.getParameter("ye"), request.getParameter("mo"), specialist));
+
+            request.getRequestDispatcher("/WEB-INF/manager/stat_one_print.jsp").forward(request, response);
         }
 
         //сортировка на согласовании =============================================================================================================
@@ -790,6 +858,15 @@ public class manager_controller extends HttpServlet {
         }
         if (req.getParameter("Showc") != null) {
             return "Showc";
+        }
+        if (req.getParameter("bcharts") != null) {
+            return "bcharts";
+        }
+        if (req.getParameter("bPrint") != null) {
+            return "bPrint";
+        }
+        if (req.getParameter("bPrintOne") != null) {
+            return "bPrintOne";
         }
         return "none";
     }
